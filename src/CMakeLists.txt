@@ -13,6 +13,11 @@ find_package(Boost REQUIRED COMPONENTS filesystem system)
 add_definitions(-Wall -g -O2 -std=c++11)
 
 add_executable(son-of-mars
+    local/Assets.cc
+    local/Entity.cc
+    local/Group.cc
+    local/Random.cc
+    local/Resources.cc
 	local/SFMLDebugDraw.cc
 	son-of-mars.cc
 )
