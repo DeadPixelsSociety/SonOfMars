@@ -16,3 +16,4 @@ To compile the project, execute these commands:
     cd build
     cmake ../src
     make
+
