@@ -14,6 +14,7 @@ add_definitions(-Wall -g -O2 -std=c++11)
 
 add_executable(son-of-mars
     local/Assets.cc
+    local/Character.cc
     local/Entity.cc
     local/Group.cc
     local/Random.cc

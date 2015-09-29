@@ -19,14 +19,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
+#include "local/Character.h"
 #include "local/SFMLDebugDraw.h"
 
 int main(void) {
 	sf::RenderWindow window({800, 600}, "Son of Mars");
 
 	// Create the world physic
-	b2World b2_world(b2Vec2(0.0f, 10.0f));
+	b2World b2_world(b2Vec2(0.0f, 0.0f));
 
 	// Debug Box2D
 	SFMLDebugDraw debugDraw(window);
@@ -35,6 +35,8 @@ int main(void) {
 
 	sf::Clock clock;
 	float dt = 0.0f;
+
+	Character player(b2_world);
 
 	while (window.isOpen()) {
 	sf::Event event;
@@ -47,10 +49,11 @@ int main(void) {
 		// update
 		dt = clock.restart().asSeconds();
 		b2_world.Step(dt, 8, 3);
+		player.update(dt);
 
 		// render
-		window.clear(sf::Color::White);
-
+		window.clear(sf::Color::Black);
+		player.render(window);
 		b2_world.DrawDebugData();
 
 		window.display();
