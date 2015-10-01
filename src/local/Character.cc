@@ -2,8 +2,7 @@
 
 Character::Character(b2World &b2_world)
 : Entity(1)
-, m_body(nullptr)
-{
+, m_body(nullptr) {
     b2BodyDef b2_bodyDef;
     b2_bodyDef.type = b2_dynamicBody;
     b2_bodyDef.position.Set(100.0f * BOX2D_SCALE, 100.0f * BOX2D_SCALE);
@@ -16,13 +15,11 @@ Character::Character(b2World &b2_world)
 }
 
 
-void Character::update(const float dt)
-{
+void Character::update(const float dt) {
 
 }
 
-void Character::render(sf::RenderWindow& window)
-{
+void Character::render(sf::RenderWindow& window) {
     sf::CircleShape circle;
     circle.setPosition(100,100);
     circle.setRadius(10);

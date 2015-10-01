@@ -6,8 +6,7 @@
 
 static constexpr float BOX2D_SCALE = 0.01f;
 
-class Character: public Entity
-{
+class Character: public Entity {
     public:
         Character(b2World &b2_world);
 
