@@ -1,0 +1,18 @@
+/**
+
+@defgroup base Basic classes
+@brief All the base classes that are necessary all the time.
+
+@defgroup graphics Graphics classes
+@brief All the classes related to graphics.
+
+@defgroup model Model classes
+@brief All the classes related to models.
+
+
+@namespace game
+@brief The main namespace for game skeleton.
+
+All the classes, types and functions that are defined in the libraries are put in the @c game namespace.
+
+*/

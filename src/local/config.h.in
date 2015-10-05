@@ -1,0 +1,11 @@
+#ifndef LOCAL_CONFIG_H
+#define LOCAL_CONFIG_H
+
+#define GAME_DATADIR "@CMAKE_INSTALL_PREFIX@/share/games/son-of-mars"
+
+static constexpr float AREA_WIDTH = 800.0f;
+static constexpr float AREA_HEIGHT = 600.0f;
+
+static constexpr float BOX2D_PIXELS_PER_METER = 32.0f;
+
+#endif // LOCAL_CONFIG_H

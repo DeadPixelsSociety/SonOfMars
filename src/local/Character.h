@@ -2,19 +2,18 @@
 #define CHARACTER_H
 
 #include <Box2D/Box2D.h>
-#include "Entity.h"
 
-static constexpr float BOX2D_SCALE = 0.01f;
+#include <game/Entity.h>
 
-class Character: public Entity {
-    public:
-        Character(b2World &b2_world);
+class Character: public game::Entity {
+public:
+  Character(b2World &b2_world);
 
-        virtual void update(const float dt) override;
-        virtual void render(sf::RenderWindow& window) override;
-        
-    private:
-        b2Body *m_body; 
+  virtual void update(const float dt) override;
+  virtual void render(sf::RenderWindow& window) override;
+    
+private:
+  b2Body *m_body; 
 
 };
 #endif //CHARACTER_H
