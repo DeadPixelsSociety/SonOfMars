@@ -36,11 +36,11 @@ int main(void) {
   game::Log::setLevel(game::Log::DEBUG);
 
   // initialize
-  static constexpr unsigned INITIAL_WIDTH = 800;
-  static constexpr unsigned INITIAL_HEIGHT = 600;
+  //static constexpr unsigned INITIAL_WIDTH = 800;
+  //static constexpr unsigned INITIAL_HEIGHT = 600;
 
-  game::WindowSettings settings(INITIAL_WIDTH, INITIAL_HEIGHT, "Son of Mars");
-  game::WindowGeometry geometry(INITIAL_WIDTH, INITIAL_HEIGHT);
+  game::WindowSettings settings(AREA_WIDTH, AREA_HEIGHT, "Son of Mars");
+  game::WindowGeometry geometry(AREA_WIDTH, AREA_HEIGHT);
 
   sf::RenderWindow window;
   settings.applyTo(window);
@@ -49,7 +49,7 @@ int main(void) {
   // add cameras
   game::CameraManager cameras;
 
-  game::FixedRatioCamera mainCamera(AREA_WIDTH, AREA_HEIGHT);
+  game::FixedRatioCamera mainCamera(AREA_WIDTH, AREA_HEIGHT, {AREA_WIDTH * 0.5f, AREA_HEIGHT * 0.5f});
   cameras.addCamera(mainCamera);
 
   // add actions
@@ -63,6 +63,26 @@ int main(void) {
   game::Action fullscreenAction("Fullscreen");
   fullscreenAction.addKeyControl(sf::Keyboard::F);
   actions.addAction(fullscreenAction);
+
+  game::Action moveUP("Move UP");
+  moveUP.addKeyControl(sf::Keyboard::Z);
+  moveUP.setContinuous();
+  actions.addAction(moveUP);
+
+  game::Action moveDown("Move Down");
+  moveDown.addKeyControl(sf::Keyboard::S);
+  moveDown.setContinuous();
+  actions.addAction(moveDown);
+
+  game::Action moveLeft("Move Left");
+  moveLeft.addKeyControl(sf::Keyboard::Q);
+  moveLeft.setContinuous();
+  actions.addAction(moveLeft);
+
+  game::Action moveRight("Move Right");
+  moveRight.addKeyControl(sf::Keyboard::D);
+  moveRight.setContinuous();
+  actions.addAction(moveRight);
 
   // Setup Box2d engine
   b2World b2_world(b2Vec2(0.0f, 0.0f));
@@ -106,6 +126,20 @@ int main(void) {
       event.size.height = sz.y;
       cameras.update(event);
       geometry.update(event);
+    }
+
+    // Check move of character
+    if (moveUP.isActive()) {
+      character.move(Character::Direction::UP);
+    }
+    if (moveDown.isActive()) {
+      character.move(Character::Direction::DOWN);
+    }
+    if (moveLeft.isActive()) {
+      character.move(Character::Direction::LEFT);
+    }
+    if (moveRight.isActive()) {
+      character.move(Character::Direction::RIGHT);
     }
 
     // update
