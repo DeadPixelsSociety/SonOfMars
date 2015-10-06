@@ -10,7 +10,7 @@ Character::Character(b2World &b2_world)
 , m_horizontalDirection(NONE) {
   b2BodyDef b2_bodyDef;
   b2_bodyDef.type = b2_dynamicBody;
-  b2_bodyDef.position.Set(0.0f / BOX2D_PIXELS_PER_METER, 0.0f / BOX2D_PIXELS_PER_METER);
+  b2_bodyDef.position.Set(AREA_WIDTH / 2.0f / BOX2D_PIXELS_PER_METER, AREA_HEIGHT / 2.0f / BOX2D_PIXELS_PER_METER);
 
   b2CircleShape b2_circle;
   b2_circle.m_radius = CHARACTER_WIDTH / BOX2D_PIXELS_PER_METER;

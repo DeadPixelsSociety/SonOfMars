@@ -42,6 +42,7 @@ add_executable(son-of-mars
   game/ModelManager.cc
 
   # Own class
+  local/Arena.cc
   local/Character.cc
 	local/SFMLDebugDraw.cc
 	SonOfMars.cc

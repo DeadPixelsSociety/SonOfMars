@@ -28,6 +28,7 @@
 #include <game/WindowGeometry.h>
 #include <game/WindowSettings.h>
 
+#include "local/Arena.h"
 #include "local/Character.h"
 #include "local/config.h"
 #include "local/SFMLDebugDraw.h"
@@ -96,6 +97,9 @@ int main(void) {
 
   Character character(b2_world);
   mainEntities.addEntity(character);
+
+  Arena arena(b2_world);
+  mainEntities.addEntity(arena);
 
   // main loop
   game::Clock clock;
