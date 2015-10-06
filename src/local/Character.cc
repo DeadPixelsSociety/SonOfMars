@@ -24,26 +24,42 @@ Character::Character(b2World &b2_world)
 
 void Character::update(const float dt) {
   // Manage the move
+  
   b2Vec2 b2_velocity = m_body->GetLinearVelocity();
   if (m_verticalDirection == Direction::UP) {
-    b2_velocity.y = -VELOCITY_STEP;
-  }
-  else if (m_verticalDirection == Direction::DOWN) {
-    b2_velocity.y = +VELOCITY_STEP;
-  }
-  else {
-    b2_velocity.y = 0.0f;
-  }
-
-  if (m_horizontalDirection == Direction::RIGHT) {
-    b2_velocity.x = +VELOCITY_STEP;
-  }
-  else if (m_horizontalDirection == Direction::LEFT) {
-    b2_velocity.x = -VELOCITY_STEP;
-  }
-  else {
-    b2_velocity.x = 0.0f;
-  }
+		if (m_horizontalDirection == Direction::RIGHT) {
+			b2_velocity.y = -VELOCITY_STEP * sin(M_PI/4);
+			b2_velocity.x = +VELOCITY_STEP * cos(M_PI/4);
+		}else if (m_horizontalDirection == Direction::LEFT) {
+			b2_velocity.y = -VELOCITY_STEP * sin(M_PI/4);
+			b2_velocity.x = -VELOCITY_STEP * cos(M_PI/4);
+		}else{
+    		b2_velocity.y = -VELOCITY_STEP;
+			b2_velocity.x = 0.0f;
+		}
+  }else if (m_verticalDirection == Direction::DOWN) {
+		if (m_horizontalDirection == Direction::RIGHT) {
+			b2_velocity.y = +VELOCITY_STEP * sin(M_PI/4);
+			b2_velocity.x = +VELOCITY_STEP * cos(M_PI/4);
+		}else if (m_horizontalDirection == Direction::LEFT) {
+			b2_velocity.y = +VELOCITY_STEP * sin(M_PI/4);
+			b2_velocity.x = -VELOCITY_STEP * cos(M_PI/4);
+		}else{
+			b2_velocity.y = +VELOCITY_STEP;
+			b2_velocity.x = 0.0f;
+		}
+	}else {
+		if (m_horizontalDirection == Direction::RIGHT) {
+			b2_velocity.y = 0.0f;
+    		b2_velocity.x = +VELOCITY_STEP;
+  		}else if (m_horizontalDirection == Direction::LEFT) {
+			b2_velocity.y = 0.0f;
+    		b2_velocity.x = -VELOCITY_STEP;
+  		}else{
+    		b2_velocity.y = 0.0f;
+			b2_velocity.x = 0.0f;
+  		}
+	}
 
   m_body->SetLinearVelocity(b2_velocity);
 
