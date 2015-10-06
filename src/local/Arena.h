@@ -13,7 +13,6 @@ public:
   virtual void render(sf::RenderWindow& window) override;
     
 private:
-  b2Body *m_body; 
 
 };
 
