@@ -1,9 +1,15 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
+
+
 #include <Box2D/Box2D.h>
 
 #include <game/Entity.h>
+
+#include <cmath>
+
+#define _USE_MATH_DEFINES
 
 class Character: public game::Entity {
 public:
