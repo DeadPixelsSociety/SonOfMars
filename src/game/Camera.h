@@ -84,6 +84,10 @@ namespace game {
     virtual void update(sf::Event& event) override;
     virtual void configure(sf::RenderWindow& window) override;
 
+    const sf::View& getView() const {
+      return m_view;
+    }
+
   private:
     float m_ratio;
     sf::View m_view;
@@ -98,6 +102,10 @@ namespace game {
     virtual void update(sf::Event& event) override;
     virtual void configure(sf::RenderWindow& window) override;
 
+    const sf::View& getView() const {
+      return m_view;
+    }
+
   private:
     sf::View m_view;
   };
@@ -110,6 +118,10 @@ namespace game {
     HeadsUpCamera(sf::RenderWindow& window);
     virtual void update(sf::Event& event) override;
     virtual void configure(sf::RenderWindow& window) override;
+
+    const sf::View& getView() const {
+      return m_view;
+    }
 
   private:
     sf::View m_view;

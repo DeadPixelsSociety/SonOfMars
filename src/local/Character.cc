@@ -2,6 +2,8 @@
 
 #include "local/config.h"
 
+#include <cmath>
+//#include <iostream>
 static constexpr float VELOCITY_STEP = 5.0f;
 
 Character::Character(b2World &b2_world)
@@ -50,16 +52,29 @@ void Character::update(const float dt) {
   // Reset move
   m_verticalDirection = Direction::NONE;
   m_horizontalDirection = Direction::NONE;
+
+  // Angle
+
 }
 
 void Character::render(sf::RenderWindow& window) {
   sf::CircleShape circle;
   b2Vec2 b2_pos = m_body->GetPosition();
-  circle.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
   circle.setOrigin(CHARACTER_WIDTH, CHARACTER_WIDTH);
+  circle.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
   circle.setRadius(CHARACTER_WIDTH);
   circle.setFillColor(sf::Color::Black);
   window.draw(circle);
+
+  // Orientation of character
+  float angle = m_body->GetAngle();
+  // m_body->SetAngle(1.6f);
+  sf::RectangleShape rect({CHARACTER_WIDTH * 2.0f, 4.0f});
+  rect.setOrigin(CHARACTER_WIDTH, 2.0f);
+  rect.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
+  rect.setFillColor(sf::Color::Red);
+  rect.setRotation(angle * 180 / 3.14);
+  window.draw(rect);
 }
 
 void Character::move(Direction direction) {
@@ -85,4 +100,16 @@ void Character::move(Direction direction) {
   case NONE:
     break;
   }
+}
+
+
+void Character::rotatay(sf::Vector2i mousePos) {
+  //std::cout << "Curseur : " << mousePos.x
+  b2Vec2 b2_pos(m_body->GetPosition());
+  sf::Vector2i center(b2_pos.x*BOX2D_PIXELS_PER_METER, b2_pos.y*BOX2D_PIXELS_PER_METER);
+  float newAngle(0), dist( sqrt(pow(mousePos.x - center.x, 2) + pow(mousePos.y - center.y, 2)) );
+ 
+  newAngle = (( mousePos.y < center.y ) ? -1 : 1) * acos((mousePos.x-center.x)/dist);
+
+  m_body->SetTransform(b2_pos, newAngle);
 }

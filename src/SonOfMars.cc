@@ -146,6 +146,8 @@ int main(void) {
       character.move(Character::Direction::RIGHT);
     }
 
+    character.rotatay(sf::Mouse::getPosition(window));
+
     // update
     auto elapsed = clock.restart();
     auto dt = elapsed.asSeconds();

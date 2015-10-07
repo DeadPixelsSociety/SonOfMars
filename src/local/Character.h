@@ -21,7 +21,9 @@ public:
   virtual void update(const float dt) override;
   virtual void render(sf::RenderWindow& window) override;
 
+  // Events
   void move(Direction direction);
+  void rotatay(sf::Vector2i mousePos);
 
   static constexpr float CHARACTER_WIDTH = 10.0f;
     
