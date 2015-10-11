@@ -2,8 +2,6 @@
 
 #include "local/config.h"
 
-#include <cmath>
-//#include <iostream>
 static constexpr float VELOCITY_STEP = 5.0f;
 
 Character::Character(b2World &b2_world)
@@ -91,6 +89,9 @@ void Character::render(sf::RenderWindow& window) {
   rect.setFillColor(sf::Color::Red);
   rect.setRotation(angle * 180 / 3.14);
   window.draw(rect);
+  
+  // Target replacing mouse cursor
+  
 }
 
 void Character::move(Direction direction) {
@@ -119,13 +120,20 @@ void Character::move(Direction direction) {
 }
 
 
-void Character::rotatay(sf::Vector2i mousePos) {
-  //std::cout << "Curseur : " << mousePos.x
-  b2Vec2 b2_pos(m_body->GetPosition());
+void Character::setTarget(sf::Vector2f mousePos) {  //std::cout << "Curseur : " << mousePos.x
+  b2Vec2 b2_pos(m_body->GetPosition()), b2_newCharacterTarget;
   sf::Vector2i center(b2_pos.x*BOX2D_PIXELS_PER_METER, b2_pos.y*BOX2D_PIXELS_PER_METER);
-  float newAngle(0), dist( sqrt(pow(mousePos.x - center.x, 2) + pow(mousePos.y - center.y, 2)) );
- 
-  newAngle = (( mousePos.y < center.y ) ? -1 : 1) * acos((mousePos.x-center.x)/dist);
+  float newAngle(0)
+    , dist( sqrt(pow(mousePos.x - center.x, 2)+pow(mousePos.y - center.y, 2)) );
 
+  // Ugliest way: (mousePos.y > center.y)*2-1
+  newAngle = (( mousePos.y < center.y ) ? -1 : 1) * acos((mousePos.x-center.x)/dist);
+  // TODO: explain why it is -1 : 1 and not 1 : -1
+  
   m_body->SetTransform(b2_pos, newAngle);
+
+  // Store cursor's position for Box2D usage
+  m_target.x = mousePos.x / (double)BOX2D_PIXELS_PER_METER;
+  m_target.y = mousePos.y / (double)BOX2D_PIXELS_PER_METER;
 }
+

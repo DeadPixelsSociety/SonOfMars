@@ -1,8 +1,6 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
-
-
 #include <Box2D/Box2D.h>
 
 #include <game/Entity.h>
@@ -29,14 +27,16 @@ public:
 
   // Events
   void move(Direction direction);
-  void rotatay(sf::Vector2i mousePos);
+  void setTarget(sf::Vector2f mousePos);
 
   static constexpr float CHARACTER_WIDTH = 10.0f;
     
 private:
-  b2Body *m_body; 
+  b2Body *m_body;
   Direction m_verticalDirection;
   Direction m_horizontalDirection;
+
+  b2Vec2 m_target;
 };
 
 #endif //CHARACTER_H

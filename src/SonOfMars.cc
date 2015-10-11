@@ -146,7 +146,10 @@ int main(void) {
       character.move(Character::Direction::RIGHT);
     }
 
-    character.rotatay(sf::Mouse::getPosition(window));
+    character.setTarget( window.mapPixelToCoords(
+      sf::Mouse::getPosition(window)
+      , mainCamera.getView()
+    ) );
 
     // update
     auto elapsed = clock.restart();
@@ -168,3 +171,4 @@ int main(void) {
 
   return 0;
 }
+

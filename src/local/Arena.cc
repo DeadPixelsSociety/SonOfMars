@@ -148,3 +148,4 @@ void Arena::render(sf::RenderWindow& window) {
   wall.setPosition(AREA_WIDTH, 0.0f);
   window.draw(wall);
 }
+
