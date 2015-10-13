@@ -10,6 +10,8 @@
 #define _USE_MATH_DEFINES
 
 class Character: public game::Entity {
+
+	
 public:
   enum Direction {
     UP,
@@ -24,6 +26,10 @@ public:
 
   virtual void update(const float dt) override;
   virtual void render(sf::RenderWindow& window) override;
+
+
+  b2Vec2 getPosition();
+
 
   // Events
   void move(Direction direction);

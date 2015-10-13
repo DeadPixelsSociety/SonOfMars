@@ -43,6 +43,7 @@ add_executable(son-of-mars
 
   # Own class
   local/Arena.cc
+  local/Enemy.cc
   local/Character.cc
 	local/SFMLDebugDraw.cc
 	SonOfMars.cc

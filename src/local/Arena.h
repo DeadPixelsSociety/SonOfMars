@@ -5,6 +5,8 @@
 
 #include <game/Entity.h>
 
+
+
 class Arena: public game::Entity {
 public:
   Arena(b2World &b2_world);
