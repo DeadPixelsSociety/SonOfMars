@@ -31,7 +31,9 @@
 #include "local/Arena.h"
 #include "local/Character.h"
 #include "local/config.h"
+#include "local/EnemyManager.h"
 #include "local/SFMLDebugDraw.h"
+
 
 int main(void) {
   game::Log::setLevel(game::Log::DEBUG);
@@ -93,13 +95,19 @@ int main(void) {
   b2_world.SetDebugDraw(&debugDraw);
   debugDraw.SetFlags(b2Draw::e_shapeBit);
 
+  // Events manager 
+  game::EventManager events;
+
   game::EntityManager mainEntities;
 
   Character character(b2_world);
   mainEntities.addEntity(character);
 
-  Arena arena(b2_world);
+  Arena arena(b2_world, events);
   mainEntities.addEntity(arena);
+
+  EnemyManager enemies(events);
+  mainEntities.addEntity(enemies);
 
   // main loop
   game::Clock clock;

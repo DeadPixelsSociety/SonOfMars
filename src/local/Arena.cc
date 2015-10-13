@@ -2,9 +2,15 @@
 
 #include "local/config.h"
 
+#include "Game.h"
+
 static constexpr float WALL_SIZE = 32.0f;
 
-Arena::Arena(b2World &b2_world) {
+static constexpr float SPAWN_PERIOD = 1.0f;
+
+Arena::Arena(b2World &b2_world, game::EventManager& events)
+: m_events(events)
+, m_timeElapsed(0.0f) {
   static constexpr float B2_WIDTH = AREA_WIDTH / BOX2D_PIXELS_PER_METER;
   static constexpr float B2_HEIGHT = AREA_HEIGHT / BOX2D_PIXELS_PER_METER;
   static constexpr float X = WALL_SIZE / BOX2D_PIXELS_PER_METER;
@@ -122,7 +128,15 @@ Arena::Arena(b2World &b2_world) {
 }
 
 void Arena::update(const float dt) {
+  m_timeElapsed += dt;
 
+  if (m_timeElapsed >= SPAWN_PERIOD) {
+    SpawnMobEvent event;
+    sf::Vector2f pos(42.0f, 42.0f);
+    event.pos = pos;
+    m_events.triggerEvent(&event);
+    m_timeElapsed -= SPAWN_PERIOD;
+  }
 }
 
 void Arena::render(sf::RenderWindow& window) {
