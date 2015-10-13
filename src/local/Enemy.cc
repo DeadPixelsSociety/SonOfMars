@@ -1,16 +1,15 @@
-#include "Character.h"
+#include "Enemy.h"
 
 #include "local/config.h"
 
 static constexpr float VELOCITY_STEP = 5.0f;
 
-Character::Character(b2World &b2_world)
+Enemy::Enemy(b2World &b2_world, b2Vec2 position, Character &hero)
 : m_body(nullptr)
-, m_verticalDirection(NONE)
-, m_horizontalDirection(NONE) {
+, m_hero(hero){
   b2BodyDef b2_bodyDef;
   b2_bodyDef.type = b2_dynamicBody;
-  b2_bodyDef.position.Set(AREA_WIDTH / 2.0f / BOX2D_PIXELS_PER_METER, AREA_HEIGHT / 2.0f / BOX2D_PIXELS_PER_METER);
+  b2_bodyDef.position.Set(AREA_WIDTH / 4.0f / BOX2D_PIXELS_PER_METER, AREA_HEIGHT / 4.0f / BOX2D_PIXELS_PER_METER);
 
   b2CircleShape b2_circle;
   b2_circle.m_radius = CHARACTER_WIDTH / BOX2D_PIXELS_PER_METER;
@@ -22,10 +21,10 @@ Character::Character(b2World &b2_world)
   m_body->CreateFixture(&b2_fixture);
 }
 
-void Character::update(const float dt) {
+void Enemy::update(const float dt) {
   // Manage the move
   
-  b2Vec2 b2_velocity = m_body->GetLinearVelocity();
+  /*b2Vec2 b2_velocity = m_body->GetLinearVelocity();
   if (m_verticalDirection == Direction::UP) {
 		if (m_horizontalDirection == Direction::RIGHT) {
 			b2_velocity.y = -VELOCITY_STEP * sin(M_PI/4);
@@ -68,16 +67,16 @@ void Character::update(const float dt) {
   m_horizontalDirection = Direction::NONE;
 
   // Angle
-
+*/
 }
 
-void Character::render(sf::RenderWindow& window) {
+void Enemy::render(sf::RenderWindow& window) {
   sf::CircleShape circle;
   b2Vec2 b2_pos = m_body->GetPosition();
   circle.setOrigin(CHARACTER_WIDTH, CHARACTER_WIDTH);
   circle.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
   circle.setRadius(CHARACTER_WIDTH);
-  circle.setFillColor(sf::Color::Black);
+  circle.setFillColor(sf::Color::Cyan);
   window.draw(circle);
 
   // Orientation of character
@@ -92,51 +91,4 @@ void Character::render(sf::RenderWindow& window) {
   
   // Target replacing mouse cursor
   
-}
-
-void Character::move(Direction direction) {
-  switch (direction) {
-  case UP:
-  case DOWN:
-    if (direction == UP) {
-      m_verticalDirection = UP;
-    }
-    else {
-      m_verticalDirection = DOWN;
-    }
-    break;
-  case LEFT:
-  case RIGHT:
-    if (direction == LEFT) {
-      m_horizontalDirection = LEFT;
-    }
-    else {
-      m_horizontalDirection = RIGHT;
-    }
-    break;
-  case NONE:
-    break;
-  }
-}
-
-
-void Character::setTarget(sf::Vector2f mousePos) {  //std::cout << "Curseur : " << mousePos.x
-  b2Vec2 b2_pos(m_body->GetPosition()), b2_newCharacterTarget;
-  sf::Vector2i center(b2_pos.x*BOX2D_PIXELS_PER_METER, b2_pos.y*BOX2D_PIXELS_PER_METER);
-  float newAngle(0)
-    , dist( sqrt(pow(mousePos.x - center.x, 2)+pow(mousePos.y - center.y, 2)) );
-
-  // Ugliest way: (mousePos.y > center.y)*2-1
-  newAngle = (( mousePos.y < center.y ) ? -1 : 1) * acos((mousePos.x-center.x)/dist);
-  // TODO: explain why it is -1 : 1 and not 1 : -1
-  
-  m_body->SetTransform(b2_pos, newAngle);
-
-  // Store cursor's position for Box2D usage
-  m_target.x = mousePos.x / (double)BOX2D_PIXELS_PER_METER;
-  m_target.y = mousePos.y / (double)BOX2D_PIXELS_PER_METER;
-}
-
-b2Vec2 Character::getPosition(){
-	return m_body->GetPosition();
 }

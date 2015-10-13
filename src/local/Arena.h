@@ -6,6 +6,8 @@
 #include <game/Entity.h>
 #include <game/EventManager.h>
 
+
+
 class Arena: public game::Entity {
 public:
   Arena(b2World &b2_world, game::EventManager& events);
