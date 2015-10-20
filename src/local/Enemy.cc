@@ -19,6 +19,8 @@
 
 #include "Enemy.h"
 
+#include <cmath>
+
 #include "local/config.h"
 
 #include "Game.h"

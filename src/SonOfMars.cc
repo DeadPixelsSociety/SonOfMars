@@ -98,7 +98,7 @@ int main(void) {
 
   game::EntityManager mainEntities;
 
-  Character character(b2_world);
+  Character character(b2_world, events);
   mainEntities.addEntity(character);
 
   Arena arena(b2_world, events);

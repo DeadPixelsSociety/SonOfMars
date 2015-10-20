@@ -20,8 +20,6 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
-#include <cmath>
-
 #include <Box2D/Box2D.h>
 
 #include <game/Entity.h>

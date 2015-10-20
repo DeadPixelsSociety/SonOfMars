@@ -19,12 +19,17 @@
 
 #include "Character.h"
 
+#include <cmath>
+
 #include "local/config.h"
+
+#include "Game.h"
 
 static constexpr float VELOCITY_STEP = 5.0f;
 
-Character::Character(b2World &b2_world)
+Character::Character(b2World &b2_world, game::EventManager& events)
 : m_body(nullptr)
+, m_events(events)
 , m_verticalDirection(NONE)
 , m_horizontalDirection(NONE) {
   b2BodyDef b2_bodyDef;
@@ -47,7 +52,6 @@ Character::~Character() {
 
 void Character::update(const float dt) {
   // Manage the move
-  
   b2Vec2 b2_velocity = m_body->GetLinearVelocity();
   if (m_verticalDirection == Direction::UP) {
 		if (m_horizontalDirection == Direction::RIGHT) {
@@ -84,17 +88,21 @@ void Character::update(const float dt) {
   		}
 	}
 
+  // Apply the move
   m_body->SetLinearVelocity(b2_velocity);
 
   // Reset move
   m_verticalDirection = Direction::NONE;
   m_horizontalDirection = Direction::NONE;
-
-  // Angle
-
 }
 
 void Character::render(sf::RenderWindow& window) {
+  // Trigger location event
+  CharacterLocationEvent event;
+  event.pos = {m_body->GetPosition().x * BOX2D_PIXELS_PER_METER, m_body->GetPosition().y * BOX2D_PIXELS_PER_METER};
+  m_events.triggerEvent(&event);
+
+  // Display the character
   sf::CircleShape circle;
   b2Vec2 b2_pos = m_body->GetPosition();
   circle.setOrigin(CHARACTER_WIDTH, CHARACTER_WIDTH);
@@ -105,16 +113,12 @@ void Character::render(sf::RenderWindow& window) {
 
   // Orientation of character
   float angle = m_body->GetAngle();
-  // m_body->SetAngle(1.6f);
   sf::RectangleShape rect({CHARACTER_WIDTH * 2.0f, 4.0f});
   rect.setOrigin(CHARACTER_WIDTH, 2.0f);
   rect.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
   rect.setFillColor(sf::Color::Red);
-  rect.setRotation(angle * 180 / 3.14);
+  rect.setRotation(angle * 180 / M_PI);
   window.draw(rect);
-  
-  // Target replacing mouse cursor
-  
 }
 
 void Character::move(Direction direction) {
@@ -142,8 +146,7 @@ void Character::move(Direction direction) {
   }
 }
 
-
-void Character::setTarget(sf::Vector2f mousePos) {  //std::cout << "Curseur : " << mousePos.x
+void Character::setTarget(sf::Vector2f mousePos) {
   b2Vec2 b2_pos(m_body->GetPosition()), b2_newCharacterTarget;
   sf::Vector2i center(b2_pos.x*BOX2D_PIXELS_PER_METER, b2_pos.y*BOX2D_PIXELS_PER_METER);
   float newAngle(0)

@@ -23,8 +23,7 @@
 #include <Box2D/Box2D.h>
 
 #include <game/Entity.h>
-
-#include <cmath>
+#include <game/EventManager.h>
 
 #define _USE_MATH_DEFINES
 
@@ -41,7 +40,7 @@ public:
   };
 
 public:
-  Character(b2World &b2_world);
+  Character(b2World &b2_world, game::EventManager& events);
 
   Character(const Character&) = delete;
   Character& operator=(const Character&) = delete;
@@ -62,6 +61,8 @@ public:
     
 private:
   b2Body *m_body;
+  game::EventManager& m_events;
+
   Direction m_verticalDirection;
   Direction m_horizontalDirection;
 
