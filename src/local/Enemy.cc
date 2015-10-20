@@ -46,6 +46,10 @@ Enemy::Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f positio
   m_body->CreateFixture(&b2_fixture);
 }
 
+Enemy::~Enemy() {
+  m_body->GetWorld()->DestroyBody(m_body);
+}
+
 void Enemy::update(const float dt) {
   // Manage the move
   

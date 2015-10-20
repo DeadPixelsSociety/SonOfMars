@@ -20,16 +20,24 @@
 #ifndef ARENA_H
 #define ARENA_H
 
+#include <vector>
+
 #include <Box2D/Box2D.h>
 
 #include <game/Entity.h>
 #include <game/EventManager.h>
 
-
-
 class Arena: public game::Entity {
 public:
   Arena(b2World &b2_world, game::EventManager& events);
+  
+  Arena(const Arena&) = delete;
+  Arena& operator=(const Arena&) = delete;
+
+  Arena(Arena&&) = delete;
+  Arena& operator=(Arena&&) = delete;
+
+  virtual ~Arena();
 
   virtual void update(const float dt) override;
   virtual void render(sf::RenderWindow& window) override;
@@ -37,7 +45,7 @@ public:
 private:
   game::EventManager& m_events;
   float m_timeElapsed;
-
+  std::vector<b2Body*> m_walls;
 };
 
 #endif //ARENA_H

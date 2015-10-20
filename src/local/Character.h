@@ -43,6 +43,14 @@ public:
 public:
   Character(b2World &b2_world);
 
+  Character(const Character&) = delete;
+  Character& operator=(const Character&) = delete;
+
+  Character(Character&&) = delete;
+  Character& operator=(Character&&) = delete;
+
+  virtual ~Character();
+
   virtual void update(const float dt) override;
   virtual void render(sf::RenderWindow& window) override;
 

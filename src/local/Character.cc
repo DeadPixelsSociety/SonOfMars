@@ -41,6 +41,10 @@ Character::Character(b2World &b2_world)
   m_body->CreateFixture(&b2_fixture);
 }
 
+Character::~Character() {
+  m_body->GetWorld()->DestroyBody(m_body);
+}
+
 void Character::update(const float dt) {
   // Manage the move
   

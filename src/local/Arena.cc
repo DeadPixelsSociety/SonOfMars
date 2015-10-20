@@ -53,6 +53,7 @@ Arena::Arena(b2World &b2_world, game::EventManager& events)
   b2_fixture.shape = &b2_boxShape;
 
   b2Body *b2_body = b2_world.CreateBody(&b2_bodyDef);
+  m_walls.push_back(b2_body);
   b2_body->CreateFixture(&b2_fixture);
 
   // Défine corner top-right
@@ -69,6 +70,7 @@ Arena::Arena(b2World &b2_world, game::EventManager& events)
   b2_fixture.shape = &b2_boxShape;
 
   b2_body = b2_world.CreateBody(&b2_bodyDef);
+  m_walls.push_back(b2_body);
   b2_body->CreateFixture(&b2_fixture);
 
   // Défine corner bottom-right
@@ -85,6 +87,7 @@ Arena::Arena(b2World &b2_world, game::EventManager& events)
   b2_fixture.shape = &b2_boxShape;
 
   b2_body = b2_world.CreateBody(&b2_bodyDef);
+  m_walls.push_back(b2_body);
   b2_body->CreateFixture(&b2_fixture);
 
   // Défine corner bottom-right
@@ -101,6 +104,7 @@ Arena::Arena(b2World &b2_world, game::EventManager& events)
   b2_fixture.shape = &b2_boxShape;
 
   b2_body = b2_world.CreateBody(&b2_bodyDef);
+  m_walls.push_back(b2_body);
   b2_body->CreateFixture(&b2_fixture);
 
   static constexpr float B2_WALL_SIZE = X / 2.0f;
@@ -118,11 +122,13 @@ Arena::Arena(b2World &b2_world, game::EventManager& events)
   b2_fixture.shape = &b2_boxShape;
 
   b2_body = b2_world.CreateBody(&b2_bodyDef);
+  m_walls.push_back(b2_body);
   b2_body->CreateFixture(&b2_fixture);
 
   // Wall right
   b2_bodyDef.position.Set(B2_WIDTH - B2_WALL_SIZE, B2_HEIGHT / 2.0f);
   b2_body = b2_world.CreateBody(&b2_bodyDef);
+  m_walls.push_back(b2_body);
   b2_body->CreateFixture(&b2_fixture);
 
   // Wall top
@@ -138,12 +144,21 @@ Arena::Arena(b2World &b2_world, game::EventManager& events)
   b2_fixture.shape = &b2_boxShape;
 
   b2_body = b2_world.CreateBody(&b2_bodyDef);
+  m_walls.push_back(b2_body);
   b2_body->CreateFixture(&b2_fixture);
 
   // Wall right
   b2_bodyDef.position.Set(B2_WIDTH / 2.0f, B2_HEIGHT - B2_WALL_SIZE);
   b2_body = b2_world.CreateBody(&b2_bodyDef);
+  m_walls.push_back(b2_body);
   b2_body->CreateFixture(&b2_fixture);
+}
+
+Arena::~Arena() {
+  b2World *b2_world = m_walls[0]->GetWorld();
+  for (auto wall : m_walls) {
+    b2_world->DestroyBody(wall);
+  }
 }
 
 void Arena::update(const float dt) {

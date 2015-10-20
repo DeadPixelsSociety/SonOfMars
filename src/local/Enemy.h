@@ -33,6 +33,14 @@ class Enemy: public game::Entity {
 public:
   Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f position);
 
+  Enemy(const Enemy&) = delete;
+  Enemy& operator=(const Enemy&) = delete;
+
+  Enemy(Enemy&&) = delete;
+  Enemy& operator=(Enemy&&) = delete;
+
+  virtual ~Enemy();
+
   virtual void update(const float dt) override;
   virtual void render(sf::RenderWindow& window) override;
 
