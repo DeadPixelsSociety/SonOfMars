@@ -55,8 +55,8 @@ Enemy::~Enemy() {
 void Enemy::update(const float dt) {
   // Manage the move
   
-  /*b2Vec2 b2_velocity = m_body->GetLinearVelocity();
-  if (m_verticalDirection == Direction::UP) {
+  //b2Vec2 b2_velocity = m_body->GetLinearVelocity();
+  /*if (m_verticalDirection == Direction::UP) {
 		if (m_horizontalDirection == Direction::RIGHT) {
 			b2_velocity.y = -VELOCITY_STEP * sin(M_PI/4);
 			b2_velocity.x = +VELOCITY_STEP * cos(M_PI/4);
@@ -90,15 +90,23 @@ void Enemy::update(const float dt) {
 			b2_velocity.x = 0.0f;
   		}
 	}
-
-  m_body->SetLinearVelocity(b2_velocity);
+	*/
+  
 
   // Reset move
-  m_verticalDirection = Direction::NONE;
-  m_horizontalDirection = Direction::NONE;
+  //m_verticalDirection = Direction::NONE;
+  //m_horizontalDirection = Direction::NONE;
 
   // Angle
-*/
+
+  
+  b2Vec2 dir = m_target - m_body->GetPosition();
+  float norm = std::hypot(dir.x, dir.y);
+  /*dir.x = (dir.x / norm) * 1.0f;
+  dir.y = (dir.y / norm) * 1.0f;*/
+  m_body->SetTransform(m_body->GetPosition(), (( dir.y < 0 ) ? -1 : 1) * acos((dir.x)/norm));
+  
+  m_body->SetLinearVelocity((3.0f/norm)*dir);
 }
 
 void Enemy::render(sf::RenderWindow& window) {

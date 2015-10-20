@@ -48,7 +48,7 @@ public:
     
 private:
   b2Body *m_body;
-  sf::Vector2f m_target;
+  b2Vec2 m_target;
 };
 
 #endif //ENEMY_H

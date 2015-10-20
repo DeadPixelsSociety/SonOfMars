@@ -94,14 +94,15 @@ void Character::update(const float dt) {
   // Reset move
   m_verticalDirection = Direction::NONE;
   m_horizontalDirection = Direction::NONE;
+  
+  // Trigger location event
+  CharacterLocationEvent event;
+  event.pos = {m_body->GetPosition().x, m_body->GetPosition().y};
+  m_events.triggerEvent(&event);
+
 }
 
 void Character::render(sf::RenderWindow& window) {
-  // Trigger location event
-  CharacterLocationEvent event;
-  event.pos = {m_body->GetPosition().x * BOX2D_PIXELS_PER_METER, m_body->GetPosition().y * BOX2D_PIXELS_PER_METER};
-  m_events.triggerEvent(&event);
-
   // Display the character
   sf::CircleShape circle;
   b2Vec2 b2_pos = m_body->GetPosition();
