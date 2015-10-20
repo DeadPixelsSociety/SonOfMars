@@ -46,10 +46,6 @@ public:
   virtual void update(const float dt) override;
   virtual void render(sf::RenderWindow& window) override;
 
-
-  b2Vec2 getPosition();
-
-
   // Events
   void move(Direction direction);
   void setTarget(sf::Vector2f mousePos);

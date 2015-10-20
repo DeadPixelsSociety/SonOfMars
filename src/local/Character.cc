@@ -155,7 +155,3 @@ void Character::setTarget(sf::Vector2f mousePos) {  //std::cout << "Curseur : " 
   m_target.x = mousePos.x / (double)BOX2D_PIXELS_PER_METER;
   m_target.y = mousePos.y / (double)BOX2D_PIXELS_PER_METER;
 }
-
-b2Vec2 Character::getPosition(){
-	return m_body->GetPosition();
-}
