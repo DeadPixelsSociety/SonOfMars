@@ -29,5 +29,10 @@ struct SpawnMobEvent : public game::Event {
   sf::Vector2f pos;
 };
 
+struct CharacterLocationEvent : public game::Event {
+  static const game::EventType type = "CharacterLocationEvent"_type;
+  sf::Vector2f pos;
+};
+
 
 #endif // LOCAL_GAME_H

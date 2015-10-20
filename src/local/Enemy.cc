@@ -2,11 +2,17 @@
 
 #include "local/config.h"
 
+#include "Game.h"
+
 static constexpr float VELOCITY_STEP = 5.0f;
 
-Enemy::Enemy(b2World &b2_world, sf::Vector2f position, Character &hero)
+Enemy::Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f position)
 : m_body(nullptr)
-, m_hero(hero){
+, m_target({0.0f, 0.0f}) {
+  // Register events trigger
+  events.registerHandler<CharacterLocationEvent>(&Enemy::onCharacterLocationEvent, this);
+
+  // Set the initial position
   b2BodyDef b2_bodyDef;
   b2_bodyDef.type = b2_dynamicBody;
   b2_bodyDef.position.Set(position.x / BOX2D_PIXELS_PER_METER, position.y / BOX2D_PIXELS_PER_METER);
@@ -86,9 +92,17 @@ void Enemy::render(sf::RenderWindow& window) {
   rect.setOrigin(ENEMY_WIDTH, 2.0f);
   rect.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
   rect.setFillColor(sf::Color::Red);
-  rect.setRotation(angle * 180 / 3.14);
+  rect.setRotation(angle * 180 / M_PI);
   window.draw(rect);
   
   // Target replacing mouse cursor
   
+}
+
+game::EventStatus Enemy::onCharacterLocationEvent(game::EventType type, game::Event *event) {
+  auto locationEvent = static_cast<CharacterLocationEvent *>(event);
+
+  m_target = locationEvent->pos;
+
+  return game::EventStatus::KEEP;
 }

@@ -2,9 +2,9 @@
 
 #include "Game.h"
 
-EnemyManager::EnemyManager(game::EventManager& events, b2World &b2_world, Character &character)
+EnemyManager::EnemyManager(b2World &b2_world, game::EventManager& events)
 : m_b2_world(b2_world)
-, m_character(character) {
+, m_events(events) {
   // Register event
   events.registerHandler<SpawnMobEvent>(&EnemyManager::onSpawnMobEvent, this);
 }
@@ -30,7 +30,7 @@ void EnemyManager::render(sf::RenderWindow& window) {
 game::EventStatus EnemyManager::onSpawnMobEvent(game::EventType type, game::Event *event) {
   auto spawnEvent = static_cast<SpawnMobEvent *>(event);
 
-  m_enemies.push_back(new Enemy(m_b2_world, spawnEvent->pos, m_character));
+  m_enemies.push_back(new Enemy(m_b2_world, m_events, spawnEvent->pos));
   
   return game::EventStatus::KEEP;
 }

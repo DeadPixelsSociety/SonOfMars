@@ -13,7 +13,7 @@
 
 class EnemyManager: public game::Entity {
 public:
-  EnemyManager(game::EventManager& events, b2World &b2_world, Character &character);
+  EnemyManager(b2World &b2_world, game::EventManager& events);
 
   EnemyManager(const EnemyManager&) = delete;
   EnemyManager& operator=(const EnemyManager&) = delete;
@@ -31,7 +31,7 @@ public:
 private:
   std::vector<Enemy*> m_enemies;
   b2World &m_b2_world;
-  Character &m_character;
+  game::EventManager& m_events;
 };
 
 #endif // ENEMY_MANAGER_H

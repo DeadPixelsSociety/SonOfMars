@@ -107,7 +107,7 @@ int main(void) {
   Arena arena(b2_world, events);
   mainEntities.addEntity(arena);
 
-  EnemyManager enemies(events, b2_world, character);
+  EnemyManager enemies(b2_world, events);
   mainEntities.addEntity(enemies);
 
   // main loop
