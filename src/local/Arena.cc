@@ -6,7 +6,7 @@
 
 static constexpr float WALL_SIZE = 32.0f;
 
-static constexpr float SPAWN_PERIOD = 1.0f;
+static constexpr float SPAWN_PERIOD = 5.0f;
 
 Arena::Arena(b2World &b2_world, game::EventManager& events)
 : m_events(events)

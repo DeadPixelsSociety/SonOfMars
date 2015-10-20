@@ -14,13 +14,12 @@ class Enemy: public game::Entity {
 
 
 public:
-  Enemy(b2World &b2_world, b2Vec2 position, Character &hero);
+  Enemy(b2World &b2_world, sf::Vector2f position, Character &hero);
 
   virtual void update(const float dt) override;
   virtual void render(sf::RenderWindow& window) override;
 
-
-  static constexpr float CHARACTER_WIDTH = 10.0f;
+  static constexpr float ENEMY_WIDTH = 10.0f;
     
 private:
   b2Body *m_body;

@@ -4,15 +4,15 @@
 
 static constexpr float VELOCITY_STEP = 5.0f;
 
-Enemy::Enemy(b2World &b2_world, b2Vec2 position, Character &hero)
+Enemy::Enemy(b2World &b2_world, sf::Vector2f position, Character &hero)
 : m_body(nullptr)
 , m_hero(hero){
   b2BodyDef b2_bodyDef;
   b2_bodyDef.type = b2_dynamicBody;
-  b2_bodyDef.position.Set(AREA_WIDTH / 4.0f / BOX2D_PIXELS_PER_METER, AREA_HEIGHT / 4.0f / BOX2D_PIXELS_PER_METER);
+  b2_bodyDef.position.Set(position.x / BOX2D_PIXELS_PER_METER, position.y / BOX2D_PIXELS_PER_METER);
 
   b2CircleShape b2_circle;
-  b2_circle.m_radius = CHARACTER_WIDTH / BOX2D_PIXELS_PER_METER;
+  b2_circle.m_radius = ENEMY_WIDTH / BOX2D_PIXELS_PER_METER;
 
   b2FixtureDef b2_fixture;
   b2_fixture.shape = &b2_circle;
@@ -73,17 +73,17 @@ void Enemy::update(const float dt) {
 void Enemy::render(sf::RenderWindow& window) {
   sf::CircleShape circle;
   b2Vec2 b2_pos = m_body->GetPosition();
-  circle.setOrigin(CHARACTER_WIDTH, CHARACTER_WIDTH);
+  circle.setOrigin(ENEMY_WIDTH, ENEMY_WIDTH);
   circle.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
-  circle.setRadius(CHARACTER_WIDTH);
+  circle.setRadius(ENEMY_WIDTH);
   circle.setFillColor(sf::Color::Cyan);
   window.draw(circle);
 
   // Orientation of character
   float angle = m_body->GetAngle();
   // m_body->SetAngle(1.6f);
-  sf::RectangleShape rect({CHARACTER_WIDTH * 2.0f, 4.0f});
-  rect.setOrigin(CHARACTER_WIDTH, 2.0f);
+  sf::RectangleShape rect({ENEMY_WIDTH * 2.0f, 4.0f});
+  rect.setOrigin(ENEMY_WIDTH, 2.0f);
   rect.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
   rect.setFillColor(sf::Color::Red);
   rect.setRotation(angle * 180 / 3.14);

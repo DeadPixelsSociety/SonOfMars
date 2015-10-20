@@ -103,14 +103,11 @@ int main(void) {
 
   Character character(b2_world);
   mainEntities.addEntity(character);
-  
-  Enemy enemy(b2_world, b2Vec2(0,0), character);
-  mainEntities.addEntity(enemy);
 
   Arena arena(b2_world, events);
   mainEntities.addEntity(arena);
 
-  EnemyManager enemies(events);
+  EnemyManager enemies(events, b2_world, character);
   mainEntities.addEntity(enemies);
 
   // main loop
