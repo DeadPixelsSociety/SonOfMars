@@ -21,6 +21,7 @@
 #define ARENA_H
 
 #include <vector>
+#include <random>
 
 #include <Box2D/Box2D.h>
 

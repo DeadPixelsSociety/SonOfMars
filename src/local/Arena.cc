@@ -25,7 +25,7 @@
 
 static constexpr float WALL_SIZE = 32.0f;
 
-static constexpr float SPAWN_PERIOD = 5.0f;
+static constexpr float SPAWN_PERIOD = 1.0f;
 
 Arena::Arena(b2World &b2_world, game::EventManager& events)
 : m_events(events)
@@ -165,10 +165,25 @@ void Arena::update(const float dt) {
   m_timeElapsed += dt;
 
   if (m_timeElapsed >= SPAWN_PERIOD) {
-    SpawnMobEvent event;
-    sf::Vector2f pos(42.0f, 42.0f);
-    event.pos = pos;
-    m_events.triggerEvent(&event);
+	int random=rand()%4;
+	SpawnMobEvent event;
+	if (random==0){	
+    	sf::Vector2f pos1(42.0f, 42.0f);
+    	event.pos = pos1;
+		m_events.triggerEvent(&event);
+	}else if(random==1){
+    	sf::Vector2f pos2(800.0f-42.0f, 42.0f);
+    	event.pos = pos2;
+		m_events.triggerEvent(&event);
+	}else if(random==2){
+		sf::Vector2f pos3(42.0f, 600.0f-42.0f);
+    	event.pos = pos3;
+		m_events.triggerEvent(&event);
+	}else{
+		sf::Vector2f pos4(800.0f-42.0f, 600.0f-42.0f);
+    	event.pos = pos4;
+		m_events.triggerEvent(&event);
+	}
     m_timeElapsed -= SPAWN_PERIOD;
   }
 }
