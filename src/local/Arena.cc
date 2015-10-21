@@ -165,25 +165,23 @@ void Arena::update(const float dt) {
   m_timeElapsed += dt;
 
   if (m_timeElapsed >= SPAWN_PERIOD) {
-	int random=rand()%4;
+	// Make the new ennemy spawn randomly near one of the corners
 	SpawnMobEvent event;
-	if (random==0){	
-    	sf::Vector2f pos1(42.0f, 42.0f);
-    	event.pos = pos1;
-		m_events.triggerEvent(&event);
-	}else if(random==1){
-    	sf::Vector2f pos2(800.0f-42.0f, 42.0f);
-    	event.pos = pos2;
-		m_events.triggerEvent(&event);
-	}else if(random==2){
-		sf::Vector2f pos3(42.0f, 600.0f-42.0f);
-    	event.pos = pos3;
-		m_events.triggerEvent(&event);
-	}else{
-		sf::Vector2f pos4(800.0f-42.0f, 600.0f-42.0f);
-    	event.pos = pos4;
-		m_events.triggerEvent(&event);
+	// NOTE: maybe use game::Random::computeUniformInteger
+	switch (rand()%4) {
+	  case 0:
+    	event.pos = sf::Vector2f(42.0f, 42.0f);
+		break;
+	  case 1:
+    	event.pos = sf::Vector2f(800.0f-42.0f, 42.0f);
+		break;
+	  case 2:
+    	event.pos = sf::Vector2f(42.0f, 600.0f-42.0f);
+		break;
+	  default:
+    	event.pos = sf::Vector2f(800.0f-42.0f, 600.0f-42.0f);
 	}
+	m_events.triggerEvent(&event);
     m_timeElapsed -= SPAWN_PERIOD;
   }
 }

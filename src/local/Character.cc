@@ -149,17 +149,17 @@ void Character::move(Direction direction) {
 
 void Character::setTarget(sf::Vector2f mousePos) {
   b2Vec2 b2_pos(m_body->GetPosition()), b2_newCharacterTarget;
-  sf::Vector2i center(b2_pos.x*BOX2D_PIXELS_PER_METER, b2_pos.y*BOX2D_PIXELS_PER_METER);
+  sf::Vector2i center(b2_pos.x*BOX2D_PIXELS_PER_METER,
+                      b2_pos.y*BOX2D_PIXELS_PER_METER);
   float newAngle(0)
-    , dist( sqrt(pow(mousePos.x - center.x, 2)+pow(mousePos.y - center.y, 2)) );
+    , dist( std::hypot( mousePos.x - center.x, mousePos.y - center.y) );
 
-  // Ugliest way: (mousePos.y > center.y)*2-1
-  newAngle = (( mousePos.y < center.y ) ? -1 : 1) * acos((mousePos.x-center.x)/dist);
-  // TODO: explain why it is -1 : 1 and not 1 : -1
+  newAngle = (( mousePos.y < center.y ) ? -1 : 1)
+    * acos((mousePos.x-center.x)/dist);
   
   m_body->SetTransform(b2_pos, newAngle);
 
-  // Store cursor's position for Box2D usage
+  // Store cursor's position for Box2D and drawing usage
   m_target.x = mousePos.x / (double)BOX2D_PIXELS_PER_METER;
   m_target.y = mousePos.y / (double)BOX2D_PIXELS_PER_METER;
 }

@@ -25,8 +25,6 @@
 
 #include "Game.h"
 
-static constexpr float VELOCITY_STEP = 5.0f;
-
 Enemy::Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f position)
 : m_body(nullptr)
 , m_target({0.0f, 0.0f}) {
@@ -54,59 +52,16 @@ Enemy::~Enemy() {
 
 void Enemy::update(const float dt) {
   // Manage the move
-  
-  //b2Vec2 b2_velocity = m_body->GetLinearVelocity();
-  /*if (m_verticalDirection == Direction::UP) {
-		if (m_horizontalDirection == Direction::RIGHT) {
-			b2_velocity.y = -VELOCITY_STEP * sin(M_PI/4);
-			b2_velocity.x = +VELOCITY_STEP * cos(M_PI/4);
-		}else if (m_horizontalDirection == Direction::LEFT) {
-			b2_velocity.y = -VELOCITY_STEP * sin(M_PI/4);
-			b2_velocity.x = -VELOCITY_STEP * cos(M_PI/4);
-		}else{
-    		b2_velocity.y = -VELOCITY_STEP;
-			b2_velocity.x = 0.0f;
-		}
-  }else if (m_verticalDirection == Direction::DOWN) {
-		if (m_horizontalDirection == Direction::RIGHT) {
-			b2_velocity.y = +VELOCITY_STEP * sin(M_PI/4);
-			b2_velocity.x = +VELOCITY_STEP * cos(M_PI/4);
-		}else if (m_horizontalDirection == Direction::LEFT) {
-			b2_velocity.y = +VELOCITY_STEP * sin(M_PI/4);
-			b2_velocity.x = -VELOCITY_STEP * cos(M_PI/4);
-		}else{
-			b2_velocity.y = +VELOCITY_STEP;
-			b2_velocity.x = 0.0f;
-		}
-	}else {
-		if (m_horizontalDirection == Direction::RIGHT) {
-			b2_velocity.y = 0.0f;
-    		b2_velocity.x = +VELOCITY_STEP;
-  		}else if (m_horizontalDirection == Direction::LEFT) {
-			b2_velocity.y = 0.0f;
-    		b2_velocity.x = -VELOCITY_STEP;
-  		}else{
-    		b2_velocity.y = 0.0f;
-			b2_velocity.x = 0.0f;
-  		}
-	}
-	*/
-  
-
-  // Reset move
-  //m_verticalDirection = Direction::NONE;
-  //m_horizontalDirection = Direction::NONE;
-
-  // Angle
-
-  
+  // Compute enemy's rotation
   b2Vec2 dir = m_target - m_body->GetPosition();
   float norm = std::hypot(dir.x, dir.y);
-  /*dir.x = (dir.x / norm) * 1.0f;
-  dir.y = (dir.y / norm) * 1.0f;*/
-  m_body->SetTransform(m_body->GetPosition(), (( dir.y < 0 ) ? -1 : 1) * acos((dir.x)/norm));
-  
-  m_body->SetLinearVelocity((3.0f/norm)*dir);
+  m_body->SetTransform(m_body->GetPosition(),
+    (( dir.y < 0 ) ? -1 : 1) * acos( dir.x/norm) );
+  // Set enemy's speed (constant)
+  if ( norm > 3.0f*ENEMY_WIDTH / BOX2D_PIXELS_PER_METER )
+    m_body->SetLinearVelocity((3.0f/norm)*dir);
+  else // Useless when other enemies push
+    m_body->SetLinearVelocity( b2Vec2(0,0) );
 }
 
 void Enemy::render(sf::RenderWindow& window) {
@@ -118,18 +73,14 @@ void Enemy::render(sf::RenderWindow& window) {
   circle.setFillColor(sf::Color::Cyan);
   window.draw(circle);
 
-  // Orientation of character
+  // Orientation of enemy
   float angle = m_body->GetAngle();
-  // m_body->SetAngle(1.6f);
   sf::RectangleShape rect({ENEMY_WIDTH * 2.0f, 4.0f});
   rect.setOrigin(ENEMY_WIDTH, 2.0f);
   rect.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
   rect.setFillColor(sf::Color::Red);
   rect.setRotation(angle * 180 / M_PI);
   window.draw(rect);
-  
-  // Target replacing mouse cursor
-  
 }
 
 game::EventStatus Enemy::onCharacterLocationEvent(game::EventType type, game::Event *event) {
