@@ -97,8 +97,9 @@ int main(void) {
   // Events manager
   game::EventManager events;
   //add Resource manager
-    game::ResourceManager resources;
-    resources.addSearchDir("./");
+  game::ResourceManager resources;
+  resources.addSearchDir("../share/");
+
   game::EntityManager mainEntities;
 
   Character character(b2_world, events);
@@ -109,7 +110,9 @@ int main(void) {
 
   EnemyManager enemies(b2_world, events);
   mainEntities.addEntity(enemies);
+
   Hub hub(events,resources);
+  mainEntities.addEntity(hub);
 
   // main loop
   game::Clock clock;
