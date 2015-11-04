@@ -31,10 +31,10 @@ Hub::Hub(game::EventManager& events, game::ResourceManager& resources)
     m_font=resources.getFont("capitalis_goreanis.ttf");
     assert(m_font!=nullptr);
     m_StrHealth.setFont(*m_font);
-    m_StrHealth.setString("100");
-    m_StrHealth.setCharacterSize(50);
+    m_StrHealth.setString("Health: 100");
+    m_StrHealth.setCharacterSize(25);
     m_StrHealth.setColor(sf::Color::Red);
-    m_StrHealth.setPosition(100.0f,100.0f);
+    m_StrHealth.setPosition(100.0f,0.0f);
 }
 Hub::~Hub()
 {
