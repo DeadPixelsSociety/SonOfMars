@@ -31,6 +31,7 @@
 #include "local/config.h"
 #include "local/EnemyManager.h"
 #include "local/SFMLDebugDraw.h"
+#include "local/Hub.h"
 
 
 int main(void) {
@@ -93,9 +94,11 @@ int main(void) {
   b2_world.SetDebugDraw(&debugDraw);
   debugDraw.SetFlags(b2Draw::e_shapeBit);
 
-  // Events manager 
+  // Events manager
   game::EventManager events;
-
+  //add Resource manager
+    game::ResourceManager resources;
+    resources.addSearchDir("./");
   game::EntityManager mainEntities;
 
   Character character(b2_world, events);
@@ -106,6 +109,7 @@ int main(void) {
 
   EnemyManager enemies(b2_world, events);
   mainEntities.addEntity(enemies);
+  Hub hub(events,resources);
 
   // main loop
   game::Clock clock;

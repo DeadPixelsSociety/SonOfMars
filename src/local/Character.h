@@ -29,7 +29,7 @@
 
 class Character: public game::Entity {
 
-	
+
 public:
   enum Direction {
     UP,
@@ -57,8 +57,11 @@ public:
   void move(Direction direction);
   void setTarget(sf::Vector2f mousePos);
 
+  void setHealth(int health);
+  int getHealth();
+
   static constexpr float CHARACTER_WIDTH = 10.0f;
-    
+
 private:
   b2Body *m_body;
   game::EventManager& m_events;
@@ -67,6 +70,8 @@ private:
   Direction m_horizontalDirection;
 
   b2Vec2 m_target;
+
+  int m_health;
 };
 
 #endif //CHARACTER_H

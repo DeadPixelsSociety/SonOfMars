@@ -31,7 +31,8 @@ Character::Character(b2World &b2_world, game::EventManager& events)
 : m_body(nullptr)
 , m_events(events)
 , m_verticalDirection(NONE)
-, m_horizontalDirection(NONE) {
+, m_horizontalDirection(NONE)
+, m_health(100) {
   b2BodyDef b2_bodyDef;
   b2_bodyDef.type = b2_dynamicBody;
   b2_bodyDef.position.Set(AREA_WIDTH / 2.0f / BOX2D_PIXELS_PER_METER, AREA_HEIGHT / 2.0f / BOX2D_PIXELS_PER_METER);
@@ -94,7 +95,7 @@ void Character::update(const float dt) {
   // Reset move
   m_verticalDirection = Direction::NONE;
   m_horizontalDirection = Direction::NONE;
-  
+
   // Trigger location event
   CharacterLocationEvent event;
   event.pos = {m_body->GetPosition().x, m_body->GetPosition().y};
@@ -156,10 +157,19 @@ void Character::setTarget(sf::Vector2f mousePos) {
 
   newAngle = (( mousePos.y < center.y ) ? -1 : 1)
     * acos((mousePos.x-center.x)/dist);
-  
+
   m_body->SetTransform(b2_pos, newAngle);
 
   // Store cursor's position for Box2D and drawing usage
   m_target.x = mousePos.x / (double)BOX2D_PIXELS_PER_METER;
   m_target.y = mousePos.y / (double)BOX2D_PIXELS_PER_METER;
+}
+
+void Character::setHealth(int health)
+{
+    m_health=health;
+}
+int Character::getHealth()
+{
+    return m_health;
 }
