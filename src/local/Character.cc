@@ -20,10 +20,12 @@
 #include "Character.h"
 
 #include <cmath>
+#include <iostream>
 
 #include "local/config.h"
 
 #include "Game.h"
+#include "Target.h"
 
 static constexpr float VELOCITY_STEP = 5.0f;
 
@@ -31,11 +33,13 @@ Character::Character(b2World &b2_world, game::EventManager& events)
 : m_body(nullptr)
 , m_events(events)
 , m_verticalDirection(NONE)
-, m_horizontalDirection(NONE) {
+, m_horizontalDirection(NONE)
+, m_b2_hitbox(nullptr) {
   b2BodyDef b2_bodyDef;
   b2_bodyDef.type = b2_dynamicBody;
   b2_bodyDef.position.Set(AREA_WIDTH / 2.0f / BOX2D_PIXELS_PER_METER, AREA_HEIGHT / 2.0f / BOX2D_PIXELS_PER_METER);
 
+  // Body 
   b2CircleShape b2_circle;
   b2_circle.m_radius = CHARACTER_WIDTH / BOX2D_PIXELS_PER_METER;
 
@@ -43,10 +47,23 @@ Character::Character(b2World &b2_world, game::EventManager& events)
   b2_fixture.shape = &b2_circle;
 
   m_body = b2_world.CreateBody(&b2_bodyDef);
-  m_body->CreateFixture(&b2_fixture);
+
+  // Create the body fixture
+  b2Fixture *fixture = m_body->CreateFixture(&b2_fixture);
+  fixture->SetUserData(new Target(this, Origin::CHARACTER, false));
+
+  // Create the hitbox fixture
+  b2PolygonShape b2_hitbox;
+  float hitboxSize = CHARACTER_WIDTH / BOX2D_PIXELS_PER_METER;
+  b2_hitbox.SetAsBox(hitboxSize, hitboxSize, {hitboxSize, 0.0f}, 0.0f);
+  b2_fixture.shape = &b2_hitbox;
+  b2_fixture.isSensor = true;
+  m_b2_hitbox = m_body->CreateFixture(&b2_fixture);
+  m_b2_hitbox->SetUserData(new Target(this, Origin::CHARACTER, true));
 }
 
 Character::~Character() {
+  delete static_cast<Target*>(m_b2_hitbox->GetUserData());
   m_body->GetWorld()->DestroyBody(m_body);
 }
 
@@ -161,4 +178,16 @@ void Character::setTarget(sf::Vector2f mousePos) {
   // Store cursor's position for Box2D usage
   m_target.x = mousePos.x / (double)BOX2D_PIXELS_PER_METER;
   m_target.y = mousePos.y / (double)BOX2D_PIXELS_PER_METER;
+}
+
+void Character::simpleAttack() {
+  std::cout << "Attack" << std::endl;
+}
+
+void Character::addTarget(Entity *entity) {
+  m_targets.push_back(entity);
+}
+
+void Character::removeTarget(Entity *entity) {
+  m_targets.erase(std::remove(m_targets.begin(), m_targets.end(), entity));
 }

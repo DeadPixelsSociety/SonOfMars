@@ -17,27 +17,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LOCAL_GAME_H
-#define LOCAL_GAME_H
+#ifndef LOCAL_TARGET_H
+#define LOCAL_TARGET_H
 
-#include <SFML/Graphics.hpp>
+#include <game/Entity.h>
 
-#include <game/Event.h>
+#include "Game.h"
 
-enum Origin {
-  CHARACTER,
-  ENEMY,
+class Target {
+public:
+  Target(game::Entity *entity, Origin origin, bool isHitbox) 
+  : m_entity(entity)
+  , m_origin(origin)
+  , m_isHitbox(isHitbox) {
+    // ctor
+  }
+
+  game::Entity *getEntity() {
+    return m_entity;
+  }
+
+  Origin getOrigin() const {
+    return m_origin;
+  }
+
+  bool isHitbox() const {
+    return m_isHitbox;
+  }
+
+private:
+  game::Entity* m_entity;
+  Origin m_origin;
+  bool m_isHitbox;
 };
 
-struct SpawnMobEvent : public game::Event {
-  static const game::EventType type = "SpawnMobEvent"_type;
-  sf::Vector2f pos;
-};
-
-struct CharacterLocationEvent : public game::Event {
-  static const game::EventType type = "CharacterLocationEvent"_type;
-  sf::Vector2f pos;
-};
-
-
-#endif // LOCAL_GAME_H
+#endif // LOCAL_TARGET_H

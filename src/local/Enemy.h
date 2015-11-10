@@ -49,6 +49,7 @@ public:
 private:
   b2Body *m_body;
   sf::Vector2f m_target;
+  b2Fixture *m_b2_hitbox;
 };
 
 #endif //ENEMY_H

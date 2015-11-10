@@ -24,12 +24,14 @@
 #include "local/config.h"
 
 #include "Game.h"
+#include "Target.h"
 
 static constexpr float VELOCITY_STEP = 5.0f;
 
 Enemy::Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f position)
 : m_body(nullptr)
-, m_target({0.0f, 0.0f}) {
+, m_target({0.0f, 0.0f})
+, m_b2_hitbox(nullptr) {
   // Register events trigger
   events.registerHandler<CharacterLocationEvent>(&Enemy::onCharacterLocationEvent, this);
 
@@ -45,10 +47,14 @@ Enemy::Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f positio
   b2_fixture.shape = &b2_circle;
 
   m_body = b2_world.CreateBody(&b2_bodyDef);
-  m_body->CreateFixture(&b2_fixture);
+
+  // TODO Pas fini, voir Character
+  m_b2_hitbox = m_body->CreateFixture(&b2_fixture);
+  m_b2_hitbox->SetUserData(new Target(this, Origin::ENEMY, false));
 }
 
 Enemy::~Enemy() {
+  delete static_cast<Target*>(m_b2_hitbox->GetUserData());
   m_body->GetWorld()->DestroyBody(m_body);
 }
 

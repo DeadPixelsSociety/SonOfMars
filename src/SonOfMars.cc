@@ -28,6 +28,7 @@
 #include "local/Arena.h"
 #include "local/Enemy.h"
 #include "local/Character.h"
+#include "local/ContactListener.h"
 #include "local/config.h"
 #include "local/EnemyManager.h"
 #include "local/SFMLDebugDraw.h"
@@ -85,8 +86,14 @@ int main(void) {
   moveRight.setContinuous();
   actions.addAction(moveRight);
 
+  game::Action simpleAttack("Simple Attack");
+  simpleAttack.addMouseButtonControl(sf::Mouse::Left);
+  actions.addAction(simpleAttack);
+
   // Setup Box2d engine
   b2World b2_world(b2Vec2(0.0f, 0.0f));
+  ContactListener contactListener;
+  b2_world.SetContactListener(&contactListener);
 
   // Debug Box2D
   SFMLDebugDraw debugDraw(window);
@@ -150,6 +157,11 @@ int main(void) {
     }
     if (moveRight.isActive()) {
       character.move(Character::Direction::RIGHT);
+    }
+
+    // Check the attacks
+    if (simpleAttack.isActive()) {
+      character.simpleAttack();
     }
 
     character.setTarget( window.mapPixelToCoords(

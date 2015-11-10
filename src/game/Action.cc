@@ -98,7 +98,6 @@ namespace game {
   }
 
   // ActionManager
-
   void ActionManager::addAction(Action& action) {
     m_actions.push_back(&action);
   }

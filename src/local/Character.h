@@ -20,16 +20,14 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
+#include <vector>
+
 #include <Box2D/Box2D.h>
 
 #include <game/Entity.h>
 #include <game/EventManager.h>
 
-#define _USE_MATH_DEFINES
-
 class Character: public game::Entity {
-
-	
 public:
   enum Direction {
     UP,
@@ -53,9 +51,13 @@ public:
   virtual void update(const float dt) override;
   virtual void render(sf::RenderWindow& window) override;
 
+  void addTarget(Entity *entity);
+  void removeTarget(Entity *entity);
+
   // Events
   void move(Direction direction);
   void setTarget(sf::Vector2f mousePos);
+  void simpleAttack();
 
   static constexpr float CHARACTER_WIDTH = 10.0f;
     
@@ -67,6 +69,9 @@ private:
   Direction m_horizontalDirection;
 
   b2Vec2 m_target;
+  b2Fixture *m_b2_hitbox;
+
+  std::vector<Entity*> m_targets;
 };
 
 #endif //CHARACTER_H
