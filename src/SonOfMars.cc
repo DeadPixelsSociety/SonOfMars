@@ -135,6 +135,7 @@ int main(void) {
     }
 
     if (closeWindowAction.isActive()) {
+      b2_world.SetContactListener(nullptr);
       window.close();
     }
 

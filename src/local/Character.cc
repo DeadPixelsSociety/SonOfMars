@@ -34,7 +34,6 @@ Character::Character(b2World &b2_world, game::EventManager& events)
 , m_events(events)
 , m_verticalDirection(NONE)
 , m_horizontalDirection(NONE)
-, m_b2_hitbox(nullptr)
 , m_health(100) {
   b2BodyDef b2_bodyDef;
   b2_bodyDef.type = b2_dynamicBody;
@@ -51,7 +50,8 @@ Character::Character(b2World &b2_world, game::EventManager& events)
 
   // Create the body fixture
   b2Fixture *fixture = m_body->CreateFixture(&b2_fixture);
-  fixture->SetUserData(new Target(this, Origin::CHARACTER, false));
+  m_removeTargets.push_back(new Target(this, Origin::CHARACTER, false));
+  fixture->SetUserData(m_removeTargets.back());
 
   // Create the hitbox fixture
   b2PolygonShape b2_hitbox;
@@ -59,12 +59,15 @@ Character::Character(b2World &b2_world, game::EventManager& events)
   b2_hitbox.SetAsBox(hitboxSize, hitboxSize, {hitboxSize, 0.0f}, 0.0f);
   b2_fixture.shape = &b2_hitbox;
   b2_fixture.isSensor = true;
-  m_b2_hitbox = m_body->CreateFixture(&b2_fixture);
-  m_b2_hitbox->SetUserData(new Target(this, Origin::CHARACTER, true));
+  fixture = m_body->CreateFixture(&b2_fixture);
+  m_removeTargets.push_back(new Target(this, Origin::CHARACTER, true));
+  fixture->SetUserData(m_removeTargets.back());
 }
 
 Character::~Character() {
-  delete static_cast<Target*>(m_b2_hitbox->GetUserData());
+  for (auto removeTarget: m_removeTargets) {
+    delete removeTarget;
+  }
   m_body->GetWorld()->DestroyBody(m_body);
 }
 

@@ -27,6 +27,8 @@
 #include <game/Entity.h>
 #include <game/EventManager.h>
 
+#include "Target.h"
+
 class Character: public game::Entity {
 public:
   enum Direction {
@@ -72,7 +74,7 @@ private:
   Direction m_horizontalDirection;
 
   b2Vec2 m_target;
-  b2Fixture *m_b2_hitbox;
+  std::vector<Target*> m_removeTargets;
 
   std::vector<Entity*> m_targets;
   int m_health;
