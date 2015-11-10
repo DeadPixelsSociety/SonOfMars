@@ -59,8 +59,11 @@ public:
   void setTarget(sf::Vector2f mousePos);
   void simpleAttack();
 
+  void setHealth(int health);
+  int getHealth() const;
+
   static constexpr float CHARACTER_WIDTH = 10.0f;
-    
+
 private:
   b2Body *m_body;
   game::EventManager& m_events;
@@ -72,6 +75,7 @@ private:
   b2Fixture *m_b2_hitbox;
 
   std::vector<Entity*> m_targets;
+  int m_health;
 };
 
 #endif //CHARACTER_H

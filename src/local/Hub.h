@@ -16,40 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-#ifndef ENEMY_H
-#define ENEMY_H
-
-#include <Box2D/Box2D.h>
+#ifndef HUB_H
+#define HUB_H
 
 #include <game/Entity.h>
 #include <game/EventManager.h>
+#include <game/ResourceManager.h>
 
-class Enemy: public game::Entity {
+//#include "Game.h"
 
+class Hub: public game::Entity
+{
+    public:
+        Hub(game::EventManager& events, game::ResourceManager& resource);
+        virtual ~Hub();
+        virtual void update(const float dt) override;
+        virtual void render(sf::RenderWindow& window) override;
+        void setStrHealth(int health);
+    private:
+        sf::Text m_StrHealth;
+        float m_timeElapsed;
+        sf::Font *m_font;
 
-public:
-  Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f position);
-
-  Enemy(const Enemy&) = delete;
-  Enemy& operator=(const Enemy&) = delete;
-
-  Enemy(Enemy&&) = delete;
-  Enemy& operator=(Enemy&&) = delete;
-
-  virtual ~Enemy();
-
-  virtual void update(const float dt) override;
-  virtual void render(sf::RenderWindow& window) override;
-
-  game::EventStatus onCharacterLocationEvent(game::EventType type, game::Event *event);
-
-  static constexpr float ENEMY_WIDTH = 10.0f;
-    
-private:
-  b2Body *m_body;
-  b2Vec2 m_target;
-  b2Fixture *m_b2_hitbox;
 };
 
-#endif //ENEMY_H
+#endif //HUB_H

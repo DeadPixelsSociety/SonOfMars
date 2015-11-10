@@ -46,9 +46,10 @@ add_executable(son-of-mars
   local/Enemy.cc
   local/Character.cc
   local/ContactListener.cc
+  local/Hub.cc
   local/EnemyManager.cc
-	local/SFMLDebugDraw.cc
-	SonOfMars.cc
+  local/SFMLDebugDraw.cc
+  SonOfMars.cc
 )
 
 target_link_libraries(son-of-mars

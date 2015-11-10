@@ -17,36 +17,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARENA_H
-#define ARENA_H
+#include "Hub.h"
 
-#include <vector>
-#include <random>
+#include <cassert>
 
-#include <Box2D/Box2D.h>
+#include "local/config.h"
 
-#include <game/Entity.h>
-#include <game/EventManager.h>
 
-class Arena: public game::Entity {
-public:
-  Arena(b2World &b2_world, game::EventManager& events);
-  
-  Arena(const Arena&) = delete;
-  Arena& operator=(const Arena&) = delete;
+Hub::Hub(game::EventManager& events, game::ResourceManager& resources)
+: m_timeElapsed(0.0f)
+, m_font(nullptr)
+{
+    m_font=resources.getFont("capitalis_goreanis.ttf");
+    assert(m_font!=nullptr);
+    m_StrHealth.setFont(*m_font);
+    m_StrHealth.setString("Health: 100");
+    m_StrHealth.setCharacterSize(25);
+    m_StrHealth.setColor(sf::Color::Red);
+    m_StrHealth.setPosition(100.0f,0.0f);
+}
+Hub::~Hub()
+{
 
-  Arena(Arena&&) = delete;
-  Arena& operator=(Arena&&) = delete;
+}
+void Hub::update(const float dt)
+{
 
-  virtual ~Arena();
+}
+void Hub::render(sf::RenderWindow& window)
+{
+    window.draw(m_StrHealth);
+}
+void Hub::setStrHealth(int health)
+{
 
-  virtual void update(const float dt) override;
-  virtual void render(sf::RenderWindow& window) override;
-    
-private:
-  game::EventManager& m_events;
-  float m_timeElapsed;
-  std::vector<b2Body*> m_walls;
-};
-
-#endif //ARENA_H
+}

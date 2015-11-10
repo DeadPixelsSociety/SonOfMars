@@ -25,7 +25,7 @@
 
 static constexpr float WALL_SIZE = 32.0f;
 
-static constexpr float SPAWN_PERIOD = 5.0f;
+static constexpr float SPAWN_PERIOD = 1.0f;
 
 Arena::Arena(b2World &b2_world, game::EventManager& events)
 : m_events(events)
@@ -165,10 +165,23 @@ void Arena::update(const float dt) {
   m_timeElapsed += dt;
 
   if (m_timeElapsed >= SPAWN_PERIOD) {
-    SpawnMobEvent event;
-    sf::Vector2f pos(42.0f, 42.0f);
-    event.pos = pos;
-    m_events.triggerEvent(&event);
+	// Make the new ennemy spawn randomly near one of the corners
+	SpawnMobEvent event;
+	// NOTE: maybe use game::Random::computeUniformInteger
+	switch (rand()%4) {
+	  case 0:
+    	event.pos = sf::Vector2f(42.0f, 42.0f);
+		break;
+	  case 1:
+    	event.pos = sf::Vector2f(800.0f-42.0f, 42.0f);
+		break;
+	  case 2:
+    	event.pos = sf::Vector2f(42.0f, 600.0f-42.0f);
+		break;
+	  default:
+    	event.pos = sf::Vector2f(800.0f-42.0f, 600.0f-42.0f);
+	}
+	m_events.triggerEvent(&event);
     m_timeElapsed -= SPAWN_PERIOD;
   }
 }

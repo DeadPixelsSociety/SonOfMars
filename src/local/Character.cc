@@ -34,7 +34,8 @@ Character::Character(b2World &b2_world, game::EventManager& events)
 , m_events(events)
 , m_verticalDirection(NONE)
 , m_horizontalDirection(NONE)
-, m_b2_hitbox(nullptr) {
+, m_b2_hitbox(nullptr)
+, m_health(100) {
   b2BodyDef b2_bodyDef;
   b2_bodyDef.type = b2_dynamicBody;
   b2_bodyDef.position.Set(AREA_WIDTH / 2.0f / BOX2D_PIXELS_PER_METER, AREA_HEIGHT / 2.0f / BOX2D_PIXELS_PER_METER);
@@ -111,14 +112,15 @@ void Character::update(const float dt) {
   // Reset move
   m_verticalDirection = Direction::NONE;
   m_horizontalDirection = Direction::NONE;
+
+  // Trigger location event
+  CharacterLocationEvent event;
+  event.pos = {m_body->GetPosition().x, m_body->GetPosition().y};
+  m_events.triggerEvent(&event);
+
 }
 
 void Character::render(sf::RenderWindow& window) {
-  // Trigger location event
-  CharacterLocationEvent event;
-  event.pos = {m_body->GetPosition().x * BOX2D_PIXELS_PER_METER, m_body->GetPosition().y * BOX2D_PIXELS_PER_METER};
-  m_events.triggerEvent(&event);
-
   // Display the character
   sf::CircleShape circle;
   b2Vec2 b2_pos = m_body->GetPosition();
@@ -165,17 +167,17 @@ void Character::move(Direction direction) {
 
 void Character::setTarget(sf::Vector2f mousePos) {
   b2Vec2 b2_pos(m_body->GetPosition()), b2_newCharacterTarget;
-  sf::Vector2i center(b2_pos.x*BOX2D_PIXELS_PER_METER, b2_pos.y*BOX2D_PIXELS_PER_METER);
+  sf::Vector2i center(b2_pos.x*BOX2D_PIXELS_PER_METER,
+                      b2_pos.y*BOX2D_PIXELS_PER_METER);
   float newAngle(0)
-    , dist( sqrt(pow(mousePos.x - center.x, 2)+pow(mousePos.y - center.y, 2)) );
+    , dist( std::hypot( mousePos.x - center.x, mousePos.y - center.y) );
 
-  // Ugliest way: (mousePos.y > center.y)*2-1
-  newAngle = (( mousePos.y < center.y ) ? -1 : 1) * acos((mousePos.x-center.x)/dist);
-  // TODO: explain why it is -1 : 1 and not 1 : -1
-  
+  newAngle = (( mousePos.y < center.y ) ? -1 : 1)
+    * acos((mousePos.x-center.x)/dist);
+
   m_body->SetTransform(b2_pos, newAngle);
 
-  // Store cursor's position for Box2D usage
+  // Store cursor's position for Box2D and drawing usage
   m_target.x = mousePos.x / (double)BOX2D_PIXELS_PER_METER;
   m_target.y = mousePos.y / (double)BOX2D_PIXELS_PER_METER;
 }
@@ -190,4 +192,12 @@ void Character::addTarget(Entity *entity) {
 
 void Character::removeTarget(Entity *entity) {
   m_targets.erase(std::remove(m_targets.begin(), m_targets.end(), entity));
+}
+
+void Character::setHealth(int health) {
+  m_health=health;
+}
+
+int Character::getHealth() const {
+  return m_health;
 }
