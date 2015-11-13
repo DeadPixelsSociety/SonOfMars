@@ -17,33 +17,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LOCAL_GAME_H
-#define LOCAL_GAME_H
-
-#include <SFML/Graphics.hpp>
+#ifndef LOCAL_CONTACT_LISTNER_H
+#define LOCAL_CONTACT_LISTNER_H
 
 #include <Box2D/Box2D.h>
 
-#include <game/Event.h>
+#include "Target.h"
 
-enum Origin {
-  CHARACTER,
-  ENEMY,
+class ContactListener : public b2ContactListener {
+public:
+  void BeginContact(b2Contact* contact) override;
+  void EndContact(b2Contact* contact) override;
+
+private:
+  struct Contact {
+    Target *hitbox;
+    Target *body;
+  };
+
+private:
+  Contact defineHitboxAndBody(b2Contact *contact);
 };
 
-struct SpawnMobEvent : public game::Event {
-  static const game::EventType type = "SpawnMobEvent"_type;
-  sf::Vector2f pos;
-};
-
-struct CharacterLocationEvent : public game::Event {
-  static const game::EventType type = "CharacterLocationEvent"_type;
-  b2Vec2 pos;
-};
-
-struct CharacterHealthChange : public game::Event {
-  static const game::EventType type = "CharacterHealthChange"_type;
-  int health;
-};
-
-#endif // LOCAL_GAME_H
+#endif // LOCAL_CONTACT_LISTNER_H

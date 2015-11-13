@@ -24,6 +24,7 @@
 #include "local/config.h"
 
 #include "Game.h"
+#include "Target.h"
 
 Enemy::Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f position)
 : m_body(nullptr)
@@ -43,7 +44,7 @@ Enemy::Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f positio
   b2_fixture.shape = &b2_circle;
 
   m_body = b2_world.CreateBody(&b2_bodyDef);
-  m_body->CreateFixture(&b2_fixture);
+  m_body->CreateFixture(&b2_fixture)->SetUserData(new Target(Origin::ENEMY, false, this));
 }
 
 Enemy::~Enemy() {

@@ -24,8 +24,10 @@
 #include "local/config.h"
 
 #include "Game.h"
+#include "Target.h"
 
 static constexpr float VELOCITY_STEP = 5.0f;
+static constexpr float DEGTORAD = M_PI / 180.0f;
 
 Character::Character(b2World &b2_world, game::EventManager& events)
 : m_body(nullptr)
@@ -40,11 +42,26 @@ Character::Character(b2World &b2_world, game::EventManager& events)
   b2CircleShape b2_circle;
   b2_circle.m_radius = CHARACTER_WIDTH / BOX2D_PIXELS_PER_METER;
 
-  b2FixtureDef b2_fixture;
-  b2_fixture.shape = &b2_circle;
+  b2FixtureDef b2_fixtureDef;
+  b2_fixtureDef.shape = &b2_circle;
 
+  // Create the body of character
   m_body = b2_world.CreateBody(&b2_bodyDef);
-  m_body->CreateFixture(&b2_fixture);
+  m_body->CreateFixture(&b2_fixtureDef)->SetUserData(new Target(Origin::CHARACTER, false, this));
+
+  // Create the hitbox of player
+  float radius = 1.0f;
+  b2Vec2 vertices[8];
+  vertices[0].Set(0,0);
+  for (int i = 0; i < 7; i++) {
+      float angle = ((i / 6.0f * 90.0f) - 45.0f) * DEGTORAD;
+      vertices[i+1].Set( radius * cosf(angle), radius * sinf(angle) );
+  }
+  b2PolygonShape b2_polygonShape;
+  b2_polygonShape.Set(vertices, 8);
+  b2_fixtureDef.shape = &b2_polygonShape;
+  b2_fixtureDef.isSensor = true;
+  m_body->CreateFixture(&b2_fixtureDef)->SetUserData(new Target(Origin::CHARACTER, true, this));
 }
 
 Character::~Character() {
@@ -167,9 +184,18 @@ void Character::setTarget(sf::Vector2f mousePos) {
 
 void Character::setHealth(int health)
 {
-    m_health=health;
+  m_health=health;
 }
+
 int Character::getHealth()
 {
-    return m_health;
+  return m_health;  
+}
+
+void Character::acquiredEnemy(Enemy* enemy) {
+  m_visibleEnemies.push_back(enemy);
+}
+
+void Character::lostEnemy(Enemy* enemy) {
+  m_visibleEnemies.erase(std::find(m_visibleEnemies.begin(), m_visibleEnemies.end(), enemy));
 }

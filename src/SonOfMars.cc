@@ -27,11 +27,12 @@
 
 #include "local/Arena.h"
 #include "local/Enemy.h"
+#include "local/EnemyManager.h"
 #include "local/Character.h"
 #include "local/config.h"
-#include "local/EnemyManager.h"
-#include "local/SFMLDebugDraw.h"
+#include "local/ContactListener.h"
 #include "local/Hub.h"
+#include "local/SFMLDebugDraw.h"
 
 
 int main(void) {
@@ -88,6 +89,8 @@ int main(void) {
 
   // Setup Box2d engine
   b2World b2_world(b2Vec2(0.0f, 0.0f));
+  ContactListener contactListener;
+  b2_world.SetContactListener(&contactListener);
 
   // Debug Box2D
   SFMLDebugDraw debugDraw(window);

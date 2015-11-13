@@ -25,7 +25,7 @@
 #include <game/Entity.h>
 #include <game/EventManager.h>
 
-#define _USE_MATH_DEFINES
+#include "Enemy.h"
 
 class Character: public game::Entity {
 
@@ -60,6 +60,9 @@ public:
   void setHealth(int health);
   int getHealth();
 
+  void acquiredEnemy(Enemy* enemy);
+  void lostEnemy(Enemy* enemy);
+
   static constexpr float CHARACTER_WIDTH = 10.0f;
 
 private:
@@ -72,6 +75,8 @@ private:
   b2Vec2 m_target;
 
   int m_health;
+
+  std::vector<Enemy *> m_visibleEnemies;
 };
 
 #endif //CHARACTER_H
