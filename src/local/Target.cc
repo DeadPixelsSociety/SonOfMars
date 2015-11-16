@@ -17,28 +17,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LOCAL_CONTACT_LISTNER_H
-#define LOCAL_CONTACT_LISTNER_H
-
-#include <Box2D/Box2D.h>
-
-#include <game/EventManager.h>
-
 #include "Target.h"
 
-class ContactListener : public b2ContactListener {
-public:
-  void BeginContact(b2Contact* contact) override;
-  void EndContact(b2Contact* contact) override;
+Target::Target(Origin origin, bool isHitbox, game::Entity *entity) 
+: m_origin(origin)
+, m_isHitbox(isHitbox)
+, m_entity(entity) {
+  // Ctor
+}
 
-private:
-  struct Contact {
-    Target *hitbox;
-    Target *body;
-  };
+Origin Target::getOrigin() const {
+  return m_origin;
+}
 
-private:
-  Contact defineHitboxAndBody(b2Contact *contact);
-};
+bool Target::isHitbox() const {
+  return m_isHitbox;
+}
 
-#endif // LOCAL_CONTACT_LISTNER_H
+game::Entity* Target::getEntity() const {
+  return m_entity;
+}

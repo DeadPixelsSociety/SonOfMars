@@ -24,6 +24,8 @@
 
 #include <game/Entity.h>
 #include <game/EventManager.h>
+ 
+#include "Target.h"
 
 class Enemy: public game::Entity {
 
@@ -42,6 +44,9 @@ public:
   virtual void update(const float dt) override;
   virtual void render(sf::RenderWindow& window) override;
 
+  void death();
+
+  // Events
   game::EventStatus onCharacterLocationEvent(game::EventType type, game::Event *event);
 
   static constexpr float ENEMY_WIDTH = 10.0f;
@@ -49,7 +54,7 @@ public:
 private:
   b2Body *m_body;
   b2Vec2 m_target;
-  b2Fixture *m_b2_hitbox;
+  std::vector<Target *> m_targets;
 };
 
 #endif //ENEMY_H

@@ -28,6 +28,7 @@
 #include "Target.h"
 
 static constexpr float VELOCITY_STEP = 5.0f;
+static constexpr float DEGTORAD = M_PI / 180.0f;
 
 Character::Character(b2World &b2_world, game::EventManager& events)
 : m_body(nullptr)
@@ -43,32 +44,36 @@ Character::Character(b2World &b2_world, game::EventManager& events)
   b2CircleShape b2_circle;
   b2_circle.m_radius = CHARACTER_WIDTH / BOX2D_PIXELS_PER_METER;
 
-  b2FixtureDef b2_fixture;
-  b2_fixture.shape = &b2_circle;
+  b2FixtureDef b2_fixtureDef;
+  b2_fixtureDef.shape = &b2_circle;
 
+  // Create the body of character
   m_body = b2_world.CreateBody(&b2_bodyDef);
+  m_targets.push_back(new Target(Origin::CHARACTER, false, this));
+  m_body->CreateFixture(&b2_fixtureDef)->SetUserData(m_targets.back());
 
-  // Create the body fixture
-  b2Fixture *fixture = m_body->CreateFixture(&b2_fixture);
-  m_removeTargets.push_back(new Target(this, Origin::CHARACTER, false));
-  fixture->SetUserData(m_removeTargets.back());
-
-  // Create the hitbox fixture
-  b2PolygonShape b2_hitbox;
-  float hitboxSize = CHARACTER_WIDTH / BOX2D_PIXELS_PER_METER;
-  b2_hitbox.SetAsBox(hitboxSize, hitboxSize, {hitboxSize, 0.0f}, 0.0f);
-  b2_fixture.shape = &b2_hitbox;
-  b2_fixture.isSensor = true;
-  fixture = m_body->CreateFixture(&b2_fixture);
-  m_removeTargets.push_back(new Target(this, Origin::CHARACTER, true));
-  fixture->SetUserData(m_removeTargets.back());
+  // Create the hitbox of player
+  float radius = 1.0f;
+  b2Vec2 vertices[8];
+  vertices[0].Set(0,0);
+  for (int i = 0; i < 7; i++) {
+      float angle = ((i / 6.0f * 90.0f) - 45.0f) * DEGTORAD;
+      vertices[i+1].Set( radius * cosf(angle), radius * sinf(angle) );
+  }
+  b2PolygonShape b2_polygonShape;
+  b2_polygonShape.Set(vertices, 8);
+  b2_fixtureDef.shape = &b2_polygonShape;
+  b2_fixtureDef.isSensor = true;
+  m_targets.push_back(new Target(Origin::CHARACTER, true, this));
+  m_body->CreateFixture(&b2_fixtureDef)->SetUserData(m_targets.back());
 }
 
 Character::~Character() {
-  for (auto removeTarget: m_removeTargets) {
-    delete removeTarget;
-  }
   m_body->GetWorld()->DestroyBody(m_body);
+
+  for (auto target: m_targets) {
+    delete target;
+  }
 }
 
 void Character::update(const float dt) {
@@ -190,16 +195,10 @@ void Character::setTarget(sf::Vector2f mousePos) {
   m_target.y = mousePos.y / (double)BOX2D_PIXELS_PER_METER;
 }
 
-void Character::simpleAttack() {
-  std::cout << "Attack" << std::endl;
-}
-
-void Character::addTarget(Entity *entity) {
-  m_targets.push_back(entity);
-}
-
-void Character::removeTarget(Entity *entity) {
-  m_targets.erase(std::remove(m_targets.begin(), m_targets.end(), entity));
+void Character::simpleAttack() { 
+  for (Enemy* enemy: m_visibleEnemies) {
+    enemy->death();
+  }
 }
 
 void Character::setHealth(int health) {
@@ -207,5 +206,13 @@ void Character::setHealth(int health) {
 }
 
 int Character::getHealth() const {
-  return m_health;
+  return m_health;  
+}
+
+void Character::acquiredEnemy(Enemy* enemy) {
+  m_visibleEnemies.push_back(enemy);
+}
+
+void Character::lostEnemy(Enemy* enemy) {
+  m_visibleEnemies.erase(std::find(m_visibleEnemies.begin(), m_visibleEnemies.end(), enemy));
 }

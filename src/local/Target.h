@@ -26,29 +26,16 @@
 
 class Target {
 public:
-  Target(game::Entity *entity, Origin origin, bool isHitbox) 
-  : m_entity(entity)
-  , m_origin(origin)
-  , m_isHitbox(isHitbox) {
-    // ctor
-  }
+  Target(Origin origin, bool isHitbox, game::Entity *entity);
 
-  game::Entity *getEntity() {
-    return m_entity;
-  }
-
-  Origin getOrigin() const {
-    return m_origin;
-  }
-
-  bool isHitbox() const {
-    return m_isHitbox;
-  }
+  Origin getOrigin() const;
+  bool isHitbox() const;
+  game::Entity* getEntity() const;
 
 private:
-  game::Entity* m_entity;
   Origin m_origin;
   bool m_isHitbox;
+  game::Entity *m_entity;
 };
 
 #endif // LOCAL_TARGET_H

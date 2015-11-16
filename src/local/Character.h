@@ -27,6 +27,7 @@
 #include <game/Entity.h>
 #include <game/EventManager.h>
 
+#include "Enemy.h"
 #include "Target.h"
 
 class Character: public game::Entity {
@@ -53,9 +54,6 @@ public:
   virtual void update(const float dt) override;
   virtual void render(sf::RenderWindow& window) override;
 
-  void addTarget(Entity *entity);
-  void removeTarget(Entity *entity);
-
   // Events
   void move(Direction direction);
   void setTarget(sf::Vector2f mousePos);
@@ -63,6 +61,9 @@ public:
 
   void setHealth(int health);
   int getHealth() const;
+
+  void acquiredEnemy(Enemy* enemy);
+  void lostEnemy(Enemy* enemy);
 
   static constexpr float CHARACTER_WIDTH = 10.0f;
 
@@ -74,10 +75,10 @@ private:
   Direction m_horizontalDirection;
 
   b2Vec2 m_target;
-  std::vector<Target*> m_removeTargets;
-
-  std::vector<Entity*> m_targets;
   int m_health;
+
+  std::vector<Enemy *> m_visibleEnemies;
+  std::vector<Target *> m_targets;
 };
 
 #endif //CHARACTER_H

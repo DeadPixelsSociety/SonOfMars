@@ -28,8 +28,7 @@
 
 Enemy::Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f position)
 : m_body(nullptr)
-, m_target({0.0f, 0.0f})
-, m_b2_hitbox(nullptr) {
+, m_target({0.0f, 0.0f}) {
   // Register events trigger
   events.registerHandler<CharacterLocationEvent>(&Enemy::onCharacterLocationEvent, this);
 
@@ -45,15 +44,14 @@ Enemy::Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f positio
   b2_fixture.shape = &b2_circle;
 
   m_body = b2_world.CreateBody(&b2_bodyDef);
-
-  // TODO Pas fini, voir Character
-  m_b2_hitbox = m_body->CreateFixture(&b2_fixture);
-  m_b2_hitbox->SetUserData(new Target(this, Origin::ENEMY, false));
+  m_targets.push_back(new Target(Origin::ENEMY, false, this));
+  m_body->CreateFixture(&b2_fixture)->SetUserData(m_targets.back());
 }
 
 Enemy::~Enemy() {
-  delete static_cast<Target*>(m_b2_hitbox->GetUserData());
-  m_body->GetWorld()->DestroyBody(m_body);
+  for (auto target: m_targets) {
+    delete target;
+  }
 }
 
 void Enemy::update(const float dt) {
@@ -87,6 +85,11 @@ void Enemy::render(sf::RenderWindow& window) {
   rect.setFillColor(sf::Color::Red);
   rect.setRotation(angle * 180 / M_PI);
   window.draw(rect);
+}
+
+void Enemy::death() {
+  m_body->GetWorld()->DestroyBody(m_body);
+  kill();
 }
 
 game::EventStatus Enemy::onCharacterLocationEvent(game::EventType type, game::Event *event) {

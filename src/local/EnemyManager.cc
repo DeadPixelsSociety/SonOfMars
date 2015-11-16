@@ -36,13 +36,15 @@ EnemyManager::~EnemyManager() {
 
 void EnemyManager::update(const float dt) {
   for (auto enemy : m_enemies) {
-    enemy->update(dt);
+    if (enemy->isAlive())
+      enemy->update(dt);
   }
 }
 
 void EnemyManager::render(sf::RenderWindow& window) {
   for (auto enemy : m_enemies) {
-    enemy->render(window);
+    if (enemy->isAlive())
+      enemy->render(window);
   }
 }
 

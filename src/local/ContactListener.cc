@@ -23,6 +23,7 @@
 #include <iostream>
 
 #include "Character.h"
+#include "Enemy.h"
 
 void ContactListener::BeginContact(b2Contact* b2_contact) {
   Contact contact = defineHitboxAndBody(b2_contact);
@@ -41,7 +42,7 @@ void ContactListener::BeginContact(b2Contact* b2_contact) {
   // If the player hits the enemy
   if (contact.hitbox->getOrigin() == Origin::CHARACTER) {
     Character *character = static_cast<Character*>(contact.hitbox->getEntity());
-    character->addTarget(contact.body->getEntity());
+    character->acquiredEnemy(static_cast<Enemy*>(contact.body->getEntity()));
     return;
   }
 
@@ -65,7 +66,7 @@ void ContactListener::EndContact(b2Contact* b2_contact) {
   // If the player hits the enemy
   if (contact.hitbox->getOrigin() == Origin::CHARACTER) {
     Character *character = static_cast<Character*>(contact.hitbox->getEntity());
-    character->removeTarget(contact.body->getEntity());
+    character->lostEnemy(static_cast<Enemy*>(contact.body->getEntity()));
     return;
   }
 

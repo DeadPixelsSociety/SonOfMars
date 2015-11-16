@@ -27,12 +27,12 @@
 
 #include "local/Arena.h"
 #include "local/Enemy.h"
-#include "local/Character.h"
-#include "local/ContactListener.h"
-#include "local/config.h"
 #include "local/EnemyManager.h"
-#include "local/SFMLDebugDraw.h"
+#include "local/Character.h"
+#include "local/config.h"
+#include "local/ContactListener.h"
 #include "local/Hub.h"
+#include "local/SFMLDebugDraw.h"
 
 
 int main(void) {
@@ -91,6 +91,13 @@ int main(void) {
   simpleAttack.addMouseButtonControl(sf::Mouse::Left);
   actions.addAction(simpleAttack);
 
+  // Events manager
+  game::EventManager events;
+
+  // resource manager
+  game::ResourceManager resources;
+  resources.addSearchDir("../share/");
+
   // Setup Box2d engine
   b2World b2_world(b2Vec2(0.0f, 0.0f));
   ContactListener contactListener;
@@ -100,12 +107,6 @@ int main(void) {
   SFMLDebugDraw debugDraw(window);
   b2_world.SetDebugDraw(&debugDraw);
   debugDraw.SetFlags(b2Draw::e_shapeBit);
-
-  // Events manager
-  game::EventManager events;
-  //add Resource manager
-  game::ResourceManager resources;
-  resources.addSearchDir("../share/");
 
   game::EntityManager mainEntities;
 
@@ -118,7 +119,7 @@ int main(void) {
   EnemyManager enemies(b2_world, events);
   mainEntities.addEntity(enemies);
 
-  Hub hub(events,resources);
+  Hub hub(events, resources);
   mainEntities.addEntity(hub);
 
   // main loop
