@@ -24,7 +24,6 @@
 #include "local/config.h"
 
 #include "Game.h"
-#include "Target.h"
 
 static constexpr float VELOCITY_STEP = 5.0f;
 static constexpr float DEGTORAD = M_PI / 180.0f;
@@ -47,7 +46,8 @@ Character::Character(b2World &b2_world, game::EventManager& events)
 
   // Create the body of character
   m_body = b2_world.CreateBody(&b2_bodyDef);
-  m_body->CreateFixture(&b2_fixtureDef)->SetUserData(new Target(Origin::CHARACTER, false, this));
+  m_targets.push_back(new Target(Origin::CHARACTER, false, this));
+  m_body->CreateFixture(&b2_fixtureDef)->SetUserData(m_targets.back());
 
   // Create the hitbox of player
   float radius = 1.0f;
@@ -61,11 +61,16 @@ Character::Character(b2World &b2_world, game::EventManager& events)
   b2_polygonShape.Set(vertices, 8);
   b2_fixtureDef.shape = &b2_polygonShape;
   b2_fixtureDef.isSensor = true;
-  m_body->CreateFixture(&b2_fixtureDef)->SetUserData(new Target(Origin::CHARACTER, true, this));
+  m_targets.push_back(new Target(Origin::CHARACTER, true, this));
+  m_body->CreateFixture(&b2_fixtureDef)->SetUserData(m_targets.back());
 }
 
 Character::~Character() {
   m_body->GetWorld()->DestroyBody(m_body);
+
+  for (auto target: m_targets) {
+    delete target;
+  }
 }
 
 void Character::update(const float dt) {

@@ -24,6 +24,8 @@
 
 #include <game/Entity.h>
 #include <game/EventManager.h>
+ 
+#include "Target.h"
 
 class Enemy: public game::Entity {
 
@@ -52,6 +54,7 @@ public:
 private:
   b2Body *m_body;
   b2Vec2 m_target;
+  std::vector<Target *> m_targets;
 };
 
 #endif //ENEMY_H

@@ -26,6 +26,7 @@
 #include <game/EventManager.h>
 
 #include "Enemy.h"
+#include "Target.h"
 
 class Character: public game::Entity {
 
@@ -78,6 +79,7 @@ private:
   int m_health;
 
   std::vector<Enemy *> m_visibleEnemies;
+  std::vector<Target *> m_targets;
 };
 
 #endif //CHARACTER_H
