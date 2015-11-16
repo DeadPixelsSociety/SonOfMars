@@ -56,6 +56,7 @@ public:
   // Events
   void move(Direction direction);
   void setTarget(sf::Vector2f mousePos);
+  void simpleAttack();
 
   void setHealth(int health);
   int getHealth();

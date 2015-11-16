@@ -42,7 +42,6 @@ void ContactListener::BeginContact(b2Contact* b2_contact) {
   // If the player hits the enemy
   if (contact.hitbox->getOrigin() == Origin::CHARACTER) {
     Character *character = static_cast<Character*>(contact.hitbox->getEntity());
-    std::cout << "Acquired enemy" << std::endl;
     character->acquiredEnemy(static_cast<Enemy*>(contact.body->getEntity()));
     return;
   }
@@ -67,7 +66,6 @@ void ContactListener::EndContact(b2Contact* b2_contact) {
   // If the player hits the enemy
   if (contact.hitbox->getOrigin() == Origin::CHARACTER) {
     Character *character = static_cast<Character*>(contact.hitbox->getEntity());
-    std::cout << "Lost enemy" << std::endl;
     character->lostEnemy(static_cast<Enemy*>(contact.body->getEntity()));
     return;
   }

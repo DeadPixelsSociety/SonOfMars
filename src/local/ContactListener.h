@@ -22,6 +22,8 @@
 
 #include <Box2D/Box2D.h>
 
+#include <game/EventManager.h>
+
 #include "Target.h"
 
 class ContactListener : public b2ContactListener {

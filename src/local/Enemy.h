@@ -42,6 +42,9 @@ public:
   virtual void update(const float dt) override;
   virtual void render(sf::RenderWindow& window) override;
 
+  void death();
+
+  // Events
   game::EventStatus onCharacterLocationEvent(game::EventType type, game::Event *event);
 
   static constexpr float ENEMY_WIDTH = 10.0f;

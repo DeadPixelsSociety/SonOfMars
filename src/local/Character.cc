@@ -182,6 +182,12 @@ void Character::setTarget(sf::Vector2f mousePos) {
   m_target.y = mousePos.y / (double)BOX2D_PIXELS_PER_METER;
 }
 
+void Character::simpleAttack() {
+  for (Enemy* enemy: m_visibleEnemies) {
+    enemy->death();
+  }
+}
+
 void Character::setHealth(int health)
 {
   m_health=health;

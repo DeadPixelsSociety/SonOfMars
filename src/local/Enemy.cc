@@ -48,7 +48,7 @@ Enemy::Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f positio
 }
 
 Enemy::~Enemy() {
-  m_body->GetWorld()->DestroyBody(m_body);
+  // dtor
 }
 
 void Enemy::update(const float dt) {
@@ -82,6 +82,11 @@ void Enemy::render(sf::RenderWindow& window) {
   rect.setFillColor(sf::Color::Red);
   rect.setRotation(angle * 180 / M_PI);
   window.draw(rect);
+}
+
+void Enemy::death() {
+  m_body->GetWorld()->DestroyBody(m_body);
+  kill();
 }
 
 game::EventStatus Enemy::onCharacterLocationEvent(game::EventType type, game::Event *event) {

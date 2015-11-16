@@ -24,6 +24,7 @@
 
 #include <Box2D/Box2D.h>
 
+#include <game/Entity.h>
 #include <game/Event.h>
 
 enum Origin {

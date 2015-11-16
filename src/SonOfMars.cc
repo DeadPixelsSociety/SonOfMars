@@ -87,6 +87,17 @@ int main(void) {
   moveRight.setContinuous();
   actions.addAction(moveRight);
 
+  game::Action simpleAttack("Simple Attack");
+  simpleAttack.addMouseButtonControl(sf::Mouse::Left);
+  actions.addAction(simpleAttack);
+
+  // Events manager
+  game::EventManager events;
+
+  // resource manager
+  game::ResourceManager resources;
+  resources.addSearchDir("../share/");
+
   // Setup Box2d engine
   b2World b2_world(b2Vec2(0.0f, 0.0f));
   ContactListener contactListener;
@@ -96,12 +107,6 @@ int main(void) {
   SFMLDebugDraw debugDraw(window);
   b2_world.SetDebugDraw(&debugDraw);
   debugDraw.SetFlags(b2Draw::e_shapeBit);
-
-  // Events manager
-  game::EventManager events;
-  //add Resource manager
-  game::ResourceManager resources;
-  resources.addSearchDir("../share/");
 
   game::EntityManager mainEntities;
 
@@ -160,6 +165,11 @@ int main(void) {
     }
     if (moveRight.isActive()) {
       character.move(Character::Direction::RIGHT);
+    }
+
+    // Check the attacks
+    if (simpleAttack.isActive()) {
+      character.simpleAttack();
     }
 
     character.setTarget( window.mapPixelToCoords(
