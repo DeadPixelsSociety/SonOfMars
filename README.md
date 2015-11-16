@@ -16,6 +16,7 @@ To compile the project, execute these commands:
     cd build
     cmake ../src
     make
+    make install # Root maybe needed
 
 ### Playing
 After your first compilation, launch and enjoy the game:

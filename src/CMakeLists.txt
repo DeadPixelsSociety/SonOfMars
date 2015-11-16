@@ -58,3 +58,13 @@ target_link_libraries(son-of-mars
 	${BOX2D_LIBRARIES}
 	${Boost_LIBRARIES}
 )
+
+install(
+  DIRECTORY "${CMAKE_SOURCE_DIR}/share/son-of-mars"
+  DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/games"
+)
+
+install(
+  TARGETS son-of-mars
+  RUNTIME DESTINATION games
+)

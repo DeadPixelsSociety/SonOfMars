@@ -96,7 +96,7 @@ int main(void) {
 
   // resource manager
   game::ResourceManager resources;
-  resources.addSearchDir("../share/");
+  resources.addSearchDir(GAME_DATADIR);
 
   // Setup Box2d engine
   b2World b2_world(b2Vec2(0.0f, 0.0f));
