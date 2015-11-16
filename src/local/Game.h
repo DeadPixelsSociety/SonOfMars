@@ -39,9 +39,9 @@ struct CharacterLocationEvent : public game::Event {
   b2Vec2 pos;
 };
 
-struct CharacterHealthChange : public game::Event {
-  static const game::EventType type = "CharacterHealthChange"_type;
-  int health;
+struct CharacterHealthEvent : public game::Event {
+  static const game::EventType type = "CharacterHealthEvent"_type;
+  int CharacterHealth;
 };
 
 #endif // LOCAL_GAME_H

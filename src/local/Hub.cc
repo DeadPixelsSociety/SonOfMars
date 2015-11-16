@@ -20,6 +20,7 @@
 #include "Hub.h"
 
 #include <cassert>
+#include <stdlib.h>
 
 #include "local/config.h"
 
@@ -27,14 +28,18 @@
 Hub::Hub(game::EventManager& events, game::ResourceManager& resources)
 : m_timeElapsed(0.0f)
 , m_font(nullptr)
+, m_CharacterHealth(0)
 {
     m_font=resources.getFont("capitalis_goreanis.ttf");
     assert(m_font!=nullptr);
     m_StrHealth.setFont(*m_font);
-    m_StrHealth.setString("Health: 100");
+    std::string str="Health: "+std::to_string(m_CharacterHealth);
+    m_StrHealth.setString(str);
     m_StrHealth.setCharacterSize(25);
     m_StrHealth.setColor(sf::Color::Red);
     m_StrHealth.setPosition(100.0f,0.0f);
+    // Register event
+    events.registerHandler<CharacterHealthEvent>(&Hub::onCharacterHealthEvent, this);
 }
 Hub::~Hub()
 {
@@ -42,13 +47,17 @@ Hub::~Hub()
 }
 void Hub::update(const float dt)
 {
-
+    m_StrHealth.setString("Health: "+std::to_string(m_CharacterHealth));
 }
 void Hub::render(sf::RenderWindow& window)
 {
     window.draw(m_StrHealth);
 }
-void Hub::setStrHealth(int health)
+game::EventStatus Hub::onCharacterHealthEvent(game::EventType type, game::Event *event)
 {
+    auto healthEvent = static_cast<CharacterHealthEvent *>(event);
 
+    m_CharacterHealth = healthEvent->CharacterHealth;
+
+    return game::EventStatus::KEEP;
 }

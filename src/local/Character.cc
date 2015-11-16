@@ -121,6 +121,11 @@ void Character::update(const float dt) {
   event.pos = {m_body->GetPosition().x, m_body->GetPosition().y};
   m_events.triggerEvent(&event);
 
+  // Trigger health event
+  CharacterHealthEvent healthEvent;
+  healthEvent.CharacterHealth=m_health;
+  m_events.triggerEvent(&healthEvent);
+
 }
 
 void Character::render(sf::RenderWindow& window) {

@@ -23,7 +23,8 @@
 #include <game/EventManager.h>
 #include <game/ResourceManager.h>
 
-//#include "Game.h"
+#include "Character.h"
+#include "Game.h"
 
 class Hub: public game::Entity
 {
@@ -32,11 +33,12 @@ class Hub: public game::Entity
         virtual ~Hub();
         virtual void update(const float dt) override;
         virtual void render(sf::RenderWindow& window) override;
-        void setStrHealth(int health);
+        game::EventStatus onCharacterHealthEvent(game::EventType type, game::Event *event);
     private:
         sf::Text m_StrHealth;
         float m_timeElapsed;
         sf::Font *m_font;
+        int m_CharacterHealth;
 
 };
 
