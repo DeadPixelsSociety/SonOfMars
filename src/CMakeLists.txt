@@ -47,7 +47,7 @@ add_executable(son-of-mars
   local/ContactListener.cc
   local/Enemy.cc
   local/EnemyManager.cc
-  local/Hub.cc
+  local/Hud.cc
   local/SFMLDebugDraw.cc
   local/Target.cc
   SonOfMars.cc

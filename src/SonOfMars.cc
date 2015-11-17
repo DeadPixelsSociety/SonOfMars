@@ -31,7 +31,7 @@
 #include "local/Character.h"
 #include "local/config.h"
 #include "local/ContactListener.h"
-#include "local/Hub.h"
+#include "local/Hud.h"
 #include "local/SFMLDebugDraw.h"
 
 
@@ -119,8 +119,8 @@ int main(void) {
   EnemyManager enemies(b2_world, events);
   mainEntities.addEntity(enemies);
 
-  Hub hub(events, resources);
-  mainEntities.addEntity(hub);
+  Hud hud(events, resources);
+  mainEntities.addEntity(hud);
 
   // main loop
   game::Clock clock;
