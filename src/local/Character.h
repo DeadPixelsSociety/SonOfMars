@@ -20,6 +20,7 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
+#include <set>
 #include <vector>
 
 #include <Box2D/Box2D.h>
@@ -77,7 +78,7 @@ private:
   b2Vec2 m_target;
   int m_health;
 
-  std::vector<Enemy *> m_visibleEnemies;
+  std::set<Enemy *> m_visibleEnemies;
   std::vector<Target *> m_targets;
 };
 

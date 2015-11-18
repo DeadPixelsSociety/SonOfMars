@@ -210,9 +210,9 @@ int Character::getHealth() const {
 }
 
 void Character::acquiredEnemy(Enemy* enemy) {
-  m_visibleEnemies.push_back(enemy);
+  m_visibleEnemies.insert(enemy);
 }
 
 void Character::lostEnemy(Enemy* enemy) {
-  m_visibleEnemies.erase(std::find(m_visibleEnemies.begin(), m_visibleEnemies.end(), enemy));
+  m_visibleEnemies.erase(enemy);
 }
