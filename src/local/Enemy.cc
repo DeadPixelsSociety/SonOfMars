@@ -26,9 +26,19 @@
 #include "Game.h"
 #include "Target.h"
 
+static constexpr int BASIC_HEALTH = 5;
+static constexpr int BASIC_DAMAGE = 1;
+static constexpr float BASIC_SPEED = 3.0f;
+static constexpr float BASIC_ATTACKPERIOD = 5.0f;
+
 Enemy::Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f position)
 : m_body(nullptr)
-, m_target({0.0f, 0.0f}) {
+, m_target({0.0f, 0.0f})
+, m_Health(BASIC_HEALTH)
+, m_Damage(BASIC_DAMAGE)
+, m_Speed(BASIC_SPEED)
+, m_AttackPeriod(BASIC_ATTACKPERIOD)
+ {
   // Register events trigger
   events.registerHandler<CharacterLocationEvent>(&Enemy::onCharacterLocationEvent, this);
 
@@ -63,7 +73,7 @@ void Enemy::update(const float dt) {
     (( dir.y < 0 ) ? -1 : 1) * acos( dir.x/norm) );
   // Set enemy's speed (constant)
   if ( norm > 3.0f*ENEMY_WIDTH / BOX2D_PIXELS_PER_METER )
-    m_body->SetLinearVelocity((3.0f/norm)*dir);
+    m_body->SetLinearVelocity((m_Speed/norm)*dir);
   else // Useless when other enemies push
     m_body->SetLinearVelocity( b2Vec2(0,0) );
 }

@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef HUB_H
-#define HUB_H
+#ifndef HUD_H
+#define HUD_H
 
 #include <game/Entity.h>
 #include <game/EventManager.h>
@@ -26,11 +26,11 @@
 #include "Character.h"
 #include "Game.h"
 
-class Hub: public game::Entity
+class Hud: public game::Entity
 {
     public:
-        Hub(game::EventManager& events, game::ResourceManager& resource);
-        virtual ~Hub();
+        Hud(game::EventManager& events, game::ResourceManager& resource);
+        virtual ~Hud();
         virtual void update(const float dt) override;
         virtual void render(sf::RenderWindow& window) override;
         game::EventStatus onCharacterHealthEvent(game::EventType type, game::Event *event);
@@ -42,4 +42,4 @@ class Hub: public game::Entity
 
 };
 
-#endif //HUB_H
+#endif //HUD_H

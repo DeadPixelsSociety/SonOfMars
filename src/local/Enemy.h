@@ -24,7 +24,7 @@
 
 #include <game/Entity.h>
 #include <game/EventManager.h>
- 
+
 #include "Target.h"
 
 class Enemy: public game::Entity {
@@ -50,11 +50,15 @@ public:
   game::EventStatus onCharacterLocationEvent(game::EventType type, game::Event *event);
 
   static constexpr float ENEMY_WIDTH = 10.0f;
-    
+
 private:
   b2Body *m_body;
   b2Vec2 m_target;
   std::vector<Target *> m_targets;
+  int m_Health;
+  int m_Damage;
+  float m_Speed;
+  float m_AttackPeriod;
 };
 
 #endif //ENEMY_H

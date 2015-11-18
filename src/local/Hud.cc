@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Hub.h"
+#include "Hud.h"
 
 #include <cassert>
 #include <stdlib.h>
@@ -25,7 +25,7 @@
 #include "local/config.h"
 
 
-Hub::Hub(game::EventManager& events, game::ResourceManager& resources)
+Hud::Hud(game::EventManager& events, game::ResourceManager& resources)
 : m_timeElapsed(0.0f)
 , m_font(nullptr)
 , m_CharacterHealth(0)
@@ -39,21 +39,21 @@ Hub::Hub(game::EventManager& events, game::ResourceManager& resources)
     m_StrHealth.setColor(sf::Color::Red);
     m_StrHealth.setPosition(100.0f,0.0f);
     // Register event
-    events.registerHandler<CharacterHealthEvent>(&Hub::onCharacterHealthEvent, this);
+    events.registerHandler<CharacterHealthEvent>(&Hud::onCharacterHealthEvent, this);
 }
-Hub::~Hub()
+Hud::~Hud()
 {
 
 }
-void Hub::update(const float dt)
+void Hud::update(const float dt)
 {
     m_StrHealth.setString("Health: "+std::to_string(m_CharacterHealth));
 }
-void Hub::render(sf::RenderWindow& window)
+void Hud::render(sf::RenderWindow& window)
 {
     window.draw(m_StrHealth);
 }
-game::EventStatus Hub::onCharacterHealthEvent(game::EventType type, game::Event *event)
+game::EventStatus Hud::onCharacterHealthEvent(game::EventType type, game::Event *event)
 {
     auto healthEvent = static_cast<CharacterHealthEvent *>(event);
 
