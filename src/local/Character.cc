@@ -30,19 +30,28 @@
 static constexpr float VELOCITY_STEP = 5.0f;
 static constexpr float DEGTORAD = M_PI / 180.0f;
 
-Character::Character(b2World &b2_world, game::EventManager& events)
+Character::Character(b2World &b2_world, game::EventManager& events, game::ResourceManager &resources)
 : m_body(nullptr)
 , m_events(events)
+, m_animLeftTexture(nullptr)
 , m_verticalDirection(NONE)
 , m_horizontalDirection(NONE)
+, m_spriteDirection(0)
+, m_timeElapsedAnimation(0.0f)
+, m_animationCounter(0)
 , m_health(100) {
+  // Load textures
+  m_animLeftTexture = resources.getTexture("character/character_left.png");
+  assert(m_animLeftTexture != nullptr);
+
+  // Create the physical body
   b2BodyDef b2_bodyDef;
   b2_bodyDef.type = b2_dynamicBody;
   b2_bodyDef.position.Set(AREA_WIDTH / 2.0f / BOX2D_PIXELS_PER_METER, AREA_HEIGHT / 2.0f / BOX2D_PIXELS_PER_METER);
 
   // Body 
   b2CircleShape b2_circle;
-  b2_circle.m_radius = CHARACTER_WIDTH / BOX2D_PIXELS_PER_METER;
+  b2_circle.m_radius = CHARACTER_WIDTH * 0.4f / BOX2D_PIXELS_PER_METER;
 
   b2FixtureDef b2_fixtureDef;
   b2_fixtureDef.shape = &b2_circle;
@@ -53,7 +62,7 @@ Character::Character(b2World &b2_world, game::EventManager& events)
   m_body->CreateFixture(&b2_fixtureDef)->SetUserData(m_targets.back());
 
   // Create the hitbox of player
-  float radius = 1.0f;
+  float radius = CHARACTER_WIDTH / BOX2D_PIXELS_PER_METER;
   b2Vec2 vertices[8];
   vertices[0].Set(0,0);
   for (int i = 0; i < 7; i++) {
@@ -75,6 +84,9 @@ Character::~Character() {
     delete target;
   }
 }
+
+static constexpr float ANIMATION_SPEED = 0.1f;
+static constexpr unsigned int NUMBER_ANIMATIONS = 8;
 
 void Character::update(const float dt) {
   // Manage the move
@@ -117,6 +129,22 @@ void Character::update(const float dt) {
   // Apply the move
   m_body->SetLinearVelocity(b2_velocity);
 
+  // Update animation
+  if (m_spriteDirection != (m_verticalDirection | m_horizontalDirection)) { // Change direction
+    m_animationCounter = 0;
+    m_timeElapsedAnimation = 0.0f;
+  }
+  else {
+    m_timeElapsedAnimation += dt;
+    if (m_timeElapsedAnimation >= ANIMATION_SPEED) {
+      m_timeElapsedAnimation -= ANIMATION_SPEED;
+      m_animationCounter = (m_animationCounter + 1) % NUMBER_ANIMATIONS;
+    }
+  }
+
+  // Set direction move
+  m_spriteDirection = m_verticalDirection | m_horizontalDirection;
+
   // Reset move
   m_verticalDirection = Direction::NONE;
   m_horizontalDirection = Direction::NONE;
@@ -134,23 +162,38 @@ void Character::update(const float dt) {
 }
 
 void Character::render(sf::RenderWindow& window) {
-  // Display the character
-  sf::CircleShape circle;
+  // Get box2d position
   b2Vec2 b2_pos = m_body->GetPosition();
-  circle.setOrigin(CHARACTER_WIDTH, CHARACTER_WIDTH);
-  circle.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
-  circle.setRadius(CHARACTER_WIDTH);
-  circle.setFillColor(sf::Color::Black);
-  window.draw(circle);
 
-  // Orientation of character
-  float angle = m_body->GetAngle();
-  sf::RectangleShape rect({CHARACTER_WIDTH * 2.0f, 4.0f});
-  rect.setOrigin(CHARACTER_WIDTH, 2.0f);
-  rect.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
-  rect.setFillColor(sf::Color::Red);
-  rect.setRotation(angle * 180 / M_PI);
-  window.draw(rect);
+  // Display the character
+  if (m_spriteDirection == LEFT) {
+    sf::Sprite sprite;
+    sprite.setTexture(*m_animLeftTexture);
+    sf::IntRect textureRect(CHARACTER_SPRITE_WIDTH * (m_animationCounter % 4), CHARACTER_SPRITE_HEIGHT * (m_animationCounter / 4), CHARACTER_SPRITE_WIDTH, CHARACTER_SPRITE_HEIGHT);// {pos_left, pos_top, width, height}
+    sprite.setTextureRect(textureRect); 
+    sprite.setOrigin(CHARACTER_SPRITE_WIDTH * 0.5f, CHARACTER_SPRITE_HEIGHT * 0.7f); // Half size of texture
+    sprite.setScale(CHARACTER_WIDTH_SCALE, CHARACTER_HEIGHT_SCALE);
+    sprite.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
+    window.draw(sprite);
+  }
+  else {
+    // Display the character
+    sf::CircleShape circle;
+    circle.setOrigin(CHARACTER_WIDTH * 0.4f, CHARACTER_WIDTH * 0.4f);
+    circle.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
+    circle.setRadius(CHARACTER_WIDTH * 0.4f);
+    circle.setFillColor(sf::Color::Black);
+    window.draw(circle);
+
+    // Orientation of character
+    float angle = m_body->GetAngle();
+    sf::RectangleShape rect({CHARACTER_WIDTH * 0.80f, 4.0f});
+    rect.setOrigin(CHARACTER_WIDTH * 0.4f, 2.0f);
+    rect.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
+    rect.setFillColor(sf::Color::Red);
+    rect.setRotation(angle * 180 / M_PI);
+    window.draw(rect);
+  }
 }
 
 void Character::move(Direction direction) {

@@ -27,22 +27,23 @@
 
 #include <game/Entity.h>
 #include <game/EventManager.h>
+#include <game/ResourceManager.h>
 
 #include "Enemy.h"
 #include "Target.h"
 
 class Character: public game::Entity {
 public:
-  enum Direction {
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT,
-    NONE,
+  enum Direction : unsigned int {
+    UP      = 0x1,
+    DOWN    = 0x2,
+    LEFT    = 0x4,
+    RIGHT   = 0x8,
+    NONE    = 0x0,
   };
 
 public:
-  Character(b2World &b2_world, game::EventManager& events);
+  Character(b2World &b2_world, game::EventManager& events, game::ResourceManager &resources);
 
   Character(const Character&) = delete;
   Character& operator=(const Character&) = delete;
@@ -66,14 +67,26 @@ public:
   void acquiredEnemy(Enemy* enemy);
   void lostEnemy(Enemy* enemy);
 
-  static constexpr float CHARACTER_WIDTH = 10.0f;
+  static constexpr float CHARACTER_SPRITE_WIDTH = 554.0f;
+  static constexpr float CHARACTER_SPRITE_HEIGHT = 931.0f;
+  static constexpr float CHARACTER_SPRITE_RATIO = CHARACTER_SPRITE_WIDTH / CHARACTER_SPRITE_HEIGHT;
+
+  static constexpr float CHARACTER_WIDTH = 50.0f;
+  static constexpr float CHARACTER_HEIGHT = CHARACTER_WIDTH / CHARACTER_SPRITE_RATIO;
+
+  static constexpr float CHARACTER_WIDTH_SCALE = CHARACTER_WIDTH / CHARACTER_SPRITE_WIDTH;
+  static constexpr float CHARACTER_HEIGHT_SCALE = CHARACTER_HEIGHT / CHARACTER_SPRITE_HEIGHT;
 
 private:
   b2Body *m_body;
   game::EventManager& m_events;
+  sf::Texture *m_animLeftTexture;
 
   Direction m_verticalDirection;
   Direction m_horizontalDirection;
+  unsigned int m_spriteDirection;
+  float m_timeElapsedAnimation;
+  unsigned int m_animationCounter;
 
   b2Vec2 m_target;
   int m_health;
