@@ -21,11 +21,14 @@
 #define ENEMY_H
 
 #include <Box2D/Box2D.h>
+#include <set>
 
 #include <game/Entity.h>
 #include <game/EventManager.h>
 
 #include "Target.h"
+
+class Character;
 
 class Enemy: public game::Entity {
 
@@ -48,17 +51,32 @@ public:
 
   // Events
   game::EventStatus onCharacterLocationEvent(game::EventType type, game::Event *event);
+  void simpleAttack();
+
+  void acquiredCharacter(Character* character);
+  void lostCharacter(Character* character);
 
   static constexpr float ENEMY_WIDTH = 10.0f;
+
+    void setHealth(int health);
+    int getHealth() const;
+    void addToHealth(int value);
+    void substractToHealth(int value);
+
+    void setArmor(int armor);
+    int getArmor() const;
 
 private:
   b2Body *m_body;
   b2Vec2 m_target;
   std::vector<Target *> m_targets;
-  int m_Health;
-  int m_Damage;
-  float m_Speed;
-  float m_AttackPeriod;
+  int m_health;
+  int m_damage;
+  int m_armor;
+  float m_speed;
+  float m_attackPeriod;
+  float m_timeElapsed;
+  std::set<Character *> m_visibleCharacter;
 };
 
 #endif //ENEMY_H

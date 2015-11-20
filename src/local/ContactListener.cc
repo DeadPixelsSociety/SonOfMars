@@ -34,8 +34,8 @@ void ContactListener::BeginContact(b2Contact* b2_contact) {
 
   // If the enemy hits the player
   if (contact.hitbox->getOrigin() == Origin::ENEMY) {
-    std::cerr << "No yet implemented" << std::endl;
-    assert(false);
+    Enemy *enemy = static_cast<Enemy*>(contact.hitbox->getEntity());
+    enemy->acquiredCharacter(static_cast<Character*>(contact.body->getEntity()));
     return;
   }
 
@@ -58,8 +58,8 @@ void ContactListener::EndContact(b2Contact* b2_contact) {
 
   // If the enemy hits the player
   if (contact.hitbox->getOrigin() == Origin::ENEMY) {
-    std::cerr << "No yet implemented" << std::endl;
-    assert(false);
+    Enemy *enemy = static_cast<Enemy*>(contact.hitbox->getEntity());
+    enemy->lostCharacter(static_cast<Character*>(contact.body->getEntity()));
     return;
   }
 

@@ -25,11 +25,11 @@
 
 static constexpr float WALL_SIZE = 32.0f;
 
-static constexpr float SPAWN_PERIOD = 1.0f;
+static constexpr float SPAWN_PERIOD = 5.0f;
 
 Arena::Arena(b2World &b2_world, game::EventManager& events)
 : m_events(events)
-, m_timeElapsed(0.0f) {
+, m_timeElapsed(3.0f) {
   static constexpr float B2_WIDTH = AREA_WIDTH / BOX2D_PIXELS_PER_METER;
   static constexpr float B2_HEIGHT = AREA_HEIGHT / BOX2D_PIXELS_PER_METER;
   static constexpr float X = WALL_SIZE / BOX2D_PIXELS_PER_METER;

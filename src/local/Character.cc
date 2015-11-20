@@ -29,18 +29,24 @@
 
 static constexpr float VELOCITY_STEP = 5.0f;
 static constexpr float DEGTORAD = M_PI / 180.0f;
+static constexpr int BASIC_HEALTH = 100;
+static constexpr int BASIC_DAMAGE = 1;
+static constexpr int BASIC_ARMOR = 0;
 
 Character::Character(b2World &b2_world, game::EventManager& events)
 : m_body(nullptr)
 , m_events(events)
 , m_verticalDirection(NONE)
 , m_horizontalDirection(NONE)
-, m_health(100) {
+, m_health(BASIC_HEALTH)
+, m_damage(BASIC_DAMAGE)
+, m_armor(BASIC_ARMOR)
+{
   b2BodyDef b2_bodyDef;
   b2_bodyDef.type = b2_dynamicBody;
   b2_bodyDef.position.Set(AREA_WIDTH / 2.0f / BOX2D_PIXELS_PER_METER, AREA_HEIGHT / 2.0f / BOX2D_PIXELS_PER_METER);
 
-  // Body 
+  // Body
   b2CircleShape b2_circle;
   b2_circle.m_radius = CHARACTER_WIDTH / BOX2D_PIXELS_PER_METER;
 
@@ -131,6 +137,11 @@ void Character::update(const float dt) {
   healthEvent.CharacterHealth=m_health;
   m_events.triggerEvent(&healthEvent);
 
+  //check if the player is still alive
+  if(m_health<=0)
+  {
+    this->death();
+  }
 }
 
 void Character::render(sf::RenderWindow& window) {
@@ -195,9 +206,11 @@ void Character::setTarget(sf::Vector2f mousePos) {
   m_target.y = mousePos.y / (double)BOX2D_PIXELS_PER_METER;
 }
 
-void Character::simpleAttack() { 
-  for (Enemy* enemy: m_visibleEnemies) {
-    enemy->death();
+void Character::simpleAttack()
+{
+  for (Enemy* enemy: m_visibleEnemies)
+  {
+    enemy->substractToHealth((m_damage-enemy->getArmor()));
   }
 }
 
@@ -206,13 +219,33 @@ void Character::setHealth(int health) {
 }
 
 int Character::getHealth() const {
-  return m_health;  
+  return m_health;
 }
-
+void Character::addToHealth(int value)
+{
+    m_health+=value;
+}
+void Character::substractToHealth(int value)
+{
+    m_health-=value;
+}
+void Character::setArmor(int armor)
+{
+    m_armor=armor;
+}
+int Character::getArmor() const
+{
+    return m_armor;
+}
 void Character::acquiredEnemy(Enemy* enemy) {
   m_visibleEnemies.insert(enemy);
 }
 
 void Character::lostEnemy(Enemy* enemy) {
   m_visibleEnemies.erase(enemy);
+}
+void Character::death()
+{
+  m_body->GetWorld()->DestroyBody(m_body);
+  kill();
 }

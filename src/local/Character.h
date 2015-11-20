@@ -55,13 +55,20 @@ public:
   virtual void update(const float dt) override;
   virtual void render(sf::RenderWindow& window) override;
 
+  void death();
+
   // Events
   void move(Direction direction);
   void setTarget(sf::Vector2f mousePos);
   void simpleAttack();
 
-  void setHealth(int health);
-  int getHealth() const;
+    void setHealth(int health);
+    int getHealth() const;
+    void addToHealth(int value);
+    void substractToHealth(int value);
+
+    void setArmor(int armor);
+    int getArmor() const;
 
   void acquiredEnemy(Enemy* enemy);
   void lostEnemy(Enemy* enemy);
@@ -77,6 +84,8 @@ private:
 
   b2Vec2 m_target;
   int m_health;
+  int m_damage;
+  int m_armor;
 
   std::set<Enemy *> m_visibleEnemies;
   std::vector<Target *> m_targets;
