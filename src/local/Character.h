@@ -81,6 +81,7 @@ private:
   b2Body *m_body;
   game::EventManager& m_events;
   sf::Texture *m_animLeftTexture;
+  sf::Texture *m_animRightTexture;
 
   Direction m_verticalDirection;
   Direction m_horizontalDirection;

@@ -34,6 +34,7 @@ Character::Character(b2World &b2_world, game::EventManager& events, game::Resour
 : m_body(nullptr)
 , m_events(events)
 , m_animLeftTexture(nullptr)
+, m_animRightTexture(nullptr)
 , m_verticalDirection(NONE)
 , m_horizontalDirection(NONE)
 , m_spriteDirection(0)
@@ -43,6 +44,9 @@ Character::Character(b2World &b2_world, game::EventManager& events, game::Resour
   // Load textures
   m_animLeftTexture = resources.getTexture("character/character_left.png");
   assert(m_animLeftTexture != nullptr);
+
+  m_animRightTexture = resources.getTexture("character/character_right.png");
+  assert(m_animRightTexture != nullptr);
 
   // Create the physical body
   b2BodyDef b2_bodyDef;
@@ -180,6 +184,16 @@ void Character::render(sf::RenderWindow& window) {
     // If the character is oriented to left
     if (angle >= 157.5f * DEGTORAD || angle < -157.5f * DEGTORAD) {
       sprite.setTexture(*m_animLeftTexture);
+      sprite.setTextureRect(textureRect); 
+      sprite.setOrigin(CHARACTER_SPRITE_WIDTH * 0.5f, CHARACTER_SPRITE_HEIGHT * 0.7f);
+      sprite.setScale(CHARACTER_WIDTH_SCALE, CHARACTER_HEIGHT_SCALE);
+      sprite.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
+      sprite.setRotation(angle - 180.0f * DEGTORAD);
+      window.draw(sprite);
+    }
+    // If the character is oriented to right
+    else if (angle >= -22.5 * DEGTORAD && angle < 22.5 * DEGTORAD) {
+      sprite.setTexture(*m_animRightTexture);
       sprite.setTextureRect(textureRect); 
       sprite.setOrigin(CHARACTER_SPRITE_WIDTH * 0.5f, CHARACTER_SPRITE_HEIGHT * 0.7f);
       sprite.setScale(CHARACTER_WIDTH_SCALE, CHARACTER_HEIGHT_SCALE);
