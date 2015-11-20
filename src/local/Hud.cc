@@ -28,18 +28,29 @@
 Hud::Hud(game::EventManager& events, game::ResourceManager& resources)
 : m_timeElapsed(0.0f)
 , m_font(nullptr)
-, m_CharacterHealth(0)
+, m_characterHealth(0)
+, m_characterExperience(0)
 {
     m_font=resources.getFont("capitalis_goreanis.ttf");
     assert(m_font!=nullptr);
-    m_StrHealth.setFont(*m_font);
-    std::string str="Health: "+std::to_string(m_CharacterHealth);
-    m_StrHealth.setString(str);
-    m_StrHealth.setCharacterSize(25);
-    m_StrHealth.setColor(sf::Color::Red);
-    m_StrHealth.setPosition(100.0f,0.0f);
+    //Set the strings
+    std::string strHealth="Health: "+std::to_string(m_characterHealth);
+    std::string strExp="Experience: "+std::to_string(m_characterExperience);
+    //Set the characteristics of m_strHealth
+    m_strHealth.setFont(*m_font);
+    m_strHealth.setString(strHealth);
+    m_strHealth.setCharacterSize(25);
+    m_strHealth.setColor(sf::Color::Red);
+    m_strHealth.setPosition(100.0f,0.0f);
+    //Set the characteristics of m_strExperience
+    m_strExperience.setFont(*m_font);
+    m_strExperience.setString(strExp);
+    m_strExperience.setCharacterSize(25);
+    m_strExperience.setColor(sf::Color::Green);
+    m_strExperience.setPosition(300.0f,0.0f);
     // Register event
     events.registerHandler<CharacterHealthEvent>(&Hud::onCharacterHealthEvent, this);
+    events.registerHandler<CharacterExperienceEvent>(&Hud::onCharacterExperienceEvent, this);
 }
 Hud::~Hud()
 {
@@ -47,17 +58,27 @@ Hud::~Hud()
 }
 void Hud::update(const float dt)
 {
-    m_StrHealth.setString("Health: "+std::to_string(m_CharacterHealth));
+    m_strHealth.setString("Health: "+std::to_string(m_characterHealth));
+    m_strExperience.setString("Experience: "+std::to_string(m_characterExperience));
 }
 void Hud::render(sf::RenderWindow& window)
 {
-    window.draw(m_StrHealth);
+    window.draw(m_strHealth);
+    window.draw(m_strExperience);
 }
 game::EventStatus Hud::onCharacterHealthEvent(game::EventType type, game::Event *event)
 {
     auto healthEvent = static_cast<CharacterHealthEvent *>(event);
 
-    m_CharacterHealth = healthEvent->CharacterHealth;
+    m_characterHealth = healthEvent->characterHealth;
+
+    return game::EventStatus::KEEP;
+}
+game::EventStatus Hud::onCharacterExperienceEvent(game::EventType type, game::Event *event)
+{
+    auto experienceEvent = static_cast<CharacterExperienceEvent *>(event);
+
+    m_characterExperience = experienceEvent->characterExperience;
 
     return game::EventStatus::KEEP;
 }

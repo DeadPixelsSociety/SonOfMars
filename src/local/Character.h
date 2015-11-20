@@ -58,10 +58,13 @@ public:
 
   void death();
 
+  game::EventStatus onEnemyDeathEvent(game::EventType type, game::Event *event);
+
   // Events
   void move(Direction direction);
   void setTarget(sf::Vector2f mousePos);
   void simpleAttack();
+  void buyDamage();
 
     void setHealth(int health);
     int getHealth() const;
@@ -70,6 +73,11 @@ public:
 
     void setArmor(int armor);
     int getArmor() const;
+
+    void setExperience(int experience);
+    int getExperience() const;
+    void addToExperience(int value);
+    void substractToExperience(int value);
 
   void acquiredEnemy(Enemy* enemy);
   void lostEnemy(Enemy* enemy);
@@ -100,6 +108,7 @@ private:
   int m_health;
   int m_damage;
   int m_armor;
+  int m_experience;
 
   std::set<Enemy *> m_visibleEnemies;
   std::vector<Target *> m_targets;

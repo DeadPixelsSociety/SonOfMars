@@ -69,10 +69,12 @@ public:
 private:
   b2Body *m_body;
   b2Vec2 m_target;
+  game::EventManager& m_events;
   std::vector<Target *> m_targets;
   int m_health;
   int m_damage;
   int m_armor;
+  int m_expGiven;
   float m_speed;
   float m_attackPeriod;
   float m_timeElapsed;

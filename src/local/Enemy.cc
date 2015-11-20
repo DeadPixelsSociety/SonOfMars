@@ -30,6 +30,7 @@
 static constexpr int BASIC_HEALTH = 5;
 static constexpr int BASIC_DAMAGE = 1;
 static constexpr int BASIC_ARMOR = 0;
+static constexpr int BASIC_EXP = 2;
 static constexpr float BASIC_SPEED = 3.0f;
 static constexpr float BASIC_ATTACKPERIOD = 3.0f;
 static constexpr float DEGTORAD = M_PI / 180.0f;
@@ -37,9 +38,11 @@ static constexpr float DEGTORAD = M_PI / 180.0f;
 Enemy::Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f position)
 : m_body(nullptr)
 , m_target({0.0f, 0.0f})
+, m_events(events)
 , m_health(BASIC_HEALTH)
 , m_damage(BASIC_DAMAGE)
 , m_armor(BASIC_ARMOR)
+, m_expGiven(BASIC_EXP)
 , m_speed(BASIC_SPEED)
 , m_attackPeriod(BASIC_ATTACKPERIOD)
 , m_timeElapsed(2.0f)
@@ -110,6 +113,10 @@ void Enemy::update(const float dt) {
     //check if the enemy has health>0
     if(m_health<=0)
     {
+        // Trigger death event
+        EnemyDeathEvent deathEvent;
+        deathEvent.givenExperience=m_expGiven;
+        m_events.triggerEvent(&deathEvent);
         this->death();
     }
 }

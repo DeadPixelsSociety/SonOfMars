@@ -34,11 +34,14 @@ class Hud: public game::Entity
         virtual void update(const float dt) override;
         virtual void render(sf::RenderWindow& window) override;
         game::EventStatus onCharacterHealthEvent(game::EventType type, game::Event *event);
+        game::EventStatus onCharacterExperienceEvent(game::EventType type, game::Event *event);
     private:
-        sf::Text m_StrHealth;
+        sf::Text m_strHealth;
+        sf::Text m_strExperience;
         float m_timeElapsed;
         sf::Font *m_font;
-        int m_CharacterHealth;
+        int m_characterHealth;
+        int m_characterExperience;
 
 };
 

@@ -44,7 +44,17 @@ struct CharacterLocationEvent : public game::Event {
 
 struct CharacterHealthEvent : public game::Event {
   static const game::EventType type = "CharacterHealthEvent"_type;
-  int CharacterHealth;
+  int characterHealth;
+};
+
+struct CharacterExperienceEvent : public game::Event {
+  static const game::EventType type = "CharacterExperienceEvent"_type;
+  int characterExperience;
+};
+
+struct EnemyDeathEvent : public game::Event {
+  static const game::EventType type = "EnemyDeathEvent"_type;
+  int givenExperience;
 };
 
 #endif // LOCAL_GAME_H

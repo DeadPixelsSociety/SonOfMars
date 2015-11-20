@@ -45,7 +45,9 @@ Character::Character(b2World &b2_world, game::EventManager& events, game::Resour
 , m_animationCounter(0)
 , m_health(BASIC_HEALTH)
 , m_damage(BASIC_DAMAGE)
-, m_armor(BASIC_ARMOR){
+, m_armor(BASIC_ARMOR)
+, m_experience(0)
+{
   // Load textures
   m_animLeftTexture = resources.getTexture("character/character_left.png");
   assert(m_animLeftTexture != nullptr);
@@ -84,6 +86,9 @@ Character::Character(b2World &b2_world, game::EventManager& events, game::Resour
   b2_fixtureDef.isSensor = true;
   m_targets.push_back(new Target(Origin::CHARACTER, true, this));
   m_body->CreateFixture(&b2_fixtureDef)->SetUserData(m_targets.back());
+
+  // Register event
+    events.registerHandler<EnemyDeathEvent>(&Character::onEnemyDeathEvent, this);
 }
 
 Character::~Character() {
@@ -167,10 +172,15 @@ void Character::update(const float dt) {
 
   // Trigger health event
   CharacterHealthEvent healthEvent;
-  healthEvent.CharacterHealth=m_health;
+  healthEvent.characterHealth=m_health;
   m_events.triggerEvent(&healthEvent);
 
-  //check if the player is still alive
+  // Trigger experience event
+  CharacterExperienceEvent experienceEvent;
+  experienceEvent.characterExperience=m_experience;
+  m_events.triggerEvent(&experienceEvent);
+
+  // Check if the player is still alive
   if(m_health<=0)
   {
     this->death();
@@ -301,6 +311,16 @@ void Character::simpleAttack()
   }
 }
 
+void Character::buyDamage()
+{
+    if(m_experience>=10)
+    {
+        m_experience-=10;
+        m_damage++;
+    }
+}
+
+
 void Character::setHealth(int health) {
   m_health=health;
 }
@@ -324,6 +344,22 @@ int Character::getArmor() const
 {
     return m_armor;
 }
+void Character::setExperience(int experience)
+{
+    m_experience=experience;
+}
+int Character::getExperience() const
+{
+    return m_experience;
+}
+void Character::addToExperience(int value)
+{
+    m_experience+=value;
+}
+void Character::substractToExperience(int value)
+{
+    m_experience-=value;
+}
 void Character::acquiredEnemy(Enemy* enemy) {
   m_visibleEnemies.insert(enemy);
 }
@@ -335,4 +371,12 @@ void Character::death()
 {
   m_body->GetWorld()->DestroyBody(m_body);
   kill();
+}
+game::EventStatus Character::onEnemyDeathEvent(game::EventType type, game::Event *event)
+{
+    auto deathEvent = static_cast<EnemyDeathEvent *>(event);
+
+    this->addToExperience(deathEvent->givenExperience);
+
+    return game::EventStatus::KEEP;
 }

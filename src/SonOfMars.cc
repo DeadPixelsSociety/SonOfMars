@@ -91,6 +91,10 @@ int main(void) {
   simpleAttack.addMouseButtonControl(sf::Mouse::Left);
   actions.addAction(simpleAttack);
 
+  game::Action buyDamage("Buy Damage");
+  buyDamage.addKeyControl(sf::Keyboard::E);
+  actions.addAction(buyDamage);
+
   // Events manager
   game::EventManager events;
 
@@ -171,6 +175,12 @@ int main(void) {
     // Check the attacks
     if (simpleAttack.isActive()) {
       character.simpleAttack();
+    }
+
+    // Check the buy damage action
+    if (buyDamage.isActive())
+    {
+        character.buyDamage();
     }
 
     character.setTarget( window.mapPixelToCoords(
