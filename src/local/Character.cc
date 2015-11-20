@@ -130,10 +130,12 @@ void Character::update(const float dt) {
   m_body->SetLinearVelocity(b2_velocity);
 
   // Update animation
-  if (m_spriteDirection != (m_verticalDirection | m_horizontalDirection)) { // Change direction
+  // Change direction
+  if (m_spriteDirection != (m_verticalDirection | m_horizontalDirection)) { 
     m_animationCounter = 0;
     m_timeElapsedAnimation = 0.0f;
   }
+  // Same direction
   else {
     m_timeElapsedAnimation += dt;
     if (m_timeElapsedAnimation >= ANIMATION_SPEED) {
@@ -165,18 +167,48 @@ void Character::render(sf::RenderWindow& window) {
   // Get box2d position
   b2Vec2 b2_pos = m_body->GetPosition();
 
+  // Angle in RAD
+  float angle = m_body->GetAngle();
+
   // Display the character
-  if (m_spriteDirection == LEFT) {
+  // If the player move
+  if (m_body->GetLinearVelocity().x != 0 || m_body->GetLinearVelocity().x != 0) {
     sf::Sprite sprite;
-    sprite.setTexture(*m_animLeftTexture);
-    sf::IntRect textureRect(CHARACTER_SPRITE_WIDTH * (m_animationCounter % 4), CHARACTER_SPRITE_HEIGHT * (m_animationCounter / 4), CHARACTER_SPRITE_WIDTH, CHARACTER_SPRITE_HEIGHT);// {pos_left, pos_top, width, height}
-    sprite.setTextureRect(textureRect); 
-    sprite.setOrigin(CHARACTER_SPRITE_WIDTH * 0.5f, CHARACTER_SPRITE_HEIGHT * 0.7f); // Half size of texture
-    sprite.setScale(CHARACTER_WIDTH_SCALE, CHARACTER_HEIGHT_SCALE);
-    sprite.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
-    window.draw(sprite);
+    // {pos_left, pos_top, width, height}
+    sf::IntRect textureRect(CHARACTER_SPRITE_WIDTH * (m_animationCounter % 4), CHARACTER_SPRITE_HEIGHT * (m_animationCounter / 4), CHARACTER_SPRITE_WIDTH, CHARACTER_SPRITE_HEIGHT);
+
+    // If the character is oriented to left
+    if (angle >= 157.5f * DEGTORAD || angle < -157.5f * DEGTORAD) {
+      sprite.setTexture(*m_animLeftTexture);
+      sprite.setTextureRect(textureRect); 
+      sprite.setOrigin(CHARACTER_SPRITE_WIDTH * 0.5f, CHARACTER_SPRITE_HEIGHT * 0.7f);
+      sprite.setScale(CHARACTER_WIDTH_SCALE, CHARACTER_HEIGHT_SCALE);
+      sprite.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
+      sprite.setRotation(angle - 180.0f * DEGTORAD);
+      window.draw(sprite);
+    }
+    // Default case to DEBUG
+    else {
+      // Display the character
+      sf::CircleShape circle;
+      circle.setOrigin(CHARACTER_WIDTH * 0.4f, CHARACTER_WIDTH * 0.4f);
+      circle.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
+      circle.setRadius(CHARACTER_WIDTH * 0.4f);
+      circle.setFillColor(sf::Color::Black);
+      window.draw(circle);
+
+      // Orientation of character
+      sf::RectangleShape rect({CHARACTER_WIDTH * 0.80f, 4.0f});
+      rect.setOrigin(CHARACTER_WIDTH * 0.4f, 2.0f);
+      rect.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
+      rect.setFillColor(sf::Color::Red);
+      rect.setRotation(angle * 180 / M_PI);
+      window.draw(rect);
+    }
   }
-  else {
+  // If the player don't move
+  // TODO to debug, implement the write function
+  else {    
     // Display the character
     sf::CircleShape circle;
     circle.setOrigin(CHARACTER_WIDTH * 0.4f, CHARACTER_WIDTH * 0.4f);
@@ -186,7 +218,6 @@ void Character::render(sf::RenderWindow& window) {
     window.draw(circle);
 
     // Orientation of character
-    float angle = m_body->GetAngle();
     sf::RectangleShape rect({CHARACTER_WIDTH * 0.80f, 4.0f});
     rect.setOrigin(CHARACTER_WIDTH * 0.4f, 2.0f);
     rect.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
