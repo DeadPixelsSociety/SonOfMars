@@ -29,23 +29,23 @@
 
 static constexpr int BASIC_HEALTH = 5;
 static constexpr int BASIC_DAMAGE = 1;
-static constexpr int BASIC_ARMOR = 0;
+static constexpr int BASIC_ARMOR = -1;
 static constexpr int BASIC_EXP = 2;
-static constexpr float BASIC_SPEED = 3.0f;
+static constexpr float BASIC_SPEED = 3.1f;
 static constexpr float BASIC_ATTACKPERIOD = 3.0f;
 static constexpr float DEGTORAD = M_PI / 180.0f;
 
-Enemy::Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f position)
+Enemy::Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f position,float multiplier)
 : m_body(nullptr)
 , m_target({0.0f, 0.0f})
 , m_events(events)
-, m_health(BASIC_HEALTH)
-, m_damage(BASIC_DAMAGE)
-, m_armor(BASIC_ARMOR)
-, m_expGiven(BASIC_EXP)
-, m_speed(BASIC_SPEED)
-, m_attackPeriod(BASIC_ATTACKPERIOD)
-, m_timeElapsed(2.0f)
+, m_health(BASIC_HEALTH*multiplier)
+, m_damage(BASIC_DAMAGE*multiplier)
+, m_armor(BASIC_ARMOR+multiplier)
+, m_expGiven(BASIC_EXP*multiplier)
+, m_speed(BASIC_SPEED+(multiplier/10.0f))
+, m_attackPeriod(BASIC_ATTACKPERIOD-(multiplier/10.0f))
+, m_timeElapsed(BASIC_ATTACKPERIOD-1.0f)
  {
   // Register events trigger
   events.registerHandler<CharacterLocationEvent>(&Enemy::onCharacterLocationEvent, this);

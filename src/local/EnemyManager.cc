@@ -51,7 +51,7 @@ void EnemyManager::render(sf::RenderWindow& window) {
 game::EventStatus EnemyManager::onSpawnMobEvent(game::EventType type, game::Event *event) {
   auto spawnEvent = static_cast<SpawnMobEvent *>(event);
 
-  m_enemies.push_back(new Enemy(m_b2_world, m_events, spawnEvent->pos));
-  
+  m_enemies.push_back(new Enemy(m_b2_world, m_events, spawnEvent->pos, spawnEvent->multiplier));
+
   return game::EventStatus::KEEP;
 }

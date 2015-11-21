@@ -27,9 +27,13 @@ static constexpr float WALL_SIZE = 32.0f;
 
 static constexpr float SPAWN_PERIOD = 5.0f;
 
+static constexpr int MAX_ENEMIES_PER_WAVE = 10;
+static constexpr int INCREASE_ENEMY_POWER_RATE = 5; // every INCREASE_ENEMY_POWER_RATE, enemies will get more powerful
+
 Arena::Arena(b2World &b2_world, game::EventManager& events)
 : m_events(events)
-, m_timeElapsed(3.0f) {
+, m_timeElapsed(SPAWN_PERIOD-2.0f)
+, m_waveNumber(1) {
   static constexpr float B2_WIDTH = AREA_WIDTH / BOX2D_PIXELS_PER_METER;
   static constexpr float B2_HEIGHT = AREA_HEIGHT / BOX2D_PIXELS_PER_METER;
   static constexpr float X = WALL_SIZE / BOX2D_PIXELS_PER_METER;
@@ -161,28 +165,26 @@ Arena::~Arena() {
   }
 }
 
-void Arena::update(const float dt) {
-  m_timeElapsed += dt;
-
-  if (m_timeElapsed >= SPAWN_PERIOD) {
-	// Make the new ennemy spawn randomly near one of the corners
-	SpawnMobEvent event;
-	// NOTE: maybe use game::Random::computeUniformInteger
-	switch (rand()%4) {
-	  case 0:
-    	event.pos = sf::Vector2f(42.0f, 42.0f);
-		break;
-	  case 1:
-    	event.pos = sf::Vector2f(800.0f-42.0f, 42.0f);
-		break;
-	  case 2:
-    	event.pos = sf::Vector2f(42.0f, 600.0f-42.0f);
-		break;
-	  default:
-    	event.pos = sf::Vector2f(800.0f-42.0f, 600.0f-42.0f);
-	}
-	m_events.triggerEvent(&event);
-    m_timeElapsed -= SPAWN_PERIOD;
+void Arena::update(const float dt)
+{
+  if (m_timeElapsed >= SPAWN_PERIOD)
+  {
+    game::Random random;
+    if(m_enemyCounter<=0)
+    {
+        m_enemyCounter=random.computeUniformInteger(1,MAX_ENEMIES_PER_WAVE);
+    }
+    spawnEnemy(random);
+    m_enemyCounter--;
+    if(m_enemyCounter<=0)
+    {
+        m_timeElapsed -= SPAWN_PERIOD;
+        m_waveNumber++;
+    }
+  }
+  else
+  {
+    m_timeElapsed += dt;
   }
 }
 
@@ -210,3 +212,24 @@ void Arena::render(sf::RenderWindow& window) {
   window.draw(wall);
 }
 
+void Arena::spawnEnemy(game::Random random)
+{
+    // Make the new ennemy spawn randomly near one of the corners
+    SpawnMobEvent event;
+    event.multiplier=(m_waveNumber/INCREASE_ENEMY_POWER_RATE)+1;
+    switch (random.computeUniformInteger(0,3))
+    {
+        case 0:
+            event.pos = sf::Vector2f(42.0f, 42.0f);
+            break;
+        case 1:
+            event.pos = sf::Vector2f(800.0f-42.0f, 42.0f);
+            break;
+        case 2:
+            event.pos = sf::Vector2f(42.0f, 600.0f-42.0f);
+            break;
+        default:
+            event.pos = sf::Vector2f(800.0f-42.0f, 600.0f-42.0f);
+    }
+    m_events.triggerEvent(&event);
+}

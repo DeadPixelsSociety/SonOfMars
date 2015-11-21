@@ -22,16 +22,18 @@
 
 #include <vector>
 #include <random>
+#include <iostream>
 
 #include <Box2D/Box2D.h>
 
 #include <game/Entity.h>
 #include <game/EventManager.h>
+#include <game/Random.h>
 
 class Arena: public game::Entity {
 public:
   Arena(b2World &b2_world, game::EventManager& events);
-  
+
   Arena(const Arena&) = delete;
   Arena& operator=(const Arena&) = delete;
 
@@ -42,11 +44,15 @@ public:
 
   virtual void update(const float dt) override;
   virtual void render(sf::RenderWindow& window) override;
-    
+
+  void spawnEnemy(game::Random random);
+
 private:
   game::EventManager& m_events;
   float m_timeElapsed;
   std::vector<b2Body*> m_walls;
+  int m_enemyCounter;
+  int m_waveNumber;
 };
 
 #endif //ARENA_H

@@ -35,6 +35,7 @@ enum Origin {
 struct SpawnMobEvent : public game::Event {
   static const game::EventType type = "SpawnMobEvent"_type;
   sf::Vector2f pos;
+  float multiplier;
 };
 
 struct CharacterLocationEvent : public game::Event {

@@ -22,6 +22,7 @@
 
 #include <Box2D/Box2D.h>
 #include <set>
+#include <iostream>
 
 #include <game/Entity.h>
 #include <game/EventManager.h>
@@ -34,7 +35,7 @@ class Enemy: public game::Entity {
 
 
 public:
-  Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f position);
+  Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f position,float multiplier);
 
   Enemy(const Enemy&) = delete;
   Enemy& operator=(const Enemy&) = delete;

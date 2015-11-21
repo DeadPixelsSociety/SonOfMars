@@ -42,7 +42,5 @@ class Hud: public game::Entity
         sf::Font *m_font;
         int m_characterHealth;
         int m_characterExperience;
-
 };
-
 #endif //HUD_H
