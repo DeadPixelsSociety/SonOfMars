@@ -33,6 +33,7 @@ static constexpr int INCREASE_ENEMY_POWER_RATE = 5; // every INCREASE_ENEMY_POWE
 Arena::Arena(b2World &b2_world, game::EventManager& events)
 : m_events(events)
 , m_timeElapsed(SPAWN_PERIOD-2.0f)
+, m_enemyCounter(0)
 , m_waveNumber(1) {
   static constexpr float B2_WIDTH = AREA_WIDTH / BOX2D_PIXELS_PER_METER;
   static constexpr float B2_HEIGHT = AREA_HEIGHT / BOX2D_PIXELS_PER_METER;

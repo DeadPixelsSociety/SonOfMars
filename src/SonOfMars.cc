@@ -95,6 +95,10 @@ int main(void) {
   buyDamage.addKeyControl(sf::Keyboard::E);
   actions.addAction(buyDamage);
 
+  game::Action buyMaxHealth("Buy Max Health");
+  buyMaxHealth.addKeyControl(sf::Keyboard::A);
+  actions.addAction(buyMaxHealth);
+
   // Events manager
   game::EventManager events;
 
@@ -177,10 +181,14 @@ int main(void) {
       character.simpleAttack();
     }
 
-    // Check the buy damage action
+    // Check the buy actions
     if (buyDamage.isActive())
     {
         character.buyDamage();
+    }
+    if (buyMaxHealth.isActive())
+    {
+        character.buyMaxHealth();
     }
 
     character.setTarget( window.mapPixelToCoords(

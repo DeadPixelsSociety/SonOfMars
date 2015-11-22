@@ -20,7 +20,6 @@
 #include "Character.h"
 
 #include <cmath>
-#include <iostream>
 
 #include "local/config.h"
 
@@ -29,24 +28,30 @@
 
 static constexpr float VELOCITY_STEP = 5.0f;
 static constexpr float DEGTORAD = M_PI / 180.0f;
-static constexpr int BASIC_HEALTH = 100;
+static constexpr int BASIC_MAX_HEALTH = 100;
 static constexpr int BASIC_DAMAGE = 1;
 static constexpr int BASIC_ARMOR = 0;
+static constexpr int BASE_REGEN_VALUE = 1;
+static constexpr float BASE_REGEN_RATE = 10.0f;
 
 Character::Character(b2World &b2_world, game::EventManager& events, game::ResourceManager &resources)
 : m_body(nullptr)
 , m_events(events)
 , m_animLeftTexture(nullptr)
 , m_animRightTexture(nullptr)
+, m_timeElapsed(0.0f)
 , m_verticalDirection(NONE)
 , m_horizontalDirection(NONE)
 , m_spriteDirection(0)
 , m_timeElapsedAnimation(0.0f)
 , m_animationCounter(0)
-, m_health(BASIC_HEALTH)
+, m_maxHealth(BASIC_MAX_HEALTH)
+, m_health(m_maxHealth)
 , m_damage(BASIC_DAMAGE)
 , m_armor(BASIC_ARMOR)
 , m_experience(0)
+, m_regenerationValue(BASE_REGEN_VALUE) // The player regenerate m_regenerationValue per m_regenerationRate second
+, m_regenerationRate(BASE_REGEN_RATE)
 {
   // Load textures
   m_animLeftTexture = resources.getTexture("character/character_left.png");
@@ -103,6 +108,7 @@ static constexpr float ANIMATION_SPEED = 0.1f;
 static constexpr unsigned int NUMBER_ANIMATIONS = 8;
 
 void Character::update(const float dt) {
+    m_timeElapsed+=dt;
   // Manage the move
   b2Vec2 b2_velocity = m_body->GetLinearVelocity();
   if (m_verticalDirection == Direction::UP) {
@@ -173,6 +179,7 @@ void Character::update(const float dt) {
   // Trigger health event
   CharacterHealthEvent healthEvent;
   healthEvent.characterHealth=m_health;
+  healthEvent.characterMaxHealth=m_maxHealth;
   m_events.triggerEvent(&healthEvent);
 
   // Trigger experience event
@@ -180,6 +187,18 @@ void Character::update(const float dt) {
   experienceEvent.characterExperience=m_experience;
   m_events.triggerEvent(&experienceEvent);
 
+  // The player regenerate m_regenerationValue per m_regenerationRate second
+  if(m_timeElapsed>=m_regenerationRate)
+  {
+    m_health+=m_regenerationValue;
+    m_timeElapsed-=m_regenerationRate;
+  }
+
+  // If the player actual health is above his max health, set it to his max health
+  if(m_health>m_maxHealth)
+  {
+    m_health=m_maxHealth;
+  }
   // Check if the player is still alive
   if(m_health<=0)
   {
@@ -320,6 +339,32 @@ void Character::buyDamage()
     }
 }
 
+void Character::buyMaxHealth()
+{
+    if(m_experience>=5)
+    {
+        m_experience-=5;
+        m_maxHealth++;
+    }
+}
+
+void Character::setMaxHealth(int maxHealth) {
+  m_maxHealth=maxHealth;
+}
+
+int Character::getMaxHealth() const {
+  return m_maxHealth;
+}
+
+void Character::addToMaxHealth(int value)
+{
+    m_maxHealth+=value;
+}
+
+void Character::substractToMaxHealth(int value)
+{
+    m_maxHealth-=value;
+}
 
 void Character::setHealth(int health) {
   m_health=health;
@@ -328,38 +373,47 @@ void Character::setHealth(int health) {
 int Character::getHealth() const {
   return m_health;
 }
+
 void Character::addToHealth(int value)
 {
     m_health+=value;
 }
+
 void Character::substractToHealth(int value)
 {
     m_health-=value;
 }
+
 void Character::setArmor(int armor)
 {
     m_armor=armor;
 }
+
 int Character::getArmor() const
 {
     return m_armor;
 }
+
 void Character::setExperience(int experience)
 {
     m_experience=experience;
 }
+
 int Character::getExperience() const
 {
     return m_experience;
 }
+
 void Character::addToExperience(int value)
 {
     m_experience+=value;
 }
+
 void Character::substractToExperience(int value)
 {
     m_experience-=value;
 }
+
 void Character::acquiredEnemy(Enemy* enemy) {
   m_visibleEnemies.insert(enemy);
 }
@@ -367,11 +421,13 @@ void Character::acquiredEnemy(Enemy* enemy) {
 void Character::lostEnemy(Enemy* enemy) {
   m_visibleEnemies.erase(enemy);
 }
+
 void Character::death()
 {
   m_body->GetWorld()->DestroyBody(m_body);
   kill();
 }
+
 game::EventStatus Character::onEnemyDeathEvent(game::EventType type, game::Event *event)
 {
     auto deathEvent = static_cast<EnemyDeathEvent *>(event);

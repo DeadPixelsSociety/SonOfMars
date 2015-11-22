@@ -65,6 +65,12 @@ public:
   void setTarget(sf::Vector2f mousePos);
   void simpleAttack();
   void buyDamage();
+  void buyMaxHealth();
+
+    void setMaxHealth(int maxHealth);
+    int getMaxHealth() const;
+    void addToMaxHealth(int value);
+    void substractToMaxHealth(int value);
 
     void setHealth(int health);
     int getHealth() const;
@@ -97,6 +103,7 @@ private:
   game::EventManager& m_events;
   sf::Texture *m_animLeftTexture;
   sf::Texture *m_animRightTexture;
+  float m_timeElapsed;
 
   Direction m_verticalDirection;
   Direction m_horizontalDirection;
@@ -105,10 +112,13 @@ private:
   unsigned int m_animationCounter;
 
   b2Vec2 m_target;
+  int m_maxHealth;
   int m_health;
   int m_damage;
   int m_armor;
   int m_experience;
+  int m_regenerationValue; // The player regenerate m_regenerationValue per m_regenerationRate second
+  float m_regenerationRate;
 
   std::set<Enemy *> m_visibleEnemies;
   std::vector<Target *> m_targets;

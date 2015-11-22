@@ -40,6 +40,7 @@ class Hud: public game::Entity
         sf::Text m_strExperience;
         float m_timeElapsed;
         sf::Font *m_font;
+        int m_characterMaxHealth;
         int m_characterHealth;
         int m_characterExperience;
 };

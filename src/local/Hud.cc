@@ -28,13 +28,14 @@
 Hud::Hud(game::EventManager& events, game::ResourceManager& resources)
 : m_timeElapsed(0.0f)
 , m_font(nullptr)
+, m_characterMaxHealth(0)
 , m_characterHealth(0)
 , m_characterExperience(0)
 {
-    m_font=resources.getFont("capitalis_goreanis.ttf");
+    m_font=resources.getFont("GRECOromanLubedWrestling.ttf");
     assert(m_font!=nullptr);
     //Set the strings
-    std::string strHealth="Health: "+std::to_string(m_characterHealth);
+    std::string strHealth="Health: "+std::to_string(m_characterHealth)+"/"+std::to_string(m_characterMaxHealth);
     std::string strExp="Experience: "+std::to_string(m_characterExperience);
     //Set the characteristics of m_strHealth
     m_strHealth.setFont(*m_font);
@@ -47,7 +48,7 @@ Hud::Hud(game::EventManager& events, game::ResourceManager& resources)
     m_strExperience.setString(strExp);
     m_strExperience.setCharacterSize(25);
     m_strExperience.setColor(sf::Color::Green);
-    m_strExperience.setPosition(300.0f,0.0f);
+    m_strExperience.setPosition(350.0f,0.0f);
     // Register event
     events.registerHandler<CharacterHealthEvent>(&Hud::onCharacterHealthEvent, this);
     events.registerHandler<CharacterExperienceEvent>(&Hud::onCharacterExperienceEvent, this);
@@ -58,7 +59,7 @@ Hud::~Hud()
 }
 void Hud::update(const float dt)
 {
-    m_strHealth.setString("Health: "+std::to_string(m_characterHealth));
+    m_strHealth.setString("Health: "+std::to_string(m_characterHealth)+"/"+std::to_string(m_characterMaxHealth));
     m_strExperience.setString("Experience: "+std::to_string(m_characterExperience));
 }
 void Hud::render(sf::RenderWindow& window)
@@ -71,6 +72,7 @@ game::EventStatus Hud::onCharacterHealthEvent(game::EventType type, game::Event 
     auto healthEvent = static_cast<CharacterHealthEvent *>(event);
 
     m_characterHealth = healthEvent->characterHealth;
+    m_characterMaxHealth = healthEvent->characterMaxHealth;
 
     return game::EventStatus::KEEP;
 }
