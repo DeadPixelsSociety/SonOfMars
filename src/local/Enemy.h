@@ -72,6 +72,7 @@ private:
   b2Vec2 m_target;
   game::EventManager& m_events;
   std::vector<Target *> m_targets;
+  int m_maxHealth;
   int m_health;
   int m_damage;
   int m_armor;

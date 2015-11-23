@@ -39,6 +39,7 @@ Enemy::Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f positio
 : m_body(nullptr)
 , m_target({0.0f, 0.0f})
 , m_events(events)
+, m_maxHealth(BASIC_HEALTH*multiplier)
 , m_health(BASIC_HEALTH*multiplier)
 , m_damage(BASIC_DAMAGE*multiplier)
 , m_armor(BASIC_ARMOR+multiplier)
@@ -138,6 +139,22 @@ void Enemy::render(sf::RenderWindow& window) {
   rect.setFillColor(sf::Color::Red);
   rect.setRotation(angle * 180 / M_PI);
   window.draw(rect);
+  
+  // Health bar
+  sf::RectangleShape healthRect({ENEMY_WIDTH * 4.0f, 6.0f});
+  const float healthPercent = (float)m_health/(float)m_maxHealth;
+  
+  // Red part
+  healthRect.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER - 2*ENEMY_WIDTH, b2_pos.y * BOX2D_PIXELS_PER_METER - 2 * ENEMY_WIDTH);
+  healthRect.setScale(healthPercent, 1.0f);
+  healthRect.setFillColor(sf::Color(200, 0, 0, 128));
+  window.draw(healthRect);
+  // Green part
+  healthRect.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER + ENEMY_WIDTH * (4.0f * healthPercent - 2.0f), b2_pos.y * BOX2D_PIXELS_PER_METER - 2 * ENEMY_WIDTH);
+  healthRect.setScale(1.0f - (float)m_health/(float)m_maxHealth, 1.0f);
+  healthRect.setFillColor(sf::Color(0, 200, 0, 128));
+  window.draw(healthRect);
+  
 }
 
 void Enemy::death() {
