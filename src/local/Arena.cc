@@ -213,7 +213,7 @@ void Arena::render(sf::RenderWindow& window) {
   window.draw(wall);
 }
 
-void Arena::spawnEnemy(game::Random random)
+void Arena::spawnEnemy(game::Random &random)
 {
     // Make the new ennemy spawn randomly near one of the corners
     SpawnMobEvent event;

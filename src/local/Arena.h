@@ -45,7 +45,7 @@ public:
   virtual void update(const float dt) override;
   virtual void render(sf::RenderWindow& window) override;
 
-  void spawnEnemy(game::Random random);
+  void spawnEnemy(game::Random &random);
 
 private:
   game::EventManager& m_events;
