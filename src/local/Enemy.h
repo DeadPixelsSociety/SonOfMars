@@ -76,7 +76,7 @@ private:
   int m_health;
   int m_damage;
   int m_armor;
-  int m_expGiven;
+  int m_goldGiven;
   float m_speed;
   float m_attackPeriod;
   float m_timeElapsed;

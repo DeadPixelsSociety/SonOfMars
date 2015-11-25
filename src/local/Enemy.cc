@@ -30,7 +30,7 @@
 static constexpr int BASIC_HEALTH = 5;
 static constexpr int BASIC_DAMAGE = 1;
 static constexpr int BASIC_ARMOR = -1;
-static constexpr int BASIC_EXP = 2;
+static constexpr int BASIC_GOLD = 2;
 static constexpr float BASIC_SPEED = 3.1f;
 static constexpr float BASIC_ATTACKPERIOD = 3.0f;
 static constexpr float DEGTORAD = M_PI / 180.0f;
@@ -43,7 +43,7 @@ Enemy::Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f positio
 , m_health(BASIC_HEALTH*multiplier)
 , m_damage(BASIC_DAMAGE*multiplier)
 , m_armor(BASIC_ARMOR+multiplier)
-, m_expGiven(BASIC_EXP*multiplier)
+, m_goldGiven(BASIC_GOLD*multiplier)
 , m_speed(BASIC_SPEED+(multiplier/10.0f))
 , m_attackPeriod(BASIC_ATTACKPERIOD-(multiplier/10.0f))
 , m_timeElapsed(BASIC_ATTACKPERIOD-1.0f)
@@ -116,7 +116,7 @@ void Enemy::update(const float dt) {
     {
         // Trigger death event
         EnemyDeathEvent deathEvent;
-        deathEvent.givenExperience=m_expGiven;
+        deathEvent.givenGold=m_goldGiven;
         m_events.triggerEvent(&deathEvent);
         this->death();
     }
@@ -139,11 +139,11 @@ void Enemy::render(sf::RenderWindow& window) {
   rect.setFillColor(sf::Color::Red);
   rect.setRotation(angle * 180 / M_PI);
   window.draw(rect);
-  
+
   // Health bar
   sf::RectangleShape healthRect({ENEMY_WIDTH * 4.0f, 6.0f});
   const float healthPercent = (float)m_health/(float)m_maxHealth;
-  
+
   // Red part
   healthRect.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER - 2*ENEMY_WIDTH, b2_pos.y * BOX2D_PIXELS_PER_METER - 2 * ENEMY_WIDTH);
   healthRect.setScale(healthPercent, 1.0f);
@@ -154,7 +154,7 @@ void Enemy::render(sf::RenderWindow& window) {
   healthRect.setScale(1.0f - (float)m_health/(float)m_maxHealth, 1.0f);
   healthRect.setFillColor(sf::Color(0, 200, 0, 128));
   window.draw(healthRect);
-  
+
 }
 
 void Enemy::death() {

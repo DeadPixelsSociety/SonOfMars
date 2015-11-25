@@ -6,11 +6,11 @@
 - Sprite plus petit
 - Barre de vie pour le joueur
 - Trouver un nom au perso ?
-- Pognon remplace exp
-  - Entre vague, salle magasin 
+- #Pognon remplace exp#
+  - Entre vague, salle magasin
 - Attaque spéciale avec CTRL, SHIFT, CLIC DROIT, ESPACE
   - Pour le moment, un attaque spécial lance un sort unique
-- Cool down entre attaque
+- #Cool down entre attaque#
 - Gérer complètement la vue iso
 - UPGRADE IA !
   - Nouvelle stratégie
@@ -20,3 +20,4 @@
 - Meilleur gestion de l'apparition des mobs
 - Attaque en étant immobile seulement
 
+NB: task with #...# are done

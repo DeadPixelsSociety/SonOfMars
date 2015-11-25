@@ -33,13 +33,15 @@ static constexpr int BASIC_DAMAGE = 1;
 static constexpr int BASIC_ARMOR = 0;
 static constexpr int BASE_REGEN_VALUE = 1;
 static constexpr float BASE_REGEN_RATE = 10.0f;
+static constexpr float BASE_ATTACK_PERIOD = 1.0f;
 
 Character::Character(b2World &b2_world, game::EventManager& events, game::ResourceManager &resources)
 : m_body(nullptr)
 , m_events(events)
 , m_animLeftTexture(nullptr)
 , m_animRightTexture(nullptr)
-, m_timeElapsed(0.0f)
+, m_timeElapsedRegen(0.0f)
+, m_timeElapsedAttack(0.0f)
 , m_verticalDirection(NONE)
 , m_horizontalDirection(NONE)
 , m_spriteDirection(0)
@@ -49,9 +51,10 @@ Character::Character(b2World &b2_world, game::EventManager& events, game::Resour
 , m_health(m_maxHealth)
 , m_damage(BASIC_DAMAGE)
 , m_armor(BASIC_ARMOR)
-, m_experience(0)
+, m_gold(0)
 , m_regenerationValue(BASE_REGEN_VALUE) // The player regenerate m_regenerationValue per m_regenerationRate second
 , m_regenerationRate(BASE_REGEN_RATE)
+, m_attackPeriod(BASE_ATTACK_PERIOD)
 {
   // Load textures
   m_animLeftTexture = resources.getTexture("character/character_left.png");
@@ -108,7 +111,12 @@ static constexpr float ANIMATION_SPEED = 0.1f;
 static constexpr unsigned int NUMBER_ANIMATIONS = 8;
 
 void Character::update(const float dt) {
-    m_timeElapsed+=dt;
+    m_timeElapsedRegen+=dt;
+    // if the attack is not ready to use, the actual cooldown reduce
+    if(m_timeElapsedAttack<m_attackPeriod)
+    {
+        m_timeElapsedAttack+=dt;
+    }
   // Manage the move
   b2Vec2 b2_velocity = m_body->GetLinearVelocity();
   if (m_verticalDirection == Direction::UP) {
@@ -176,22 +184,18 @@ void Character::update(const float dt) {
   event.pos = {m_body->GetPosition().x, m_body->GetPosition().y};
   m_events.triggerEvent(&event);
 
-  // Trigger health event
-  CharacterHealthEvent healthEvent;
-  healthEvent.characterHealth=m_health;
-  healthEvent.characterMaxHealth=m_maxHealth;
-  m_events.triggerEvent(&healthEvent);
-
-  // Trigger experience event
-  CharacterExperienceEvent experienceEvent;
-  experienceEvent.characterExperience=m_experience;
-  m_events.triggerEvent(&experienceEvent);
+  // Trigger stats event
+  CharacterStatsEvent statsEvent;
+  statsEvent.characterHealth=m_health;
+  statsEvent.characterMaxHealth=m_maxHealth;
+  statsEvent.characterGold=m_gold;
+  m_events.triggerEvent(&statsEvent);
 
   // The player regenerate m_regenerationValue per m_regenerationRate second
-  if(m_timeElapsed>=m_regenerationRate)
+  if(m_timeElapsedRegen>=m_regenerationRate)
   {
     m_health+=m_regenerationValue;
-    m_timeElapsed-=m_regenerationRate;
+    m_timeElapsedRegen-=m_regenerationRate;
   }
 
   // If the player actual health is above his max health, set it to his max health
@@ -324,26 +328,30 @@ void Character::setTarget(sf::Vector2f mousePos) {
 
 void Character::simpleAttack()
 {
-  for (Enemy* enemy: m_visibleEnemies)
-  {
-    enemy->substractToHealth((m_damage-enemy->getArmor()));
-  }
+    if(m_timeElapsedAttack>=m_attackPeriod)
+    {
+        for (Enemy* enemy: m_visibleEnemies)
+        {
+            enemy->substractToHealth((m_damage-enemy->getArmor()));
+        }
+        m_timeElapsedAttack-=m_attackPeriod;
+    }
 }
 
 void Character::buyDamage()
 {
-    if(m_experience>=10)
+    if(m_gold>=10)
     {
-        m_experience-=10;
+        m_gold-=10;
         m_damage++;
     }
 }
 
 void Character::buyMaxHealth()
 {
-    if(m_experience>=5)
+    if(m_gold>=5)
     {
-        m_experience-=5;
+        m_gold-=5;
         m_maxHealth++;
     }
 }
@@ -394,24 +402,24 @@ int Character::getArmor() const
     return m_armor;
 }
 
-void Character::setExperience(int experience)
+void Character::setGold(int gold)
 {
-    m_experience=experience;
+    m_gold=gold;
 }
 
-int Character::getExperience() const
+int Character::getGold() const
 {
-    return m_experience;
+    return m_gold;
 }
 
-void Character::addToExperience(int value)
+void Character::addToGold(int value)
 {
-    m_experience+=value;
+    m_gold+=value;
 }
 
-void Character::substractToExperience(int value)
+void Character::substractToGold(int value)
 {
-    m_experience-=value;
+    m_gold-=value;
 }
 
 void Character::acquiredEnemy(Enemy* enemy) {
@@ -432,7 +440,7 @@ game::EventStatus Character::onEnemyDeathEvent(game::EventType type, game::Event
 {
     auto deathEvent = static_cast<EnemyDeathEvent *>(event);
 
-    this->addToExperience(deathEvent->givenExperience);
+    this->addToGold(deathEvent->givenGold);
 
     return game::EventStatus::KEEP;
 }

@@ -30,13 +30,13 @@ Hud::Hud(game::EventManager& events, game::ResourceManager& resources)
 , m_font(nullptr)
 , m_characterMaxHealth(0)
 , m_characterHealth(0)
-, m_characterExperience(0)
+, m_characterGold(0)
 {
     m_font=resources.getFont("GRECOromanLubedWrestling.ttf");
     assert(m_font!=nullptr);
     //Set the strings
     std::string strHealth="Health: "+std::to_string(m_characterHealth)+"/"+std::to_string(m_characterMaxHealth);
-    std::string strExp="Experience: "+std::to_string(m_characterExperience);
+    std::string strGold="Sesterces: "+std::to_string(m_characterGold);
     //Set the characteristics of m_strHealth
     m_strHealth.setFont(*m_font);
     m_strHealth.setString(strHealth);
@@ -44,14 +44,13 @@ Hud::Hud(game::EventManager& events, game::ResourceManager& resources)
     m_strHealth.setColor(sf::Color::Red);
     m_strHealth.setPosition(100.0f,0.0f);
     //Set the characteristics of m_strExperience
-    m_strExperience.setFont(*m_font);
-    m_strExperience.setString(strExp);
-    m_strExperience.setCharacterSize(25);
-    m_strExperience.setColor(sf::Color::Green);
-    m_strExperience.setPosition(350.0f,0.0f);
+    m_strGold.setFont(*m_font);
+    m_strGold.setString(strGold);
+    m_strGold.setCharacterSize(25);
+    m_strGold.setColor(sf::Color::Green);
+    m_strGold.setPosition(350.0f,0.0f);
     // Register event
-    events.registerHandler<CharacterHealthEvent>(&Hud::onCharacterHealthEvent, this);
-    events.registerHandler<CharacterExperienceEvent>(&Hud::onCharacterExperienceEvent, this);
+    events.registerHandler<CharacterStatsEvent>(&Hud::onCharacterStatsEvent, this);
 }
 Hud::~Hud()
 {
@@ -60,27 +59,20 @@ Hud::~Hud()
 void Hud::update(const float dt)
 {
     m_strHealth.setString("Health: "+std::to_string(m_characterHealth)+"/"+std::to_string(m_characterMaxHealth));
-    m_strExperience.setString("Experience: "+std::to_string(m_characterExperience));
+    m_strGold.setString("Sesterces: "+std::to_string(m_characterGold));
 }
 void Hud::render(sf::RenderWindow& window)
 {
     window.draw(m_strHealth);
-    window.draw(m_strExperience);
+    window.draw(m_strGold);
 }
-game::EventStatus Hud::onCharacterHealthEvent(game::EventType type, game::Event *event)
+game::EventStatus Hud::onCharacterStatsEvent(game::EventType type, game::Event *event)
 {
-    auto healthEvent = static_cast<CharacterHealthEvent *>(event);
+    auto statsEvent = static_cast<CharacterStatsEvent *>(event);
 
-    m_characterHealth = healthEvent->characterHealth;
-    m_characterMaxHealth = healthEvent->characterMaxHealth;
-
-    return game::EventStatus::KEEP;
-}
-game::EventStatus Hud::onCharacterExperienceEvent(game::EventType type, game::Event *event)
-{
-    auto experienceEvent = static_cast<CharacterExperienceEvent *>(event);
-
-    m_characterExperience = experienceEvent->characterExperience;
+    m_characterHealth =statsEvent->characterHealth;
+    m_characterMaxHealth = statsEvent->characterMaxHealth;
+    m_characterGold = statsEvent->characterGold;
 
     return game::EventStatus::KEEP;
 }

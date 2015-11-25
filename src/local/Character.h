@@ -80,10 +80,10 @@ public:
     void setArmor(int armor);
     int getArmor() const;
 
-    void setExperience(int experience);
-    int getExperience() const;
-    void addToExperience(int value);
-    void substractToExperience(int value);
+    void setGold(int gold);
+    int getGold() const;
+    void addToGold(int value);
+    void substractToGold(int value);
 
   void acquiredEnemy(Enemy* enemy);
   void lostEnemy(Enemy* enemy);
@@ -103,7 +103,8 @@ private:
   game::EventManager& m_events;
   sf::Texture *m_animLeftTexture;
   sf::Texture *m_animRightTexture;
-  float m_timeElapsed;
+  float m_timeElapsedRegen;
+  float m_timeElapsedAttack;
 
   Direction m_verticalDirection;
   Direction m_horizontalDirection;
@@ -116,9 +117,10 @@ private:
   int m_health;
   int m_damage;
   int m_armor;
-  int m_experience;
+  int m_gold;
   int m_regenerationValue; // The player regenerate m_regenerationValue per m_regenerationRate second
   float m_regenerationRate;
+  float m_attackPeriod;
 
   std::set<Enemy *> m_visibleEnemies;
   std::vector<Target *> m_targets;
