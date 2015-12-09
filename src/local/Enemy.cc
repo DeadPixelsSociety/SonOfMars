@@ -27,11 +27,11 @@
 #include "Game.h"
 #include "Target.h"
 
-static constexpr int BASIC_HEALTH = 5;
-static constexpr int BASIC_DAMAGE = 1;
-static constexpr int BASIC_ARMOR = -1;
+static constexpr int BASIC_HEALTH = 5.0f;
+static constexpr int BASIC_DAMAGE = 1.0f;
+static constexpr int BASIC_ARMOR = -1.0f;
 static constexpr int BASIC_GOLD = 2;
-static constexpr float BASIC_SPEED = 3.1f;
+static constexpr float BASIC_SPEED = 3.0f;
 static constexpr float BASIC_ATTACKPERIOD = 3.0f;
 static constexpr float DEGTORAD = M_PI / 180.0f;
 
@@ -176,26 +176,26 @@ void Enemy::acquiredCharacter(Character* character) {
 void Enemy::lostCharacter(Character* character) {
   m_visibleCharacter.erase(character);
 }
-void Enemy::setHealth(int health) {
+void Enemy::setHealth(float health) {
   m_health=health;
 }
 
-int Enemy::getHealth() const {
+float Enemy::getHealth() const {
   return m_health;
 }
-void Enemy::addToHealth(int value)
+void Enemy::addToHealth(float value)
 {
     m_health+=value;
 }
-void Enemy::substractToHealth(int value)
+void Enemy::substractToHealth(float value)
 {
     m_health-=value;
 }
-void Enemy::setArmor(int armor)
+void Enemy::setArmor(float armor)
 {
     m_armor=armor;
 }
-int Enemy::getArmor() const
+float Enemy::getArmor() const
 {
     return m_armor;
 }

@@ -99,6 +99,10 @@ int main(void) {
   buyMaxHealth.addKeyControl(sf::Keyboard::A);
   actions.addAction(buyMaxHealth);
 
+  game::Action buyRegenValue("Buy Regen Value");
+  buyRegenValue.addKeyControl(sf::Keyboard::R);
+  actions.addAction(buyRegenValue);
+
   // Events manager
   game::EventManager events;
 
@@ -189,6 +193,10 @@ int main(void) {
     if (buyMaxHealth.isActive())
     {
         character.buyMaxHealth();
+    }
+    if (buyRegenValue.isActive())
+    {
+        character.buyRegenValue();
     }
 
     character.setTarget( window.mapPixelToCoords(

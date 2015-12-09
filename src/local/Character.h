@@ -25,6 +25,7 @@
 
 #include <Box2D/Box2D.h>
 
+#include <game/Animation.h>
 #include <game/Entity.h>
 #include <game/EventManager.h>
 #include <game/ResourceManager.h>
@@ -66,18 +67,19 @@ public:
   void simpleAttack();
   void buyDamage();
   void buyMaxHealth();
+  void buyRegenValue();
 
-    void setMaxHealth(int maxHealth);
-    int getMaxHealth() const;
-    void addToMaxHealth(int value);
-    void substractToMaxHealth(int value);
+    void setMaxHealth(float maxHealth);
+    float getMaxHealth() const;
+    void addToMaxHealth(float value);
+    void substractToMaxHealth(float value);
 
-    void setHealth(int health);
-    int getHealth() const;
-    void addToHealth(int value);
-    void substractToHealth(int value);
+    void setHealth(float health);
+    float getHealth() const;
+    void addToHealth(float value);
+    void substractToHealth(float value);
 
-    void setArmor(int armor);
+    void setArmor(float armor);
     int getArmor() const;
 
     void setGold(int gold);
@@ -103,7 +105,16 @@ private:
   game::EventManager& m_events;
   sf::Texture *m_animLeftTexture;
   sf::Texture *m_animRightTexture;
-  float m_timeElapsedRegen;
+  sf::Texture *m_animBottomTexture;
+  sf::Texture *m_animTopTexture;
+
+  game::Animation m_leftAnimation;
+  game::Animation m_rightAnimation;
+  game::Animation m_bottomAnimation;
+  game::Animation m_topAnimation;
+
+  game::Animation *m_currentAnimation;
+
   float m_timeElapsedAttack;
 
   Direction m_verticalDirection;
@@ -113,12 +124,12 @@ private:
   unsigned int m_animationCounter;
 
   b2Vec2 m_target;
-  int m_maxHealth;
-  int m_health;
-  int m_damage;
-  int m_armor;
+  float m_maxHealth;
+  float m_health;
+  float m_damage;
+  float m_armor;
   int m_gold;
-  int m_regenerationValue; // The player regenerate m_regenerationValue per m_regenerationRate second
+  float m_regenerationValue; // The player regenerate m_regenerationValue per m_regenerationRate second
   float m_regenerationRate;
   float m_attackPeriod;
 
