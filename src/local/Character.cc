@@ -30,7 +30,7 @@
 static constexpr float VELOCITY_STEP = 5.0f;
 static constexpr float DEGTORAD = M_PI / 180.0f;
 static constexpr float BASIC_MAX_HEALTH = 100.0f;
-static constexpr float BASIC_DAMAGE = 1;
+static constexpr float BASIC_DAMAGE = 5;
 static constexpr float BASIC_ARMOR = 0;
 static constexpr float BASE_REGEN_VALUE = 1.0f;
 static constexpr float BASE_REGEN_RATE = 10.0f;
