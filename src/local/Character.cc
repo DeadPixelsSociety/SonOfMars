@@ -186,11 +186,44 @@ void Character::update(const float dt) {
   // Apply the move
   m_body->SetLinearVelocity(b2_velocity);
 
+  // Set the right animation
+  // Angle in RAD
+  float angle = m_body->GetAngle();
+
+  // If the player move
+  if (m_body->GetLinearVelocity().x != 0 || m_body->GetLinearVelocity().y != 0) {
+    // If the character is oriented to left
+    if (angle >= 150.0f * DEGTORAD || angle < -150.0f * DEGTORAD) {
+      m_currentAnimation = &m_leftAnimation;
+    }
+    // If the character is oriented to right
+    else if (angle >= -30.0f * DEGTORAD && angle < 30.0f * DEGTORAD) {
+      m_currentAnimation = &m_rightAnimation;
+    }
+    // If the character is oriented to the top
+    else if (angle >= -150.0f * DEGTORAD && angle < -30.0f * DEGTORAD)
+    {
+      m_currentAnimation = &m_topAnimation;
+    }
+    // If the character is oriented to the bottom
+    else if (angle >= 30.0f * DEGTORAD && angle < 150.0f * DEGTORAD)
+    {
+      m_currentAnimation = &m_bottomAnimation;
+    }
+  }
+  // If player was stopped
+  else {
+    // NO YET IMPLEMENTED
+    m_currentAnimation = nullptr;
+  }
+
   // Update animation
-  m_currentAnimation->update(dt);
+  if (m_currentAnimation != nullptr) {
+    m_currentAnimation->update(dt);
+  }
 
   // Set direction move
-  m_spriteDirection = m_verticalDirection | m_horizontalDirection;
+  //m_spriteDirection = m_verticalDirection | m_horizontalDirection;
 
   // Reset move
   m_verticalDirection = Direction::NONE;
@@ -219,6 +252,7 @@ void Character::update(const float dt) {
   // Check if the player is still alive
   if(m_health<1.0f)
   {
+    m_health = 0;
     this->death();
   }
 }
@@ -230,50 +264,9 @@ void Character::render(sf::RenderWindow& window) {
   // Angle in RAD
   float angle = m_body->GetAngle();
 
-  m_currentAnimation->renderAt(window, { b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER },0.0f,sf::Vector2f(CHARACTER_HEIGHT_SCALE, CHARACTER_WIDTH_SCALE));
-
-  // Display the character
-  // If the player move
-  if (m_body->GetLinearVelocity().x != 0 || m_body->GetLinearVelocity().y != 0) {
-    // If the character is oriented to left
-    if (angle >= 150.0f * DEGTORAD || angle < -150.0f * DEGTORAD) {
-       m_currentAnimation = &m_leftAnimation;
-    }
-    // If the character is oriented to right
-    else if (angle >= -30.0f * DEGTORAD && angle < 30.0f * DEGTORAD) {
-       m_currentAnimation = &m_rightAnimation;
-    }
-    // If the character is oriented to the top
-    else if (angle >= -150.0f * DEGTORAD && angle < -30.0f * DEGTORAD)
-    {
-        m_currentAnimation = &m_topAnimation;
-    }
-    // If the character is oriented to the bottom
-    else if (angle >= 30.0f * DEGTORAD && angle < 150.0f * DEGTORAD)
-    {
-        m_currentAnimation = &m_bottomAnimation;
-    }
-    // Default case to DEBUG
-    else {
-      // Display the character
-      sf::CircleShape circle;
-      circle.setOrigin(CHARACTER_WIDTH * 0.4f, CHARACTER_WIDTH * 0.4f);
-      circle.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
-      circle.setRadius(CHARACTER_WIDTH * 0.4f);
-      circle.setFillColor(sf::Color::Black);
-      window.draw(circle);
-
-      // Orientation of character
-      sf::RectangleShape rect({CHARACTER_WIDTH * 0.80f, 4.0f});
-      rect.setOrigin(CHARACTER_WIDTH * 0.4f, 2.0f);
-      rect.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
-      rect.setFillColor(sf::Color::Red);
-      rect.setRotation(angle * 180 / M_PI);
-      window.draw(rect);
-    }
+  if (m_currentAnimation != nullptr) {
+    m_currentAnimation->renderAt(window, { b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER - CHARACTER_HEIGHT * CHARACTER_HEIGHT_SCALE * 2.0f},0.0f,sf::Vector2f(CHARACTER_WIDTH_SCALE, CHARACTER_HEIGHT_SCALE));
   }
-  // If the player don't move
-  // TODO to debug, implement the write function
   else {
     // Display the character
     sf::CircleShape circle;
