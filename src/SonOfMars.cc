@@ -52,8 +52,15 @@ int main(void) {
   // add cameras
   game::CameraManager cameras;
 
-  game::FixedRatioCamera mainCamera(AREA_WIDTH, AREA_HEIGHT, {AREA_WIDTH * 0.5f, AREA_HEIGHT * 0.5f});
-  cameras.addCamera(mainCamera);
+  game::FixedRatioCamera arenaCamera(AREA_WIDTH, AREA_HEIGHT, {AREA_WIDTH * 0.5f, AREA_HEIGHT * 0.5f});
+  game::FixedRatioCamera shopCamera(AREA_WIDTH, AREA_HEIGHT, {AREA_WIDTH * 2, AREA_HEIGHT * 0.5f});
+  game::FixedRatioCamera currentCamera=arenaCamera;
+
+  cameras.addCamera(currentCamera);
+  cameras.addCamera(arenaCamera);
+  cameras.addCamera(shopCamera);
+  bool mainCamera=true;//true -> arena, false -> shop
+  
 
   // add actions
   game::ActionManager actions;
@@ -198,10 +205,15 @@ int main(void) {
     {
         character.buyRegenValue();
     }
+    //changing zone
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::X)){
+      mainCamera=!mainCamera;
+    }
+    currentCamera=(mainCamera)? arenaCamera : shopCamera;
 
     character.setTarget( window.mapPixelToCoords(
       sf::Mouse::getPosition(window)
-      , mainCamera.getView()
+      , currentCamera.getView()
     ) );
 
     // update
@@ -213,7 +225,7 @@ int main(void) {
     // render
     window.clear(sf::Color::White);
 
-    mainCamera.configure(window);
+    currentCamera.configure(window);
     mainEntities.render(window);
     b2_world.DrawDebugData();
 
