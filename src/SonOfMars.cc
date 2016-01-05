@@ -42,8 +42,8 @@ int main(void) {
   //static constexpr unsigned INITIAL_WIDTH = 800;
   //static constexpr unsigned INITIAL_HEIGHT = 600;
 
-  game::WindowSettings settings(AREA_WIDTH, AREA_HEIGHT, "Son of Mars");
-  game::WindowGeometry geometry(AREA_WIDTH, AREA_HEIGHT);
+  game::WindowSettings settings(800.0f, 800.0f, "Son of Mars");
+  game::WindowGeometry geometry(800.0f, 800.0f);
 
   sf::RenderWindow window;
   settings.applyTo(window);
@@ -52,7 +52,8 @@ int main(void) {
   // add cameras
   game::CameraManager cameras;
 
-  game::FixedRatioCamera mainCamera(AREA_WIDTH, AREA_HEIGHT, {AREA_WIDTH * 0.5f, AREA_HEIGHT * 0.5f});
+  //game::FixedRatioCamera mainCamera(AREA_WIDTH, AREA_HEIGHT, {AREA_WIDTH * 0.5f, AREA_HEIGHT * 0.5f});
+  game::FlexibleCamera mainCamera(1000.0f, {AREA_WIDTH * 0.5f, AREA_HEIGHT * 0.5f});
   cameras.addCamera(mainCamera);
 
   // add actions
@@ -118,10 +119,10 @@ int main(void) {
 
   game::EntityManager mainEntities;
 
-  Character character(b2_world, events, resources);
+  Character character(b2_world, events, resources, mainCamera);
   mainEntities.addEntity(character);
 
-  Arena arena(b2_world, events);
+  Arena arena(b2_world, events, resources);
   mainEntities.addEntity(arena);
 
   EnemyManager enemies(b2_world, events);

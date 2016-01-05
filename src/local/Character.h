@@ -25,6 +25,7 @@
 
 #include <Box2D/Box2D.h>
 
+#include <game/Camera.h>
 #include <game/Entity.h>
 #include <game/EventManager.h>
 #include <game/ResourceManager.h>
@@ -43,7 +44,7 @@ public:
   };
 
 public:
-  Character(b2World &b2_world, game::EventManager& events, game::ResourceManager &resources);
+  Character(b2World &b2_world, game::EventManager& events, game::ResourceManager &resources, game::FlexibleCamera &mainCamera);
 
   Character(const Character&) = delete;
   Character& operator=(const Character&) = delete;
@@ -88,11 +89,11 @@ public:
   void acquiredEnemy(Enemy* enemy);
   void lostEnemy(Enemy* enemy);
 
-  static constexpr float CHARACTER_SPRITE_WIDTH = 554.0f;
-  static constexpr float CHARACTER_SPRITE_HEIGHT = 931.0f;
+  static constexpr float CHARACTER_SPRITE_WIDTH = 760.0f;
+  static constexpr float CHARACTER_SPRITE_HEIGHT = 954.0f;
   static constexpr float CHARACTER_SPRITE_RATIO = CHARACTER_SPRITE_WIDTH / CHARACTER_SPRITE_HEIGHT;
 
-  static constexpr float CHARACTER_WIDTH = 50.0f;
+  static constexpr float CHARACTER_WIDTH = 100.0f;
   static constexpr float CHARACTER_HEIGHT = CHARACTER_WIDTH / CHARACTER_SPRITE_RATIO;
 
   static constexpr float CHARACTER_WIDTH_SCALE = CHARACTER_WIDTH / CHARACTER_SPRITE_WIDTH;
@@ -124,6 +125,8 @@ private:
 
   std::set<Enemy *> m_visibleEnemies;
   std::vector<Target *> m_targets;
+
+  game::FlexibleCamera &m_mainCamera;
 };
 
 #endif //CHARACTER_H

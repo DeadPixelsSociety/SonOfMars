@@ -35,8 +35,9 @@ static constexpr int BASE_REGEN_VALUE = 1;
 static constexpr float BASE_REGEN_RATE = 10.0f;
 static constexpr float BASE_ATTACK_PERIOD = 1.0f;
 
-Character::Character(b2World &b2_world, game::EventManager& events, game::ResourceManager &resources)
-: m_body(nullptr)
+Character::Character(b2World &b2_world, game::EventManager& events, game::ResourceManager &resources, game::FlexibleCamera &mainCamera)
+: game::Entity(5)
+, m_body(nullptr)
 , m_events(events)
 , m_animLeftTexture(nullptr)
 , m_animRightTexture(nullptr)
@@ -55,6 +56,7 @@ Character::Character(b2World &b2_world, game::EventManager& events, game::Resour
 , m_regenerationValue(BASE_REGEN_VALUE) // The player regenerate m_regenerationValue per m_regenerationRate second
 , m_regenerationRate(BASE_REGEN_RATE)
 , m_attackPeriod(BASE_ATTACK_PERIOD)
+, m_mainCamera(mainCamera)
 {
   // Load textures
   m_animLeftTexture = resources.getTexture("character/character_left.png");
@@ -208,6 +210,9 @@ void Character::update(const float dt) {
   {
     this->death();
   }
+
+  // Set position
+  m_mainCamera.setCenter({m_body->GetPosition().x * BOX2D_PIXELS_PER_METER, m_body->GetPosition().y * BOX2D_PIXELS_PER_METER});
 }
 
 void Character::render(sf::RenderWindow& window) {
@@ -231,7 +236,7 @@ void Character::render(sf::RenderWindow& window) {
       sprite.setOrigin(CHARACTER_SPRITE_WIDTH * 0.5f, CHARACTER_SPRITE_HEIGHT * 0.7f);
       sprite.setScale(CHARACTER_WIDTH_SCALE, CHARACTER_HEIGHT_SCALE);
       sprite.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
-      sprite.setRotation(angle - 180.0f * DEGTORAD);
+      //sprite.setRotation(angle - 180.0f * DEGTORAD);
       window.draw(sprite);
     }
     // If the character is oriented to right
@@ -241,7 +246,7 @@ void Character::render(sf::RenderWindow& window) {
       sprite.setOrigin(CHARACTER_SPRITE_WIDTH * 0.5f, CHARACTER_SPRITE_HEIGHT * 0.7f);
       sprite.setScale(CHARACTER_WIDTH_SCALE, CHARACTER_HEIGHT_SCALE);
       sprite.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
-      sprite.setRotation(angle - 180.0f * DEGTORAD);
+      //sprite.setRotation(angle - 180.0f * DEGTORAD);
       window.draw(sprite);
     }
     // Default case to DEBUG
@@ -259,7 +264,7 @@ void Character::render(sf::RenderWindow& window) {
       rect.setOrigin(CHARACTER_WIDTH * 0.4f, 2.0f);
       rect.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
       rect.setFillColor(sf::Color::Red);
-      rect.setRotation(angle * 180 / M_PI);
+      //rect.setRotation(angle * 180 / M_PI);
       window.draw(rect);
     }
   }

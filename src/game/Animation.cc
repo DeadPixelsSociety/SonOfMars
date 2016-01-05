@@ -70,5 +70,4 @@ namespace game {
     sprite.setRotation(angle);
     window.draw(sprite);
   }
-
 }

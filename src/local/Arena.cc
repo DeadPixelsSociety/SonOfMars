@@ -23,33 +23,93 @@
 
 #include "Game.h"
 
-static constexpr float WALL_SIZE = 32.0f;
+static constexpr float WALL_TOP_SIZE = 192.0f * (AREA_WIDTH/3000.0f);
+static constexpr float WALL_SIDE_SIZE = 16.0f;
 
 static constexpr float SPAWN_PERIOD = 5.0f;
 
 static constexpr int MAX_ENEMIES_PER_WAVE = 10;
 static constexpr int INCREASE_ENEMY_POWER_RATE = 5; // every INCREASE_ENEMY_POWER_RATE, enemies will get more powerful
 
-Arena::Arena(b2World &b2_world, game::EventManager& events)
+Arena::Arena(b2World &b2_world, game::EventManager& events, game::ResourceManager &resources)
 : m_events(events)
 , m_timeElapsed(SPAWN_PERIOD-2.0f)
 , m_enemyCounter(0)
-, m_waveNumber(1) {
+, m_waveNumber(1)
+, m_background(nullptr) {
   static constexpr float B2_WIDTH = AREA_WIDTH / BOX2D_PIXELS_PER_METER;
   static constexpr float B2_HEIGHT = AREA_HEIGHT / BOX2D_PIXELS_PER_METER;
-  static constexpr float X = WALL_SIZE / BOX2D_PIXELS_PER_METER;
+  static constexpr float X_TOP = WALL_TOP_SIZE / BOX2D_PIXELS_PER_METER;
+  static constexpr float X_SIDE = WALL_SIDE_SIZE / BOX2D_PIXELS_PER_METER;
+  static constexpr float X = 32.0f / BOX2D_PIXELS_PER_METER;
 
-  // Défine corner top-left
+  m_background = resources.getTexture("ground.jpg");
+  assert(m_background != nullptr);
+
+  static constexpr float B2_WALL_TOP_SIZE = X_TOP / 2.0f;
+  static constexpr float B2_WALL_SIDE_SIZE = X_SIDE / 2.0f;
+  static constexpr float B2_WALL_SIZE = X / 2.0f;
+
+  // Wall left
   b2BodyDef b2_bodyDef;
   b2_bodyDef.type = b2_staticBody;
-  b2_bodyDef.position.Set(X, X);
+  b2_bodyDef.position.Set(B2_WALL_SIDE_SIZE, B2_HEIGHT / 2.0f);
 
   b2Vec2 vertices[5];
-  vertices[0].Set(-X, -X);
-  vertices[1].Set( X, -X);
-  vertices[2].Set( X,  0);
-  vertices[3].Set( 0,  X);
-  vertices[4].Set(-X,  X);
+  vertices[0].Set(-B2_WALL_SIDE_SIZE, -B2_HEIGHT / 2.0f);
+  vertices[1].Set( B2_WALL_SIDE_SIZE, -B2_HEIGHT / 2.0f);
+  vertices[2].Set( B2_WALL_SIDE_SIZE,  B2_HEIGHT / 2.0f);
+  vertices[3].Set(-B2_WALL_SIDE_SIZE,  B2_HEIGHT / 2.0f);
+
+  b2PolygonShape b2_boxShape;
+  b2_boxShape.Set(vertices, 4);
+
+  b2FixtureDef b2_fixture;
+  b2_fixture.shape = &b2_boxShape;
+
+  b2Body *b2_body = b2_world.CreateBody(&b2_bodyDef);
+  m_walls.push_back(b2_body);
+  b2_body->CreateFixture(&b2_fixture);
+
+  // Wall right
+  b2_bodyDef.position.Set(B2_WIDTH - B2_WALL_SIDE_SIZE, B2_HEIGHT / 2.0f);
+  b2_body = b2_world.CreateBody(&b2_bodyDef);
+  m_walls.push_back(b2_body);
+  b2_body->CreateFixture(&b2_fixture);
+
+  // Wall top
+  b2_bodyDef.position.Set(B2_WIDTH / 2.0f, B2_WALL_TOP_SIZE);
+
+  vertices[0].Set(-B2_WIDTH / 2.0f, -B2_WALL_TOP_SIZE);
+  vertices[1].Set( B2_WIDTH / 2.0f, -B2_WALL_TOP_SIZE);
+  vertices[2].Set( B2_WIDTH / 2.0f,  B2_WALL_TOP_SIZE);
+  vertices[3].Set(-B2_WIDTH / 2.0f,  B2_WALL_TOP_SIZE);
+
+  b2_boxShape.Set(vertices, 4);
+
+  b2_fixture.shape = &b2_boxShape;
+
+  b2_body = b2_world.CreateBody(&b2_bodyDef);
+  m_walls.push_back(b2_body);
+  b2_body->CreateFixture(&b2_fixture);
+
+  // Wall right
+  b2_bodyDef.position.Set(B2_WIDTH / 2.0f, B2_HEIGHT - B2_WALL_SIZE);
+  b2_body = b2_world.CreateBody(&b2_bodyDef);
+  m_walls.push_back(b2_body);
+  b2_body->CreateFixture(&b2_fixture);
+
+  // Défine corner top-left
+  /*b2BodyDef b2_bodyDef;
+  b2_bodyDef.type = b2_staticBody;
+  b2_bodyDef.position.Set(X_SIDE, X_TOP);
+
+  b2Vec2 vertices[5];
+  vertices[0].Set(-X_SIDE, -X_TOP);
+  vertices[1].Set( X_SIDE, -X_TOP);
+  vertices[2].Set( X_SIDE,  0);
+  vertices[3].Set( 0,  X_TOP);
+  vertices[4].Set(-X_SIDE,  X_TOP);
 
   b2PolygonShape b2_boxShape;
   b2_boxShape.Set(vertices, 5);
@@ -156,7 +216,7 @@ Arena::Arena(b2World &b2_world, game::EventManager& events)
   b2_bodyDef.position.Set(B2_WIDTH / 2.0f, B2_HEIGHT - B2_WALL_SIZE);
   b2_body = b2_world.CreateBody(&b2_bodyDef);
   m_walls.push_back(b2_body);
-  b2_body->CreateFixture(&b2_fixture);
+  b2_body->CreateFixture(&b2_fixture);*/
 }
 
 Arena::~Arena() {
@@ -190,27 +250,10 @@ void Arena::update(const float dt)
 }
 
 void Arena::render(sf::RenderWindow& window) {
-  sf::RectangleShape wall;
-  // Top wall
-  wall.setSize({AREA_WIDTH, WALL_SIZE});
-  wall.setFillColor(sf::Color::Blue);
-  window.draw(wall);
-
-  // Bottom wall
-  wall.setOrigin(0.0f, WALL_SIZE);
-  wall.setPosition(0.0f, AREA_HEIGHT);
-  window.draw(wall);
-
-  // Left wall
-  wall.setOrigin(0.0f, 0.0f);
-  wall.setSize({WALL_SIZE, AREA_HEIGHT});
-  wall.setPosition(0.0f, 0.0f);
-  window.draw(wall);
-
-  // Right wall
-  wall.setOrigin(WALL_SIZE, 0.0f);
-  wall.setPosition(AREA_WIDTH, 0.0f);
-  window.draw(wall);
+  sf::Sprite sprite;
+  sprite.setTexture(*m_background);
+  sprite.setScale(AREA_WIDTH / 3000.0f, AREA_HEIGHT / 1688.0f);
+  window.draw(sprite);
 }
 
 void Arena::spawnEnemy(game::Random &random)

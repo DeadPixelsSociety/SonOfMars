@@ -29,10 +29,11 @@
 #include <game/Entity.h>
 #include <game/EventManager.h>
 #include <game/Random.h>
+#include <game/ResourceManager.h>
 
 class Arena: public game::Entity {
 public:
-  Arena(b2World &b2_world, game::EventManager& events);
+  Arena(b2World &b2_world, game::EventManager& events, game::ResourceManager &resources);
 
   Arena(const Arena&) = delete;
   Arena& operator=(const Arena&) = delete;
@@ -53,6 +54,7 @@ private:
   std::vector<b2Body*> m_walls;
   int m_enemyCounter;
   int m_waveNumber;
+  sf::Texture *m_background;
 };
 
 #endif //ARENA_H
