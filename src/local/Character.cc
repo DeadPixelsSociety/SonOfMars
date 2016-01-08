@@ -20,6 +20,7 @@
 #include "Character.h"
 
 #include <cmath>
+#include <stdlib.h>
 
 #include "local/config.h"
 
@@ -28,20 +29,33 @@
 
 static constexpr float VELOCITY_STEP = 5.0f;
 static constexpr float DEGTORAD = M_PI / 180.0f;
-static constexpr int BASIC_MAX_HEALTH = 100;
-static constexpr int BASIC_DAMAGE = 1;
-static constexpr int BASIC_ARMOR = 0;
-static constexpr int BASE_REGEN_VALUE = 1;
+static constexpr float BASIC_MAX_HEALTH = 100.0f;
+static constexpr float BASIC_DAMAGE = 3.0f;
+static constexpr float BASIC_ARMOR = 0.0f;
+static constexpr float BASE_REGEN_VALUE = 1.0f;
 static constexpr float BASE_REGEN_RATE = 10.0f;
-static constexpr float BASE_ATTACK_PERIOD = 1.0f;
+static constexpr float BASE_ATTACK_PERIOD = 0.25f;
 
-Character::Character(b2World &b2_world, game::EventManager& events, game::ResourceManager &resources, game::FlexibleCamera &mainCamera)
+static constexpr int SPRITE_WIDTH = 760;
+static constexpr int SPRITE_HEIGHT = 940;
+
+static constexpr float FRAME_DURATION = 0.1f;
+static constexpr int NUMBER_ANIMATIONS_BY_LINE = 4;
+static constexpr int NUMBER_OF_LINES = 2;
+
+Character::Character(b2World &b2_world, game::EventManager& events, game::ResourceManager &resources)
 : game::Entity(5)
 , m_body(nullptr)
 , m_events(events)
 , m_animLeftTexture(nullptr)
 , m_animRightTexture(nullptr)
-, m_timeElapsedRegen(0.0f)
+, m_animBottomTexture(nullptr)
+, m_animTopTexture(nullptr)
+, m_leftAnimation("Left")
+, m_rightAnimation("Right")
+, m_bottomAnimation("Bottom")
+, m_topAnimation("Top")
+, m_currentAnimation(&m_bottomAnimation)
 , m_timeElapsedAttack(0.0f)
 , m_verticalDirection(NONE)
 , m_horizontalDirection(NONE)
@@ -53,10 +67,9 @@ Character::Character(b2World &b2_world, game::EventManager& events, game::Resour
 , m_damage(BASIC_DAMAGE)
 , m_armor(BASIC_ARMOR)
 , m_gold(0)
-, m_regenerationValue(BASE_REGEN_VALUE) // The player regenerate m_regenerationValue per m_regenerationRate second
+, m_regenerationValue(BASE_REGEN_VALUE) // The player regenerate m_regenerationValue over m_regenerationRate second
 , m_regenerationRate(BASE_REGEN_RATE)
 , m_attackPeriod(BASE_ATTACK_PERIOD)
-, m_mainCamera(mainCamera)
 {
   // Load textures
   m_animLeftTexture = resources.getTexture("character/character_left.png");
@@ -64,6 +77,22 @@ Character::Character(b2World &b2_world, game::EventManager& events, game::Resour
 
   m_animRightTexture = resources.getTexture("character/character_right.png");
   assert(m_animRightTexture != nullptr);
+
+  m_animBottomTexture = resources.getTexture("character/character_bottom.png");
+  assert(m_animBottomTexture != nullptr);
+
+  m_animTopTexture = resources.getTexture("character/character_top.png");
+  assert(m_animTopTexture != nullptr);
+
+  // Create animation
+  for(int counterLine=0;counterLine<NUMBER_OF_LINES;counterLine++) {
+    for(int counterAnim=0;counterAnim<NUMBER_ANIMATIONS_BY_LINE;counterAnim++) {
+      m_leftAnimation.addFrame(m_animLeftTexture, { counterAnim * SPRITE_WIDTH , counterLine * SPRITE_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT }, FRAME_DURATION);
+      m_rightAnimation.addFrame(m_animRightTexture, { counterAnim * SPRITE_WIDTH, counterLine * SPRITE_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT }, FRAME_DURATION);
+      m_bottomAnimation.addFrame(m_animBottomTexture, { counterAnim * SPRITE_WIDTH, counterLine * SPRITE_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT }, FRAME_DURATION);
+      m_topAnimation.addFrame(m_animTopTexture, { counterAnim * SPRITE_WIDTH, counterLine * SPRITE_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT }, FRAME_DURATION);
+    }
+  }
 
   // Create the physical body
   b2BodyDef b2_bodyDef;
@@ -98,7 +127,7 @@ Character::Character(b2World &b2_world, game::EventManager& events, game::Resour
   m_body->CreateFixture(&b2_fixtureDef)->SetUserData(m_targets.back());
 
   // Register event
-    events.registerHandler<EnemyDeathEvent>(&Character::onEnemyDeathEvent, this);
+  events.registerHandler<EnemyDeathEvent>(&Character::onEnemyDeathEvent, this);
 }
 
 Character::~Character() {
@@ -109,11 +138,7 @@ Character::~Character() {
   }
 }
 
-static constexpr float ANIMATION_SPEED = 0.1f;
-static constexpr unsigned int NUMBER_ANIMATIONS = 8;
-
 void Character::update(const float dt) {
-    m_timeElapsedRegen+=dt;
     // if the attack is not ready to use, the actual cooldown reduce
     if(m_timeElapsedAttack<m_attackPeriod)
     {
@@ -159,23 +184,44 @@ void Character::update(const float dt) {
   // Apply the move
   m_body->SetLinearVelocity(b2_velocity);
 
-  // Update animation
-  // Change direction
-  if (m_spriteDirection != (m_verticalDirection | m_horizontalDirection)) {
-    m_animationCounter = 0;
-    m_timeElapsedAnimation = 0.0f;
-  }
-  // Same direction
-  else {
-    m_timeElapsedAnimation += dt;
-    if (m_timeElapsedAnimation >= ANIMATION_SPEED) {
-      m_timeElapsedAnimation -= ANIMATION_SPEED;
-      m_animationCounter = (m_animationCounter + 1) % NUMBER_ANIMATIONS;
+  // Set the right animation
+  // Angle in RAD
+  float angle = m_body->GetAngle();
+
+  // If the player move
+  if (m_body->GetLinearVelocity().x != 0 || m_body->GetLinearVelocity().y != 0) {
+    // If the character is oriented to left
+    if (angle >= 150.0f * DEGTORAD || angle < -150.0f * DEGTORAD) {
+      m_currentAnimation = &m_leftAnimation;
     }
+    // If the character is oriented to right
+    else if (angle >= -30.0f * DEGTORAD && angle < 30.0f * DEGTORAD) {
+      m_currentAnimation = &m_rightAnimation;
+    }
+    // If the character is oriented to the top
+    else if (angle >= -150.0f * DEGTORAD && angle < -30.0f * DEGTORAD)
+    {
+      m_currentAnimation = &m_topAnimation;
+    }
+    // If the character is oriented to the bottom
+    else if (angle >= 30.0f * DEGTORAD && angle < 150.0f * DEGTORAD)
+    {
+      m_currentAnimation = &m_bottomAnimation;
+    }
+  }
+  // If player was stopped
+  else {
+    // NO YET IMPLEMENTED
+    m_currentAnimation = nullptr;
+  }
+
+  // Update animation
+  if (m_currentAnimation != nullptr) {
+    m_currentAnimation->update(dt);
   }
 
   // Set direction move
-  m_spriteDirection = m_verticalDirection | m_horizontalDirection;
+  //m_spriteDirection = m_verticalDirection | m_horizontalDirection;
 
   // Reset move
   m_verticalDirection = Direction::NONE;
@@ -188,17 +234,13 @@ void Character::update(const float dt) {
 
   // Trigger stats event
   CharacterStatsEvent statsEvent;
-  statsEvent.characterHealth=m_health;
-  statsEvent.characterMaxHealth=m_maxHealth;
+  statsEvent.characterHealth=(int)m_health;
+  statsEvent.characterMaxHealth=(int)m_maxHealth;
   statsEvent.characterGold=m_gold;
   m_events.triggerEvent(&statsEvent);
 
-  // The player regenerate m_regenerationValue per m_regenerationRate second
-  if(m_timeElapsedRegen>=m_regenerationRate)
-  {
-    m_health+=m_regenerationValue;
-    m_timeElapsedRegen-=m_regenerationRate;
-  }
+  // The player regenerate health over time
+  m_health+=((m_regenerationValue/m_regenerationRate)*dt);
 
   // If the player actual health is above his max health, set it to his max health
   if(m_health>m_maxHealth)
@@ -206,13 +248,11 @@ void Character::update(const float dt) {
     m_health=m_maxHealth;
   }
   // Check if the player is still alive
-  if(m_health<=0)
+  if(m_health<1.0f)
   {
+    m_health = 0;
     this->death();
   }
-
-  // Set position
-  m_mainCamera.setCenter({m_body->GetPosition().x * BOX2D_PIXELS_PER_METER, m_body->GetPosition().y * BOX2D_PIXELS_PER_METER});
 }
 
 void Character::render(sf::RenderWindow& window) {
@@ -222,54 +262,9 @@ void Character::render(sf::RenderWindow& window) {
   // Angle in RAD
   float angle = m_body->GetAngle();
 
-  // Display the character
-  // If the player move
-  if (m_body->GetLinearVelocity().x != 0 || m_body->GetLinearVelocity().x != 0) {
-    sf::Sprite sprite;
-    // {pos_left, pos_top, width, height}
-    sf::IntRect textureRect(CHARACTER_SPRITE_WIDTH * (m_animationCounter % 4), CHARACTER_SPRITE_HEIGHT * (m_animationCounter / 4), CHARACTER_SPRITE_WIDTH, CHARACTER_SPRITE_HEIGHT);
-
-    // If the character is oriented to left
-    if (angle >= 157.5f * DEGTORAD || angle < -157.5f * DEGTORAD) {
-      sprite.setTexture(*m_animLeftTexture);
-      sprite.setTextureRect(textureRect);
-      sprite.setOrigin(CHARACTER_SPRITE_WIDTH * 0.5f, CHARACTER_SPRITE_HEIGHT * 0.7f);
-      sprite.setScale(CHARACTER_WIDTH_SCALE, CHARACTER_HEIGHT_SCALE);
-      sprite.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
-      //sprite.setRotation(angle - 180.0f * DEGTORAD);
-      window.draw(sprite);
-    }
-    // If the character is oriented to right
-    else if (angle >= -22.5 * DEGTORAD && angle < 22.5 * DEGTORAD) {
-      sprite.setTexture(*m_animRightTexture);
-      sprite.setTextureRect(textureRect);
-      sprite.setOrigin(CHARACTER_SPRITE_WIDTH * 0.5f, CHARACTER_SPRITE_HEIGHT * 0.7f);
-      sprite.setScale(CHARACTER_WIDTH_SCALE, CHARACTER_HEIGHT_SCALE);
-      sprite.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
-      //sprite.setRotation(angle - 180.0f * DEGTORAD);
-      window.draw(sprite);
-    }
-    // Default case to DEBUG
-    else {
-      // Display the character
-      sf::CircleShape circle;
-      circle.setOrigin(CHARACTER_WIDTH * 0.4f, CHARACTER_WIDTH * 0.4f);
-      circle.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
-      circle.setRadius(CHARACTER_WIDTH * 0.4f);
-      circle.setFillColor(sf::Color::Black);
-      window.draw(circle);
-
-      // Orientation of character
-      sf::RectangleShape rect({CHARACTER_WIDTH * 0.80f, 4.0f});
-      rect.setOrigin(CHARACTER_WIDTH * 0.4f, 2.0f);
-      rect.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER);
-      rect.setFillColor(sf::Color::Red);
-      //rect.setRotation(angle * 180 / M_PI);
-      window.draw(rect);
-    }
+  if (m_currentAnimation != nullptr) {
+    m_currentAnimation->renderAt(window, { b2_pos.x * BOX2D_PIXELS_PER_METER, b2_pos.y * BOX2D_PIXELS_PER_METER - CHARACTER_HEIGHT * CHARACTER_HEIGHT_SCALE * 2.0f},0.0f,sf::Vector2f(CHARACTER_WIDTH_SCALE, CHARACTER_HEIGHT_SCALE));
   }
-  // If the player don't move
-  // TODO to debug, implement the write function
   else {
     // Display the character
     sf::CircleShape circle;
@@ -345,9 +340,9 @@ void Character::simpleAttack()
 
 void Character::buyDamage()
 {
-    if(m_gold>=10)
+    if(m_gold>=20)
     {
-        m_gold-=10;
+        m_gold-=20;
         m_damage++;
     }
 }
@@ -361,43 +356,52 @@ void Character::buyMaxHealth()
     }
 }
 
-void Character::setMaxHealth(int maxHealth) {
+void Character::buyRegenValue()
+{
+    if(m_gold>=30)
+    {
+        m_gold-=30;
+        m_regenerationValue++;
+    }
+}
+
+void Character::setMaxHealth(float maxHealth) {
   m_maxHealth=maxHealth;
 }
 
-int Character::getMaxHealth() const {
+float Character::getMaxHealth() const {
   return m_maxHealth;
 }
 
-void Character::addToMaxHealth(int value)
+void Character::addToMaxHealth(float value)
 {
     m_maxHealth+=value;
 }
 
-void Character::substractToMaxHealth(int value)
+void Character::substractToMaxHealth(float value)
 {
     m_maxHealth-=value;
 }
 
-void Character::setHealth(int health) {
+void Character::setHealth(float health) {
   m_health=health;
 }
 
-int Character::getHealth() const {
+float Character::getHealth() const {
   return m_health;
 }
 
-void Character::addToHealth(int value)
+void Character::addToHealth(float value)
 {
     m_health+=value;
 }
 
-void Character::substractToHealth(int value)
+void Character::substractToHealth(float value)
 {
     m_health-=value;
 }
 
-void Character::setArmor(int armor)
+void Character::setArmor(float armor)
 {
     m_armor=armor;
 }

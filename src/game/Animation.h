@@ -45,7 +45,7 @@ namespace game {
     void addFrame(sf::Texture *texture, const sf::IntRect& bounds, float duration);
 
     void update(float dt);
-    void renderAt(sf::RenderWindow& window, const sf::Vector2f& position, float angle = 0.0f) const;
+    void renderAt(sf::RenderWindow& window, const sf::Vector2f& position, float angle = 0.0f,sf::Vector2f scale = sf::Vector2f(1.0f, 1.0f)) const;
 
   private:
     struct Frame {

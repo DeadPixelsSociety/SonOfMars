@@ -59,23 +59,23 @@ public:
 
   static constexpr float ENEMY_WIDTH = 10.0f;
 
-    void setHealth(int health);
-    int getHealth() const;
-    void addToHealth(int value);
-    void substractToHealth(int value);
+    void setHealth(float health);
+    float getHealth() const;
+    void addToHealth(float value);
+    void substractToHealth(float value);
 
-    void setArmor(int armor);
-    int getArmor() const;
+    void setArmor(float armor);
+    float getArmor() const;
 
 private:
   b2Body *m_body;
   b2Vec2 m_target;
   game::EventManager& m_events;
   std::vector<Target *> m_targets;
-  int m_maxHealth;
-  int m_health;
-  int m_damage;
-  int m_armor;
+  float m_maxHealth;
+  float m_health;
+  float m_damage;
+  float m_armor;
   int m_goldGiven;
   float m_speed;
   float m_attackPeriod;

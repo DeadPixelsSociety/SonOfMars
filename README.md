@@ -27,6 +27,7 @@ For the current version, commands are:
 - Z/Q/S/D to move
 - F to enable/disable fullscreen
 - Escape to quit
-- Moving the cursor makes the character turn.
+- Moving the cursor makes the character turn
 - A to buy 1 max health for 5 Sesterces
-- E to buy 1 damage for 10 Sesterces
+- E to buy 1 damage for 20 Sesterces
+- R to buy 1 health regeneration over 10 second for 30 Sesterces

@@ -33,6 +33,7 @@
 #include "local/ContactListener.h"
 #include "local/Hud.h"
 #include "local/SFMLDebugDraw.h"
+#include "local/Stage.h"
 
 
 int main(void) {
@@ -52,9 +53,11 @@ int main(void) {
   // add cameras
   game::CameraManager cameras;
 
-  //game::FixedRatioCamera mainCamera(AREA_WIDTH, AREA_HEIGHT, {AREA_WIDTH * 0.5f, AREA_HEIGHT * 0.5f});
-  game::FlexibleCamera mainCamera(1000.0f, {AREA_WIDTH * 0.5f, AREA_HEIGHT * 0.5f});
-  cameras.addCamera(mainCamera);
+  // Events manager
+  game::EventManager events;
+
+  // Gestion des cameras
+  Stage stage(cameras, events, AREA_WIDTH, AREA_HEIGHT, 1000.0f);
 
   // add actions
   game::ActionManager actions;
@@ -100,8 +103,9 @@ int main(void) {
   buyMaxHealth.addKeyControl(sf::Keyboard::A);
   actions.addAction(buyMaxHealth);
 
-  // Events manager
-  game::EventManager events;
+  game::Action buyRegenValue("Buy Regen Value");
+  buyRegenValue.addKeyControl(sf::Keyboard::R);
+  actions.addAction(buyRegenValue);
 
   // resource manager
   game::ResourceManager resources;
@@ -119,7 +123,7 @@ int main(void) {
 
   game::EntityManager mainEntities;
 
-  Character character(b2_world, events, resources, mainCamera);
+  Character character(b2_world, events, resources);
   mainEntities.addEntity(character);
 
   Arena arena(b2_world, events, resources);
@@ -191,10 +195,18 @@ int main(void) {
     {
         character.buyMaxHealth();
     }
+    if (buyRegenValue.isActive())
+    {
+        character.buyRegenValue();
+    }
+    //changing zone
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::X)){
+      stage.togglePlace();
+    }
 
     character.setTarget( window.mapPixelToCoords(
       sf::Mouse::getPosition(window)
-      , mainCamera.getView()
+      , stage.getCurrentView()
     ) );
 
     // update
@@ -206,7 +218,7 @@ int main(void) {
     // render
     window.clear(sf::Color::White);
 
-    mainCamera.configure(window);
+    stage.configureCurrentCamera(window);
     mainEntities.render(window);
     b2_world.DrawDebugData();
 

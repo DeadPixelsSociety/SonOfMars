@@ -26,7 +26,7 @@
 static constexpr float WALL_TOP_SIZE = 192.0f * (AREA_WIDTH/3000.0f);
 static constexpr float WALL_SIDE_SIZE = 16.0f;
 
-static constexpr float SPAWN_PERIOD = 5.0f;
+static constexpr float SPAWN_PERIOD = 10.0f;
 
 static constexpr int MAX_ENEMIES_PER_WAVE = 10;
 static constexpr int INCREASE_ENEMY_POWER_RATE = 5; // every INCREASE_ENEMY_POWER_RATE, enemies will get more powerful
