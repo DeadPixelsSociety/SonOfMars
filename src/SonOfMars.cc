@@ -110,6 +110,10 @@ int main(void) {
   game::Action buyRegenValue("Buy Regen Value");
   buyRegenValue.addKeyControl(sf::Keyboard::R);
   actions.addAction(buyRegenValue);
+  
+  game::Action changeArena("Go Shop");
+  changeArena.addKeyControl(sf::Keyboard::X);
+  actions.addAction(changeArena);
 
   // resource manager
   game::ResourceManager resources;
@@ -207,7 +211,7 @@ int main(void) {
         character.buyRegenValue();
     }
     //changing zone
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::X)){
+    if(changeArena.isActive()){
       stage.togglePlace();
     }
 
