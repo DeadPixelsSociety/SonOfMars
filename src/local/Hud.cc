@@ -25,8 +25,9 @@
 #include "local/config.h"
 
 
-Hud::Hud(game::EventManager& events, game::ResourceManager& resources)
-: m_timeElapsed(0.0f)
+Hud::Hud(game::EventManager& events, game::ResourceManager& resources,game::WindowGeometry& geometry)
+: m_geometry(geometry)
+, m_timeElapsed(0.0f)
 , m_font(nullptr)
 , m_characterMaxHealth(0)
 , m_characterHealth(0)
@@ -34,21 +35,6 @@ Hud::Hud(game::EventManager& events, game::ResourceManager& resources)
 {
     m_font=resources.getFont("GRECOromanLubedWrestling.ttf");
     assert(m_font!=nullptr);
-    //Set the strings
-    std::string strHealth="Health: "+std::to_string(m_characterHealth)+"/"+std::to_string(m_characterMaxHealth);
-    std::string strGold="Sesterces: "+std::to_string(m_characterGold);
-    //Set the characteristics of m_strHealth
-    m_strHealth.setFont(*m_font);
-    m_strHealth.setString(strHealth);
-    m_strHealth.setCharacterSize(25);
-    m_strHealth.setColor(sf::Color::Red);
-    m_strHealth.setPosition(100.0f,0.0f);
-    //Set the characteristics of m_strExperience
-    m_strGold.setFont(*m_font);
-    m_strGold.setString(strGold);
-    m_strGold.setCharacterSize(25);
-    m_strGold.setColor(sf::Color::Green);
-    m_strGold.setPosition(350.0f,0.0f);
     // Register event
     events.registerHandler<CharacterStatsEvent>(&Hud::onCharacterStatsEvent, this);
 }
@@ -58,19 +44,39 @@ Hud::~Hud()
 }
 void Hud::update(const float dt)
 {
-    m_strHealth.setString("Health: "+std::to_string(m_characterHealth)+"/"+std::to_string(m_characterMaxHealth));
-    m_strGold.setString("Sesterces: "+std::to_string(m_characterGold));
 }
 void Hud::render(sf::RenderWindow& window)
 {
-    window.draw(m_strHealth);
-    window.draw(m_strGold);
+    sf::RectangleShape baseHud;
+    baseHud.setFillColor(sf::Color::Black);
+    baseHud.setPosition(sf::Vector2f(0.0f,0.0f));
+    baseHud.setSize({m_geometry.getXFromRight(0),m_geometry.getYRatio(0.05f,0.0f)});
+
+    sf::Text strHealth;
+    //Set the characteristics of strHealth
+    strHealth.setFont(*m_font);
+    strHealth.setCharacterSize(25);
+    strHealth.setColor(sf::Color::Red);
+    strHealth.setPosition(100.0f,0.0f);
+    strHealth.setString("Health: "+std::to_string(m_characterHealth)+"/"+std::to_string(m_characterMaxHealth));
+
+    sf::Text strGold;
+    //Set the characteristics of strGold
+    strGold.setFont(*m_font);
+    strGold.setCharacterSize(25);
+    strGold.setColor(sf::Color::Green);
+    strGold.setPosition(350.0f,0.0f);
+    strGold.setString("Sesterces: "+std::to_string(m_characterGold));
+
+    window.draw(baseHud);
+    window.draw(strHealth);
+    window.draw(strGold);
 }
 game::EventStatus Hud::onCharacterStatsEvent(game::EventType type, game::Event *event)
 {
     auto statsEvent = static_cast<CharacterStatsEvent *>(event);
 
-    m_characterHealth =statsEvent->characterHealth;
+    m_characterHealth = statsEvent->characterHealth;
     m_characterMaxHealth = statsEvent->characterMaxHealth;
     m_characterGold = statsEvent->characterGold;
 

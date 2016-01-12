@@ -10,7 +10,6 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
-
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -37,11 +36,13 @@ namespace game {
 
     void update(sf::Event& event);
 
-    float getXCentered(float w);
-    float getXFromRight(float x);
+    float getXCentered(float width);
+    float getXFromRight(float width);
+    float getXRatio(float r, float width);
 
-    float getYCentered(float h);
-    float getYFromBottom(float y);
+    float getYCentered(float height);
+    float getYFromBottom(float height);
+    float getYRatio(float r, float height);
 
     sf::Vector2f getCornerPosition(const sf::Vector2f& pos);
 

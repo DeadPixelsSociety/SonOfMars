@@ -144,15 +144,15 @@ void Enemy::render(sf::RenderWindow& window) {
   sf::RectangleShape healthRect({ENEMY_WIDTH * 4.0f, 6.0f});
   const float healthPercent = (float)m_health/(float)m_maxHealth;
 
-  // Red part
+  // Green part
   healthRect.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER - 2*ENEMY_WIDTH, b2_pos.y * BOX2D_PIXELS_PER_METER - 2 * ENEMY_WIDTH);
   healthRect.setScale(healthPercent, 1.0f);
-  healthRect.setFillColor(sf::Color(200, 0, 0, 128));
+  healthRect.setFillColor(sf::Color(0, 200, 0, 128));
   window.draw(healthRect);
-  // Green part
+  // Red part
   healthRect.setPosition(b2_pos.x * BOX2D_PIXELS_PER_METER + ENEMY_WIDTH * (4.0f * healthPercent - 2.0f), b2_pos.y * BOX2D_PIXELS_PER_METER - 2 * ENEMY_WIDTH);
   healthRect.setScale(1.0f - (float)m_health/(float)m_maxHealth, 1.0f);
-  healthRect.setFillColor(sf::Color(0, 200, 0, 128));
+  healthRect.setFillColor(sf::Color(200, 0, 0, 128));
   window.draw(healthRect);
 
 }

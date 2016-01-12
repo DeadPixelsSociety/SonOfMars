@@ -22,6 +22,7 @@
 #include <game/Entity.h>
 #include <game/EventManager.h>
 #include <game/ResourceManager.h>
+#include <game/WindowGeometry.h>
 
 #include "Character.h"
 #include "Game.h"
@@ -29,14 +30,13 @@
 class Hud: public game::Entity
 {
     public:
-        Hud(game::EventManager& events, game::ResourceManager& resource);
+        Hud(game::EventManager& events, game::ResourceManager& resource,game::WindowGeometry& geometry);
         virtual ~Hud();
         virtual void update(const float dt) override;
         virtual void render(sf::RenderWindow& window) override;
         game::EventStatus onCharacterStatsEvent(game::EventType type, game::Event *event);
     private:
-        sf::Text m_strHealth;
-        sf::Text m_strGold;
+        game::WindowGeometry &m_geometry;
         float m_timeElapsed;
         sf::Font *m_font;
         int m_characterMaxHealth;

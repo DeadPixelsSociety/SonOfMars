@@ -49,9 +49,13 @@ int main(void) {
   sf::RenderWindow window;
   settings.applyTo(window);
   window.setKeyRepeatEnabled(false);
+  /*settings.toggleFullscreen();
+  settings.applyTo(window);*/
 
   // add cameras
   game::CameraManager cameras;
+  game::HeadsUpCamera hudCam(window);
+  cameras.addCamera(hudCam);
 
   // Events manager
   game::EventManager events;
@@ -132,8 +136,11 @@ int main(void) {
   EnemyManager enemies(b2_world, events);
   mainEntities.addEntity(enemies);
 
-  Hud hud(events, resources);
-  mainEntities.addEntity(hud);
+
+  game::EntityManager HudEntities;
+
+  Hud hud(events, resources, geometry);
+  HudEntities.addEntity(hud);
 
   // main loop
   game::Clock clock;
@@ -214,13 +221,15 @@ int main(void) {
     auto dt = elapsed.asSeconds();
     mainEntities.update(dt);
     b2_world.Step(dt, 8, 3);
-
+    HudEntities.update(dt);
     // render
     window.clear(sf::Color::White);
 
     stage.configureCurrentCamera(window);
     mainEntities.render(window);
     b2_world.DrawDebugData();
+    hudCam.configure(window);
+    HudEntities.render(window);
 
     window.display();
 

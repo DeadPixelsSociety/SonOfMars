@@ -10,7 +10,6 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
-
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -32,22 +31,32 @@ namespace game {
     m_height = static_cast<float>(event.size.height);
   }
 
-  float WindowGeometry::getXCentered(float w) {
-    return m_width / 2 - w / 2;
+
+  float WindowGeometry::getXCentered(float width) {
+    return getXRatio(0.5f, width);
   }
 
-  float WindowGeometry::getXFromRight(float x) {
-    return m_width - x;
+  float WindowGeometry::getXFromRight(float width) {
+    return m_width - width;
+  }
+
+  float WindowGeometry::getXRatio(float r, float width) {
+    return m_width * r - width / 2;
   }
 
 
-  float WindowGeometry::getYCentered(float h) {
-    return m_height / 2 - h / 2;
+  float WindowGeometry::getYCentered(float height) {
+    return getYRatio(0.5f, height);
   }
 
-  float WindowGeometry::getYFromBottom(float y) {
-    return m_height - y;
+  float WindowGeometry::getYFromBottom(float height) {
+    return m_height - height;
   }
+
+  float WindowGeometry::getYRatio(float r, float height) {
+    return m_height * r - height / 2;
+  }
+
 
   sf::Vector2f WindowGeometry::getCornerPosition(const sf::Vector2f& pos) {
     float x = pos.x > 0 ? pos.x : m_width + pos.x;
