@@ -267,13 +267,13 @@ void Arena::spawnEnemy(game::Random &random)
             event.pos = sf::Vector2f(42.0f, 42.0f);
             break;
         case 1:
-            event.pos = sf::Vector2f(800.0f-42.0f, 42.0f);
+            event.pos = sf::Vector2f(AREA_WIDTH-42.0f, 42.0f);
             break;
         case 2:
-            event.pos = sf::Vector2f(42.0f, 600.0f-42.0f);
+            event.pos = sf::Vector2f(42.0f, AREA_HEIGHT-42.0f);
             break;
         default:
-            event.pos = sf::Vector2f(800.0f-42.0f, 600.0f-42.0f);
+            event.pos = sf::Vector2f(AREA_WIDTH-42.0f, AREA_HEIGHT-42.0f);
     }
     m_events.triggerEvent(&event);
 }
