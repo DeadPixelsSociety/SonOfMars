@@ -1,8 +1,6 @@
 # TODO
 - Passage en 16:9
-- HUD via TAB
-  - HUD display stats
-  - Background noir avec transparence
+- HUD display stats
 - Barre de vie pour le joueur
 - Trouver un nom au perso ?
   - Entre vague, salle magasin

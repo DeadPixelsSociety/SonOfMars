@@ -35,6 +35,7 @@ class Hud: public game::Entity
         virtual void update(const float dt) override;
         virtual void render(sf::RenderWindow& window) override;
         game::EventStatus onCharacterStatsEvent(game::EventType type, game::Event *event);
+        void switchDisplay();
     private:
         game::WindowGeometry &m_geometry;
         float m_timeElapsed;
@@ -42,5 +43,6 @@ class Hud: public game::Entity
         int m_characterMaxHealth;
         int m_characterHealth;
         int m_characterGold;
+        bool m_display;
 };
 #endif //HUD_H

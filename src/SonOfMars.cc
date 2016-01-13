@@ -110,10 +110,14 @@ int main(void) {
   game::Action buyRegenValue("Buy Regen Value");
   buyRegenValue.addKeyControl(sf::Keyboard::R);
   actions.addAction(buyRegenValue);
-  
+
   game::Action changeArena("Go Shop");
   changeArena.addKeyControl(sf::Keyboard::X);
   actions.addAction(changeArena);
+
+  game::Action switchDisplayHud("Switch Display Hud");
+  switchDisplayHud.addKeyControl(sf::Keyboard::Tab);
+  actions.addAction(switchDisplayHud);
 
   // resource manager
   game::ResourceManager resources;
@@ -210,9 +214,16 @@ int main(void) {
     {
         character.buyRegenValue();
     }
+
     //changing zone
     if(changeArena.isActive()){
       stage.togglePlace();
+    }
+
+    //switch the display of the hud
+    if(switchDisplayHud.isActive())
+    {
+        hud.switchDisplay();
     }
 
     character.setTarget( window.mapPixelToCoords(
