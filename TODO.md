@@ -1,16 +1,18 @@
 # TODO
-- Passage en 16:9
 - HUD display stats
-- Barre de vie pour le joueur
 - Trouver un nom au perso ?
-  - Entre vague, salle magasin
+- Entre vague, salle magasin
+  - Faire la map
+  - Gérer la transition proprement
+  - Gérer le marchant
+  - Gérer la sortie
 - Attaque spéciale avec CTRL, SHIFT, CLIC DROIT, ESPACE
   - Pour le moment, un attaque spécial lance un sort unique
 - Gérer complètement la vue iso
 - UPGRADE IA !
   - Nouvelle stratégie
   - Pas de pogo
-- Scrolling
-  - Mini map
+- Mini map
 - Meilleur gestion de l'apparition des mobs
 - Attaque en étant immobile seulement
+- Trello
