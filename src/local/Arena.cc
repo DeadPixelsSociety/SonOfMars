@@ -263,17 +263,17 @@ void Arena::spawnEnemy(game::Random &random)
     event.multiplier=(m_waveNumber/INCREASE_ENEMY_POWER_RATE)+1;
     switch (random.computeUniformInteger(0,3))
     {
-        case 0:
-            event.pos = sf::Vector2f(42.0f, 42.0f);
+        case 0: //upper left corner
+            event.pos = sf::Vector2f(WALL_SIDE_SIZE + 50, WALL_TOP_SIZE);
             break;
-        case 1:
-            event.pos = sf::Vector2f(AREA_WIDTH-42.0f, 42.0f);
+        case 1: //upper right corner
+            event.pos = sf::Vector2f(AREA_WIDTH - WALL_SIDE_SIZE - 50, WALL_TOP_SIZE);
             break;
-        case 2:
-            event.pos = sf::Vector2f(42.0f, AREA_HEIGHT-42.0f);
+        case 2: //lower left corner
+            event.pos = sf::Vector2f(WALL_SIDE_SIZE + 50, AREA_HEIGHT - WALL_TOP_SIZE/2);
             break;
-        default:
-            event.pos = sf::Vector2f(AREA_WIDTH-42.0f, AREA_HEIGHT-42.0f);
+        default: //lower right corner
+            event.pos = sf::Vector2f(AREA_WIDTH - WALL_SIDE_SIZE - 50, AREA_HEIGHT - WALL_TOP_SIZE/2);
     }
     m_events.triggerEvent(&event);
 }
