@@ -48,6 +48,10 @@ struct CharacterStatsEvent : public game::Event {
   int characterHealth;
   int characterMaxHealth;
   int characterGold;
+  int characterDamage;
+  int characterArmor;
+  int characterRegenValue;
+  int characterRegenRate;
 };
 
 struct EnemyDeathEvent : public game::Event {

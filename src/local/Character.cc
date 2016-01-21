@@ -237,6 +237,10 @@ void Character::update(const float dt) {
   statsEvent.characterHealth=(int)m_health;
   statsEvent.characterMaxHealth=(int)m_maxHealth;
   statsEvent.characterGold=m_gold;
+  statsEvent.characterDamage=(int)m_damage;
+  statsEvent.characterArmor=(int)m_armor;
+  statsEvent.characterRegenValue=(int)m_regenerationValue;
+  statsEvent.characterRegenRate=(int)m_regenerationRate;
   m_events.triggerEvent(&statsEvent);
 
   // The player regenerate health over time

@@ -43,6 +43,10 @@ class Hud: public game::Entity
         int m_characterMaxHealth;
         int m_characterHealth;
         int m_characterGold;
+        int m_characterDamage;
+        int m_characterArmor;
+        int m_characterRegenValue;
+        int m_characterRegenRate;
         bool m_display;
 };
 #endif //HUD_H
