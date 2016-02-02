@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <iostream>
 
 #include "Arena.h"
 
@@ -28,7 +29,7 @@ static constexpr float WALL_SIDE_SIZE = 16.0f;
 
 static constexpr float SPAWN_PERIOD = 10.0f;
 
-static constexpr int MAX_ENEMIES_PER_WAVE = 10;
+static constexpr int MIN_ENEMIES_PER_WAVE = 3;
 static constexpr int INCREASE_ENEMY_POWER_RATE = 5; // every INCREASE_ENEMY_POWER_RATE, enemies will get more powerful
 
 Arena::Arena(b2World &b2_world, game::EventManager& events, game::ResourceManager &resources)
@@ -233,7 +234,8 @@ void Arena::update(const float dt)
     game::Random random;
     if(m_enemyCounter<=0)
     {
-        m_enemyCounter=random.computeUniformInteger(1,MAX_ENEMIES_PER_WAVE);
+        m_enemyCounter=random.computeUniformInteger(MIN_ENEMIES_PER_WAVE + m_waveNumber, MIN_ENEMIES_PER_WAVE * (m_waveNumber + 1));
+        std::cout << m_enemyCounter << std::endl;
     }
     spawnEnemy(random);
     m_enemyCounter--;
@@ -261,19 +263,30 @@ void Arena::spawnEnemy(game::Random &random)
     // Make the new ennemy spawn randomly near one of the corners
     SpawnMobEvent event;
     event.multiplier=(m_waveNumber/INCREASE_ENEMY_POWER_RATE)+1;
+    
+    //m_view = window.getDefaultView();
+    
+    const int UPPER_LEFT_X = WALL_SIDE_SIZE + 50;
+    const int UPPER_LEFT_Y = WALL_TOP_SIZE;
+    const int UPPER_RIGHT_X = AREA_WIDTH - WALL_SIDE_SIZE - 50;
+    const int UPPER_RIGHT_Y = WALL_TOP_SIZE;
+    const int LOWER_LEFT_X = WALL_SIDE_SIZE + 50;
+    const int LOWER_LEFT_Y = AREA_HEIGHT - WALL_TOP_SIZE/2;
+    const int LOWER_RIGHT_X = AREA_WIDTH - WALL_SIDE_SIZE - 50;
+    const int LOWER_RIGHT_Y = AREA_HEIGHT - WALL_TOP_SIZE/2;
     switch (random.computeUniformInteger(0,3))
     {
         case 0: //upper left corner
-            event.pos = sf::Vector2f(WALL_SIDE_SIZE + 50, WALL_TOP_SIZE);
+            event.pos = sf::Vector2f(UPPER_LEFT_X, UPPER_LEFT_Y);
             break;
         case 1: //upper right corner
-            event.pos = sf::Vector2f(AREA_WIDTH - WALL_SIDE_SIZE - 50, WALL_TOP_SIZE);
+            event.pos = sf::Vector2f(UPPER_RIGHT_X, UPPER_RIGHT_Y);
             break;
         case 2: //lower left corner
-            event.pos = sf::Vector2f(WALL_SIDE_SIZE + 50, AREA_HEIGHT - WALL_TOP_SIZE/2);
+            event.pos = sf::Vector2f(LOWER_LEFT_X, LOWER_LEFT_Y);
             break;
         default: //lower right corner
-            event.pos = sf::Vector2f(AREA_WIDTH - WALL_SIDE_SIZE - 50, AREA_HEIGHT - WALL_TOP_SIZE/2);
+            event.pos = sf::Vector2f(LOWER_RIGHT_X, LOWER_RIGHT_Y);
     }
     m_events.triggerEvent(&event);
 }
