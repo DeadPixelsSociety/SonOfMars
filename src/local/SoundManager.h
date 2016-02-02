@@ -20,23 +20,43 @@
 #ifndef SOUND_MANAGER_H
 #define SOUND_MANAGER_H
 
+#include <iostream>
+
+#include <map>
+#include <string>
+
 #include <game/EventManager.h>
 #include <game/ResourceManager.h>
 
 #include <SFML/Audio.hpp>
+#include <boost/filesystem.hpp>
+
+#include "Game.h"
 
 
 class SoundManager {
 public:
   SoundManager(game::EventManager& events, game::ResourceManager &resources);
 
+  // Tools (most used inside)
+  bool initSound(std::string name, const boost::filesystem::path& path, float volume = 25.0f, bool loop = false);
+  float setVol(std::string name, float newVolume);
+
+  bool play(std::string name);
+  bool replay(std::string name);
+
+  // Events handlers
   game::EventStatus onCharacterHitEnemy(game::EventType type, game::Event *event);
+  game::EventStatus onCharacterDie(game::EventType type, game::Event *event);
 
 private:
   game::EventManager& m_events;
+  game::ResourceManager& m_res;
+  bool m_muted;
 
   // Sounds
-  sf::Sound m_hitEnemySound
+  std::map<std::string, sf::Sound> m_sounds;
+  sf::Sound m_hitEnemySound;
 
 };
 

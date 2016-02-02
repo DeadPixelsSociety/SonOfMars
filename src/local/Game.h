@@ -62,6 +62,12 @@ struct EnemyDeathEvent : public game::Event {
 // Sound-specific events
 struct CharacterHitEnemyEvent : public game::Event {
   static const game::EventType type = "CharacterHitEnemyEvent"_type;
+  int numberOfHits;
+  // bools or enums or ints to pass kinds of enemies (with metal armor…)
+};
+
+struct CharacterDeathEvent : public game::Event {
+  static const game::EventType type = "CharacterDeathEvent"_type;
 };
 
 #endif // LOCAL_GAME_H

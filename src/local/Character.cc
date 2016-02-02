@@ -147,39 +147,39 @@ void Character::update(const float dt) {
   // Manage the move
   b2Vec2 b2_velocity = m_body->GetLinearVelocity();
   if (m_verticalDirection == Direction::UP) {
-		if (m_horizontalDirection == Direction::RIGHT) {
-			b2_velocity.y = -VELOCITY_STEP * sin(M_PI/4);
-			b2_velocity.x = +VELOCITY_STEP * cos(M_PI/4);
-		}else if (m_horizontalDirection == Direction::LEFT) {
-			b2_velocity.y = -VELOCITY_STEP * sin(M_PI/4);
-			b2_velocity.x = -VELOCITY_STEP * cos(M_PI/4);
-		}else{
-    		b2_velocity.y = -VELOCITY_STEP;
-			b2_velocity.x = 0.0f;
-		}
+    if (m_horizontalDirection == Direction::RIGHT) {
+      b2_velocity.y = -VELOCITY_STEP * sin(M_PI/4);
+      b2_velocity.x = +VELOCITY_STEP * cos(M_PI/4);
+    }else if (m_horizontalDirection == Direction::LEFT) {
+      b2_velocity.y = -VELOCITY_STEP * sin(M_PI/4);
+      b2_velocity.x = -VELOCITY_STEP * cos(M_PI/4);
+    }else{
+        b2_velocity.y = -VELOCITY_STEP;
+      b2_velocity.x = 0.0f;
+    }
   }else if (m_verticalDirection == Direction::DOWN) {
-		if (m_horizontalDirection == Direction::RIGHT) {
-			b2_velocity.y = +VELOCITY_STEP * sin(M_PI/4);
-			b2_velocity.x = +VELOCITY_STEP * cos(M_PI/4);
-		}else if (m_horizontalDirection == Direction::LEFT) {
-			b2_velocity.y = +VELOCITY_STEP * sin(M_PI/4);
-			b2_velocity.x = -VELOCITY_STEP * cos(M_PI/4);
-		}else{
-			b2_velocity.y = +VELOCITY_STEP;
-			b2_velocity.x = 0.0f;
-		}
-	}else {
-		if (m_horizontalDirection == Direction::RIGHT) {
-			b2_velocity.y = 0.0f;
-    		b2_velocity.x = +VELOCITY_STEP;
-  		}else if (m_horizontalDirection == Direction::LEFT) {
-			b2_velocity.y = 0.0f;
-    		b2_velocity.x = -VELOCITY_STEP;
-  		}else{
-    		b2_velocity.y = 0.0f;
-			b2_velocity.x = 0.0f;
-  		}
-	}
+    if (m_horizontalDirection == Direction::RIGHT) {
+      b2_velocity.y = +VELOCITY_STEP * sin(M_PI/4);
+      b2_velocity.x = +VELOCITY_STEP * cos(M_PI/4);
+    }else if (m_horizontalDirection == Direction::LEFT) {
+      b2_velocity.y = +VELOCITY_STEP * sin(M_PI/4);
+      b2_velocity.x = -VELOCITY_STEP * cos(M_PI/4);
+    }else{
+      b2_velocity.y = +VELOCITY_STEP;
+      b2_velocity.x = 0.0f;
+    }
+  }else {
+    if (m_horizontalDirection == Direction::RIGHT) {
+      b2_velocity.y = 0.0f;
+        b2_velocity.x = +VELOCITY_STEP;
+      }else if (m_horizontalDirection == Direction::LEFT) {
+      b2_velocity.y = 0.0f;
+        b2_velocity.x = -VELOCITY_STEP;
+      }else{
+        b2_velocity.y = 0.0f;
+      b2_velocity.x = 0.0f;
+      }
+  }
 
   // Apply the move
   m_body->SetLinearVelocity(b2_velocity);
@@ -334,11 +334,17 @@ void Character::simpleAttack()
 {
     if(m_timeElapsedAttack>=m_attackPeriod)
     {
-        for (Enemy* enemy: m_visibleEnemies)
-        {
-            enemy->substractToHealth((m_damage-enemy->getArmor()));
+        if (m_visibleEnemies.size()) {
+          for (Enemy* enemy: m_visibleEnemies)
+          {
+              enemy->substractToHealth((m_damage-enemy->getArmor()));
+          }
+          m_timeElapsedAttack-=m_attackPeriod;
+          
+          CharacterHitEnemyEvent hitEnemyEvent;
+          hitEnemyEvent.numberOfHits = m_visibleEnemies.size();
+          m_events.triggerEvent(&hitEnemyEvent);
         }
-        m_timeElapsedAttack-=m_attackPeriod;
     }
 }
 
@@ -445,6 +451,9 @@ void Character::lostEnemy(Enemy* enemy) {
 
 void Character::death()
 {
+  CharacterDeathEvent deathEvent;
+  m_events.triggerEvent(&deathEvent);
+
   m_body->GetWorld()->DestroyBody(m_body);
   kill();
 }
