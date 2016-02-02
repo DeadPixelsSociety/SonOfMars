@@ -59,4 +59,9 @@ struct EnemyDeathEvent : public game::Event {
   int givenGold;
 };
 
+// Sound-specific events
+struct CharacterHitEnemyEvent : public game::Event {
+  static const game::EventType type = "CharacterHitEnemyEvent"_type;
+};
+
 #endif // LOCAL_GAME_H
