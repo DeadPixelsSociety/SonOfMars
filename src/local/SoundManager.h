@@ -23,16 +23,19 @@
 #include <iostream>
 
 #include <map>
+#include <vector>
 #include <string>
 
 #include <game/EventManager.h>
 #include <game/ResourceManager.h>
+#include <game/Random.h>
 
 #include <SFML/Audio.hpp>
 #include <boost/filesystem.hpp>
 
 #include "Game.h"
 
+typedef std::vector<std::string> SoundList;
 
 class SoundManager {
 public:
@@ -44,19 +47,22 @@ public:
 
   bool play(std::string name);
   bool replay(std::string name);
+  bool playRandom(SoundList list);
+  bool stop(std::string name);
 
   // Events handlers
   game::EventStatus onCharacterHitEnemy(game::EventType type, game::Event *event);
+  game::EventStatus onEnemyHitCharacter(game::EventType type, game::Event *event);
   game::EventStatus onCharacterDie(game::EventType type, game::Event *event);
+  game::EventStatus onEnemyDie(game::EventType type, game::Event *event);
+  game::EventStatus onCharacterMove(game::EventType type, game::Event *event);
 
 private:
   game::EventManager& m_events;
   game::ResourceManager& m_res;
-  bool m_muted;
+  game::Random m_rand;
 
-  // Sounds
   std::map<std::string, sf::Sound> m_sounds;
-  sf::Sound m_hitEnemySound;
 
 };
 

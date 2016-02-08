@@ -66,8 +66,21 @@ struct CharacterHitEnemyEvent : public game::Event {
   // bools or enums or ints to pass kinds of enemies (with metal armor…)
 };
 
+struct EnemyHitCharacterEvent : public game::Event {
+  static const game::EventType type = "EnemyHitCharacterEvent"_type;
+  int damages;
+};
+
 struct CharacterDeathEvent : public game::Event {
   static const game::EventType type = "CharacterDeathEvent"_type;
+};
+
+// EnemyDeathEvent already defined
+
+struct CharacterMovementEvent : public game::Event {
+  static const game::EventType type = "CharacterMovementEvent"_type;
+  bool moves;
+  // Maybe send speed to set pitch
 };
 
 #endif // LOCAL_GAME_H

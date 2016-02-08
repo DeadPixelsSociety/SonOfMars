@@ -64,7 +64,6 @@ target_link_libraries(son-of-mars
 install(
   DIRECTORY "${CMAKE_SOURCE_DIR}/share/son-of-mars"
   DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/games"
-  PATTERN "Bruitages" EXCLUDE # This folder will get removed later
 )
 
 install(

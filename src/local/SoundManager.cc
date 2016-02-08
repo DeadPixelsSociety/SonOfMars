@@ -22,21 +22,22 @@
 SoundManager::SoundManager(game::EventManager& events, game::ResourceManager &resources)
 : m_events(events)
 , m_res(resources)
-, m_muted(false)
+, m_rand()
 {
   // Load resources
-  // auto buffer = resources.getSoundBuffer("sounds/hit_enemy.wav");
-  // m_hitEnemySound.setBuffer(*buffer);
-  // m_hitEnemySound.setLoop(false);
-  // m_hitEnemySound.setVolume(25.0f);
-  initSound("hit_enemy", "sounds/hit_enemy.wav");
+  initSound("hit_enemy", "sounds/hit_enemy_metallic.wav");
+  initSound("hit_player", "sounds/hit_player_1.wav");
   initSound("player_die_1", "sounds/player_death_1.wav", 50.0f);
   initSound("player_die_2", "sounds/player_death_2.wav");
-  
+  initSound("enemy_die_1", "sounds/enemy_death_1.wav");
+  initSound("player_walk", "sounds/player_walk.wav", 25.0f, true);
 
   // Register events
   events.registerHandler<CharacterHitEnemyEvent>(&SoundManager::onCharacterHitEnemy, this);
+  events.registerHandler<EnemyHitCharacterEvent>(&SoundManager::onEnemyHitCharacter, this);
   events.registerHandler<CharacterDeathEvent>(&SoundManager::onCharacterDie, this);
+  events.registerHandler<EnemyDeathEvent>(&SoundManager::onEnemyDie, this);
+  events.registerHandler<CharacterMovementEvent>(&SoundManager::onCharacterMove, this);
 
 }
 
@@ -60,7 +61,7 @@ float SoundManager::setVol(std::string name, float newVolume) {
   float oldVolume;
   auto it = m_sounds.find(name);
   if (it == m_sounds.end()) {
-    return -1;
+    return -1.0f;
   }
 
   oldVolume = it->second.getVolume();
@@ -72,22 +73,32 @@ float SoundManager::setVol(std::string name, float newVolume) {
 bool SoundManager::play(std::string name) {
   auto it = m_sounds.find(name);
   if (it == m_sounds.end() || it->second.getStatus() == sf::SoundSource::Status::Playing) {
-    std::cout << "Unable to play " << name << std::endl;
     return false;
   }
   it->second.play();
-  std::cout << "Playing " << name << std::endl;
   return true;
 }
 
 bool SoundManager::replay(std::string name) {
   auto it = m_sounds.find(name);
   if (it == m_sounds.end()) {
-    std::cout << "Unable to play " << name << std::endl;
     return false;
   }
   it->second.play();
-  std::cout << "Playing " << name << std::endl;
+  return true;
+}
+
+bool SoundManager::playRandom(SoundList list) {
+  return play(list[ m_rand.computeUniformInteger(0, list.size()-1) ]);
+}
+
+
+bool SoundManager::stop(std::string name) {
+  auto it = m_sounds.find(name);
+  if (it == m_sounds.end()) {
+    return false;
+  }
+  it->second.stop();
   return true;
 }
 
@@ -109,9 +120,41 @@ game::EventStatus SoundManager::onCharacterHitEnemy(game::EventType type, game::
   return game::EventStatus::KEEP;
 }
 
+game::EventStatus SoundManager::onEnemyHitCharacter(game::EventType type, game::Event *event) {
+  auto hitEvent = static_cast<EnemyHitCharacterEvent *>(event);
+  float addedVolume = hitEvent->damages*5.0f;
+  
+  if(addedVolume > 75.0f)
+    setVol("hit_player", 100.0f);
+  else
+    setVol("hit_player", 25.0f + addedVolume);
+    
+  play("hit_player");
+  
+  return game::EventStatus::KEEP;
+}
+
 game::EventStatus SoundManager::onCharacterDie(game::EventType type, game::Event *event) {
-  play("player_die_1");
-  // play("player_die_2");
+  stop("player_walk"); // The Walking Dead *goes out*
+  stop("hit_player");
+  playRandom(SoundList({"player_die_1", "player_die_2"}));
+  
+  return game::EventStatus::KEEP;
+}
+
+game::EventStatus SoundManager::onEnemyDie(game::EventType type, game::Event *event) {
+  play("enemy_die_1");
+  
+  return game::EventStatus::KEEP;
+}
+
+game::EventStatus SoundManager::onCharacterMove(game::EventType type, game::Event *event) {
+  auto moveEvent = static_cast<CharacterMovementEvent *>(event);
+  if(moveEvent->moves) {
+    play("player_walk");
+  } else {
+    stop("player_walk");
+  }
   
   return game::EventStatus::KEEP;
 }

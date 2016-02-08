@@ -243,6 +243,11 @@ void Character::update(const float dt) {
   statsEvent.characterRegenRate=(int)m_regenerationRate;
   m_events.triggerEvent(&statsEvent);
 
+  // Trigger movement event
+  CharacterMovementEvent moveEvent;
+  moveEvent.moves = b2_velocity.x || b2_velocity.y;
+  m_events.triggerEvent(&moveEvent);
+
   // The player regenerate health over time
   m_health+=((m_regenerationValue/m_regenerationRate)*dt);
 
@@ -409,6 +414,9 @@ void Character::addToHealth(float value)
 void Character::substractToHealth(float value)
 {
     m_health-=value;
+    EnemyHitCharacterEvent hitEvent;
+    hitEvent.damages = value;
+    m_events.triggerEvent(&hitEvent);
 }
 
 void Character::setArmor(float armor)
