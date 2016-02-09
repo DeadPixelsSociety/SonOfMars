@@ -42,9 +42,17 @@ void EnemyManager::update(const float dt) {
     return b->distanceFromCharacter() > a->distanceFromCharacter();
   });
 
-  for (auto enemy : m_enemies) {
-    if (enemy->isAlive()) {
-      enemy->update(dt);
+  // The first 10
+  for (unsigned i = 0; i < 10 && i < m_enemies.size(); ++i) {
+    if (m_enemies[i]->isAlive()) {
+      m_enemies[i]->update(dt, Enemy::ActionType::ATTACK);
+    }
+  }
+
+  // the others
+  for (unsigned i = 10; i < m_enemies.size(); ++i) {
+    if (m_enemies[i]->isAlive()) {
+      m_enemies[i]->update(dt, Enemy::ActionType::CIRCLE);
     }
   }
 }

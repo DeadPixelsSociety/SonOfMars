@@ -46,7 +46,8 @@ Enemy::Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f positio
 , m_goldGiven(BASIC_GOLD*multiplier)
 , m_speed(BASIC_SPEED+(multiplier/10.0f))
 , m_attackPeriod(BASIC_ATTACKPERIOD-(multiplier/10.0f))
-, m_timeElapsed(BASIC_ATTACKPERIOD-1.0f) {
+, m_timeElapsed(BASIC_ATTACKPERIOD-1.0f)
+, m_action(ATTACK) {
   // Set the initial position
   b2BodyDef b2_bodyDef;
   b2_bodyDef.type = b2_dynamicBody;
@@ -84,11 +85,29 @@ Enemy::~Enemy() {
   }
 }
 
-void Enemy::update(const float dt) {
-    m_timeElapsed += dt;
+void Enemy::update(const float dt, const ActionType action) {
+  m_timeElapsed += dt;
+
+  // Define target
+  m_action = action;
+  //b2Vec2 dir = m_target - m_body->GetPosition();
+  b2Vec2 dir;
+  switch (m_action) {
+    case ATTACK: 
+      dir = m_target - m_body->GetPosition();
+      break;
+
+    case CIRCLE:
+      dir = {1.0f, 1.0f};
+      break;
+
+    case RETREAT:
+      dir = -1 * (m_target - m_body->GetPosition());
+      break;
+  }
+
   // Manage the move
   // Compute enemy's rotation
-  b2Vec2 dir = m_target - m_body->GetPosition();
   float norm = std::hypot(dir.x, dir.y);
   m_body->SetTransform(m_body->GetPosition(),
     (( dir.y < 0 ) ? -1 : 1) * acos( dir.x/norm) );
@@ -100,21 +119,21 @@ void Enemy::update(const float dt) {
 
     if(m_timeElapsed>=m_attackPeriod)
     {
-        //Manage the attacks
-        if(!m_visibleCharacter.empty())
-        {
-            this->simpleAttack();
-        }
-        m_timeElapsed-=m_attackPeriod;
+      //Manage the attacks
+      if(!m_visibleCharacter.empty())
+      {
+        this->simpleAttack();
+      }
+      m_timeElapsed-=m_attackPeriod;
     }
     //check if the enemy has health>0
     if(m_health<=0)
     {
-        // Trigger death event
-        EnemyDeathEvent deathEvent;
-        deathEvent.givenGold=m_goldGiven;
-        m_events.triggerEvent(&deathEvent);
-        this->death();
+      // Trigger death event
+      EnemyDeathEvent deathEvent;
+      deathEvent.givenGold=m_goldGiven;
+      m_events.triggerEvent(&deathEvent);
+      this->death();
     }
 }
 

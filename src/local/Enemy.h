@@ -32,10 +32,15 @@
 class Character;
 
 class Enemy: public game::Entity {
-
+public:
+  enum ActionType {
+    ATTACK,
+    CIRCLE,
+    RETREAT,
+  };
 
 public:
-  Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f position,float multiplier);
+  Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f position, float multiplier);
 
   Enemy(const Enemy&) = delete;
   Enemy& operator=(const Enemy&) = delete;
@@ -45,7 +50,7 @@ public:
 
   virtual ~Enemy();
 
-  virtual void update(const float dt) override;
+  virtual void update(const float dt, const ActionType action);
   virtual void render(sf::RenderWindow& window) override;
 
   void death();
@@ -80,6 +85,7 @@ private:
   float m_attackPeriod;
   float m_timeElapsed;
   std::set<Character *> m_visibleCharacter;
+  ActionType m_action;
 };
 
 #endif //ENEMY_H
