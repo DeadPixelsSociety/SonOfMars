@@ -50,8 +50,6 @@ public:
 
   void death();
 
-  // Events
-  game::EventStatus onCharacterLocationEvent(game::EventType type, game::Event *event);
   void simpleAttack();
 
   void acquiredCharacter(Character* character);
@@ -59,13 +57,14 @@ public:
 
   static constexpr float ENEMY_WIDTH = 10.0f;
 
-    void setHealth(float health);
-    float getHealth() const;
-    void addToHealth(float value);
-    void substractToHealth(float value);
-
-    void setArmor(float armor);
-    float getArmor() const;
+  void setHealth(float health);
+  float getHealth() const;
+  void addToHealth(float value);
+  void substractToHealth(float value);
+  void setArmor(float armor);
+  float getArmor() const;
+  void setCharacterLocation(const b2Vec2 &pos);
+  float distanceFromCharacter() const;
 
 private:
   b2Body *m_body;

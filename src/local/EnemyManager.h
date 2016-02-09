@@ -46,6 +46,7 @@ public:
   virtual void render(sf::RenderWindow& window) override;
 
   game::EventStatus onSpawnMobEvent(game::EventType type, game::Event *event);
+  game::EventStatus onCharacterLocationEvent(game::EventType type, game::Event *event);
 
 private:
   std::vector<Enemy*> m_enemies;

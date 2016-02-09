@@ -35,7 +35,7 @@ static constexpr float BASIC_SPEED = 3.0f;
 static constexpr float BASIC_ATTACKPERIOD = 3.0f;
 static constexpr float DEGTORAD = M_PI / 180.0f;
 
-Enemy::Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f position,float multiplier)
+Enemy::Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f position, float multiplier)
 : m_body(nullptr)
 , m_target({0.0f, 0.0f})
 , m_events(events)
@@ -46,11 +46,7 @@ Enemy::Enemy(b2World &b2_world, game::EventManager& events, sf::Vector2f positio
 , m_goldGiven(BASIC_GOLD*multiplier)
 , m_speed(BASIC_SPEED+(multiplier/10.0f))
 , m_attackPeriod(BASIC_ATTACKPERIOD-(multiplier/10.0f))
-, m_timeElapsed(BASIC_ATTACKPERIOD-1.0f)
- {
-  // Register events trigger
-  events.registerHandler<CharacterLocationEvent>(&Enemy::onCharacterLocationEvent, this);
-
+, m_timeElapsed(BASIC_ATTACKPERIOD-1.0f) {
   // Set the initial position
   b2BodyDef b2_bodyDef;
   b2_bodyDef.type = b2_dynamicBody;
@@ -162,12 +158,8 @@ void Enemy::death() {
   kill();
 }
 
-game::EventStatus Enemy::onCharacterLocationEvent(game::EventType type, game::Event *event) {
-  auto locationEvent = static_cast<CharacterLocationEvent *>(event);
-
-  m_target = locationEvent->pos;
-
-  return game::EventStatus::KEEP;
+void Enemy::setCharacterLocation(const b2Vec2 &pos) {
+  m_target = pos;
 }
 
 void Enemy::acquiredCharacter(Character* character) {
@@ -206,4 +198,9 @@ void Enemy::simpleAttack()
     {
         character->substractToHealth(m_damage-character->getArmor());
     }
+}
+
+
+float Enemy::distanceFromCharacter() const {
+  return std::abs(m_target.x - m_body->GetPosition().x) + std::abs(m_target.y - m_body->GetPosition().y);
 }

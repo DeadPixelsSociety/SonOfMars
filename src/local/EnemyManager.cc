@@ -26,6 +26,7 @@ EnemyManager::EnemyManager(b2World &b2_world, game::EventManager& events)
 , m_events(events) {
   // Register event
   events.registerHandler<SpawnMobEvent>(&EnemyManager::onSpawnMobEvent, this);
+  events.registerHandler<CharacterLocationEvent>(&EnemyManager::onCharacterLocationEvent, this);
 }
 
 EnemyManager::~EnemyManager() {
@@ -35,16 +36,24 @@ EnemyManager::~EnemyManager() {
 }
 
 void EnemyManager::update(const float dt) {
+  // Define tactics
+  // Sort the vector
+  std::sort(m_enemies.begin(), m_enemies.end(), [](Enemy* a, Enemy* b) {
+    return b->distanceFromCharacter() > a->distanceFromCharacter();
+  });
+
   for (auto enemy : m_enemies) {
-    if (enemy->isAlive())
+    if (enemy->isAlive()) {
       enemy->update(dt);
+    }
   }
 }
 
 void EnemyManager::render(sf::RenderWindow& window) {
   for (auto enemy : m_enemies) {
-    if (enemy->isAlive())
+    if (enemy->isAlive()) {
       enemy->render(window);
+    }
   }
 }
 
@@ -52,6 +61,19 @@ game::EventStatus EnemyManager::onSpawnMobEvent(game::EventType type, game::Even
   auto spawnEvent = static_cast<SpawnMobEvent *>(event);
 
   m_enemies.push_back(new Enemy(m_b2_world, m_events, spawnEvent->pos, spawnEvent->multiplier));
+
+  return game::EventStatus::KEEP;
+}
+
+game::EventStatus EnemyManager::onCharacterLocationEvent(game::EventType type, game::Event *event) {
+  auto locationEvent = static_cast<CharacterLocationEvent *>(event);
+
+  b2Vec2 target = locationEvent->pos;
+  for (auto enemy : m_enemies) {
+    if (enemy->isAlive()) {
+      enemy->setCharacterLocation(target);
+    }
+  }
 
   return game::EventStatus::KEEP;
 }
