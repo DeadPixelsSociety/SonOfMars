@@ -86,14 +86,17 @@ Enemy::~Enemy() {
 }
 
 void Enemy::update(const float dt, const ActionType action) {
-  m_timeElapsed += dt;
+    if(m_timeElapsed<m_attackPeriod) //if the attack is not ready, the cooldown reduce
+    {
+        m_timeElapsed += dt;
+    }
 
   // Define target
   m_action = action;
   //b2Vec2 dir = m_target - m_body->GetPosition();
   b2Vec2 dir;
   switch (m_action) {
-    case ATTACK: 
+    case ATTACK:
       dir = m_target - m_body->GetPosition();
       break;
 
@@ -123,8 +126,8 @@ void Enemy::update(const float dt, const ActionType action) {
       if(!m_visibleCharacter.empty())
       {
         this->simpleAttack();
+        m_timeElapsed-=m_attackPeriod;
       }
-      m_timeElapsed-=m_attackPeriod;
     }
     //check if the enemy has health>0
     if(m_health<=0)
