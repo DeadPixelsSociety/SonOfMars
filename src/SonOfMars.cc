@@ -33,6 +33,7 @@
 #include "local/ContactListener.h"
 #include "local/Hud.h"
 #include "local/SFMLDebugDraw.h"
+#include "local/SoundManager.h"
 #include "local/Stage.h"
 
 
@@ -119,9 +120,16 @@ int main(void) {
   switchDisplayHud.addKeyControl(sf::Keyboard::Tab);
   actions.addAction(switchDisplayHud);
 
+  game::Action toggleSound("Toggle sound");
+  toggleSound.addKeyControl(sf::Keyboard::M);
+  actions.addAction(toggleSound);
+
   // resource manager
   game::ResourceManager resources;
   resources.addSearchDir(GAME_DATADIR);
+
+  // Sound manager
+  SoundManager sounds(events, resources);
 
   // Setup Box2d engine
   b2World b2_world(b2Vec2(0.0f, 0.0f));
@@ -224,6 +232,10 @@ int main(void) {
     if(switchDisplayHud.isActive())
     {
         hud.switchDisplay();
+    }
+
+    if (toggleSound.isActive()) {
+      sounds.toggleSound();
     }
 
     character.setTarget( window.mapPixelToCoords(

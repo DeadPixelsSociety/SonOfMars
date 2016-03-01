@@ -1,9 +1,9 @@
 # Son of Mars
 
-### Requierement
+### Requirements
 This project needs:
-- CMake > 2.8
-- SFML > 2.1
+- CMake ≥ 2.8
+- SFML ≥ 2.1
 - C++ 11
 - Boost FileSystem Lib
 - Box2D
@@ -16,7 +16,7 @@ To compile the project, execute these commands:
     cd build
     cmake ../src
     make
-    make install # Root maybe needed
+    make install # Root may be needed
 
 ### Playing
 After your first compilation, launch and enjoy the game:
@@ -31,7 +31,8 @@ For the current version, commands are:
 - TAB 
 - A to buy 1 max health for 5 Sesterces
 - E to buy 1 damage for 20 Sesterces
-- R to buy 1 health regeneration over 10 second for 30 Sesterces
+- R to buy 1 health regeneration over 10 seconds for 30 Sesterces
+- M to mute sound
 
 
 ### Developement
