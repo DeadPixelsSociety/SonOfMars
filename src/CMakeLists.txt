@@ -49,15 +49,16 @@ add_executable(son-of-mars
   local/EnemyManager.cc
   local/Hud.cc
   local/SFMLDebugDraw.cc
+  local/SoundManager.cc
   local/Stage.cc
   local/Target.cc
   SonOfMars.cc
 )
 
 target_link_libraries(son-of-mars
-	${SFML2_LIBRARIES}
-	${BOX2D_LIBRARIES}
-	${Boost_LIBRARIES}
+  ${SFML2_LIBRARIES}
+  ${BOX2D_LIBRARIES}
+  ${Boost_LIBRARIES}
 )
 
 install(
