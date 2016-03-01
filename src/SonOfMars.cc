@@ -120,6 +120,10 @@ int main(void) {
   switchDisplayHud.addKeyControl(sf::Keyboard::Tab);
   actions.addAction(switchDisplayHud);
 
+  game::Action toggleSound("Toggle sound");
+  toggleSound.addKeyControl(sf::Keyboard::M);
+  actions.addAction(toggleSound);
+
   // resource manager
   game::ResourceManager resources;
   resources.addSearchDir(GAME_DATADIR);
@@ -228,6 +232,10 @@ int main(void) {
     if(switchDisplayHud.isActive())
     {
         hud.switchDisplay();
+    }
+
+    if (toggleSound.isActive()) {
+      sounds.toggleSound();
     }
 
     character.setTarget( window.mapPixelToCoords(

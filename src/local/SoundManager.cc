@@ -23,6 +23,8 @@ SoundManager::SoundManager(game::EventManager& events, game::ResourceManager &re
 : m_events(events)
 , m_res(resources)
 , m_rand()
+, m_muted(false)
+, m_mainVolume(100.0f)
 {
   // Load resources
   initSound("hit_enemy", "sounds/hit_enemy_metallic.wav");
@@ -44,9 +46,14 @@ SoundManager::SoundManager(game::EventManager& events, game::ResourceManager &re
 // Tools
 
 bool SoundManager::initSound(std::string name, const boost::filesystem::path& path, float volume, bool loop) {
+  bool alreadyExists = true;
   if (m_sounds.find(name) == m_sounds.end() ) {
+    alreadyExists = false;
     auto buffer = m_res.getSoundBuffer(path);
-    if (buffer != nullptr) {
+    if (buffer == nullptr) {
+      std::cout << "Unable to find " << path << std::endl;
+      return false;
+    } else {
       sf::Sound newSound;
       newSound.setBuffer(*buffer);
       newSound.setLoop(loop);
@@ -54,18 +61,27 @@ bool SoundManager::initSound(std::string name, const boost::filesystem::path& pa
       m_sounds.insert(std::pair<std::string, sf::Sound>(name, newSound));
     }
   }
-  return false;
+
+  setVol(name, volume);
+  
+  return alreadyExists;
 }
 
 float SoundManager::setVol(std::string name, float newVolume) {
-  float oldVolume;
-  auto it = m_sounds.find(name);
-  if (it == m_sounds.end()) {
+  float finalVolume, oldVolume;
+
+  if (m_sounds.find(name) == m_sounds.end()) {
     return -1.0f;
   }
 
-  oldVolume = it->second.getVolume();
-  it->second.setVolume(newVolume);
+  oldVolume = m_volumes[name];
+  m_volumes[name] = newVolume;
+  finalVolume = m_volumes[name] * m_mainVolume / 100.0f;
+
+  if (m_muted)
+    m_sounds[name].setVolume(0.0f);
+  else
+    m_sounds[name].setVolume(finalVolume);
   return oldVolume;
 }
 
@@ -101,6 +117,35 @@ bool SoundManager::stop(std::string name) {
   it->second.stop();
   return true;
 }
+
+
+
+void SoundManager::updateVolumes() {
+  std::string name;
+  for(std::map<std::string, sf::Sound>::iterator it = m_sounds.begin() ; it != m_sounds.end() ; it++) {
+    name = it->first;
+    if (m_volumes.find(name) != m_volumes.end()) {
+      setVol(name, m_volumes[it->first]);
+    }
+  }
+}
+
+void SoundManager::setMainVolume(float newVol) {
+  if (newVol >= 0.0f && newVol <= 100.0f)
+    m_mainVolume = newVol;
+}
+
+void SoundManager::setMuted(bool muted) {
+  if(m_muted != muted) {
+    m_muted = muted;
+    updateVolumes();
+  }
+}
+
+void SoundManager::toggleSound() {
+  setMuted(!m_muted);
+}
+
 
 
 

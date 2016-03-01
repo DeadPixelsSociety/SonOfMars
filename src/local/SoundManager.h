@@ -20,11 +20,10 @@
 #ifndef SOUND_MANAGER_H
 #define SOUND_MANAGER_H
 
-#include <iostream>
-
 #include <map>
 #include <vector>
 #include <string>
+#include <cmath>
 
 #include <game/EventManager.h>
 #include <game/ResourceManager.h>
@@ -41,7 +40,7 @@ class SoundManager {
 public:
   SoundManager(game::EventManager& events, game::ResourceManager &resources);
 
-  // Tools (most used inside)
+  // Tools
   bool initSound(std::string name, const boost::filesystem::path& path, float volume = 25.0f, bool loop = false);
   float setVol(std::string name, float newVolume);
 
@@ -49,6 +48,11 @@ public:
   bool replay(std::string name);
   bool playRandom(SoundList list);
   bool stop(std::string name);
+
+  void updateVolumes();
+  void setMainVolume(float newVol);
+  void setMuted(bool muted);
+  void toggleSound();
 
   // Events handlers
   game::EventStatus onCharacterHitEnemy(game::EventType type, game::Event *event);
@@ -63,6 +67,9 @@ private:
   game::Random m_rand;
 
   std::map<std::string, sf::Sound> m_sounds;
+  std::map<std::string, float> m_volumes;
+  bool m_muted;
+  float m_mainVolume;
 
 };
 
