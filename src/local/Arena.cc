@@ -235,7 +235,6 @@ void Arena::update(const float dt)
     if(m_enemyCounter<=0)
     {
         m_enemyCounter=random.computeUniformInteger(MIN_ENEMIES_PER_WAVE + m_waveNumber, MIN_ENEMIES_PER_WAVE * (m_waveNumber + 1));
-        std::cout << m_enemyCounter << std::endl;
     }
     spawnEnemy(random);
     m_enemyCounter--;

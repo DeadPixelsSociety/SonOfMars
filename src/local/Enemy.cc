@@ -93,7 +93,6 @@ void Enemy::update(const float dt, const ActionType action) {
 
   // Define target
   m_action = action;
-  //b2Vec2 dir = m_target - m_body->GetPosition();
   b2Vec2 dir;
   switch (m_action) {
     case ATTACK:
@@ -101,7 +100,14 @@ void Enemy::update(const float dt, const ActionType action) {
       break;
 
     case CIRCLE:
-      dir = {1.0f, 1.0f};
+      if (distanceFromCharacter() > 5.0f) {
+        dir = m_target - m_body->GetPosition();
+      }
+      else {
+        dir = m_target - m_body->GetPosition();
+        dir.x /= 100.0f;
+        dir.y /= 100.0f;
+      }
       break;
 
     case RETREAT:
