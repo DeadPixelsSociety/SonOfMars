@@ -108,11 +108,21 @@ private:
   sf::Texture *m_animRightTexture;
   sf::Texture *m_animBottomTexture;
   sf::Texture *m_animTopTexture;
+  
+  sf::Texture *m_animLeftPauseTexture;
+  sf::Texture *m_animRightPauseTexture;
+  sf::Texture *m_animBottomPauseTexture;
+  sf::Texture *m_animTopPauseTexture;
 
   game::Animation m_leftAnimation;
   game::Animation m_rightAnimation;
   game::Animation m_bottomAnimation;
   game::Animation m_topAnimation;
+
+  game::Animation m_leftPauseAnimation;
+  game::Animation m_rightPauseAnimation;
+  game::Animation m_bottomPauseAnimation;
+  game::Animation m_topPauseAnimation;
 
   game::Animation *m_currentAnimation;
 
