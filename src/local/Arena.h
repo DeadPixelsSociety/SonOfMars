@@ -48,6 +48,7 @@ public:
 
   void spawnEnemy(game::Random &random);
 
+  game::EventStatus onCharacterLocationEvent(game::EventType type, game::Event *event);
 private:
   game::EventManager& m_events;
   float m_timeElapsed;
@@ -55,6 +56,7 @@ private:
   int m_enemyCounter;
   int m_waveNumber;
   sf::Texture *m_background;
+  b2Vec2 m_heroPos;
 };
 
 #endif //ARENA_H

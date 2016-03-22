@@ -17,8 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <iostream>
+#include <math.h>
 
 #include "Arena.h"
+#include "Character.h"
 
 #include "local/config.h"
 
@@ -38,6 +40,9 @@ Arena::Arena(b2World &b2_world, game::EventManager& events, game::ResourceManage
 , m_enemyCounter(0)
 , m_waveNumber(1)
 , m_background(nullptr) {
+
+  events.registerHandler<CharacterLocationEvent>(&Arena::onCharacterLocationEvent, this);
+
   static constexpr float B2_WIDTH = AREA_WIDTH / BOX2D_PIXELS_PER_METER;
   static constexpr float B2_HEIGHT = AREA_HEIGHT / BOX2D_PIXELS_PER_METER;
   static constexpr float X_TOP = WALL_TOP_SIZE / BOX2D_PIXELS_PER_METER;
@@ -235,7 +240,6 @@ void Arena::update(const float dt)
     if(m_enemyCounter<=0)
     {
         m_enemyCounter=random.computeUniformInteger(MIN_ENEMIES_PER_WAVE + m_waveNumber, MIN_ENEMIES_PER_WAVE * (m_waveNumber + 1));
-        std::cout << m_enemyCounter << std::endl;
     }
     spawnEnemy(random);
     m_enemyCounter--;
@@ -260,33 +264,54 @@ void Arena::render(sf::RenderWindow& window) {
 
 void Arena::spawnEnemy(game::Random &random)
 {
+    sf::Vector2f heroPos = {m_heroPos.x, m_heroPos.y};
+	heroPos *= BOX2D_PIXELS_PER_METER;
+
+	int halfWidth = AREA_WIDTH / 2;
+	int halfHeight = AREA_HEIGHT / 2;
+	int xValue = heroPos.x / halfWidth;
+	int yValue = heroPos.y / halfHeight;
+    int heroQuarter = xValue + (yValue) * 2;
+    std::cout << "x " << heroPos.x << " x/width/2 " << xValue << std::endl;
+	std::cout << "y " << heroPos.y << " (y/height/2)*2 " << yValue << std::endl;
+    std::cout << "quarter " << heroQuarter << std::endl;
+    
     // Make the new ennemy spawn randomly near one of the corners
     SpawnMobEvent event;
     event.multiplier=(m_waveNumber/INCREASE_ENEMY_POWER_RATE)+1;
     
     //m_view = window.getDefaultView();
     
-    const int UPPER_LEFT_X = WALL_SIDE_SIZE + 50;
-    const int UPPER_LEFT_Y = WALL_TOP_SIZE;
-    const int UPPER_RIGHT_X = AREA_WIDTH - WALL_SIDE_SIZE - 50;
-    const int UPPER_RIGHT_Y = WALL_TOP_SIZE;
-    const int LOWER_LEFT_X = WALL_SIDE_SIZE + 50;
-    const int LOWER_LEFT_Y = AREA_HEIGHT - WALL_TOP_SIZE/2;
-    const int LOWER_RIGHT_X = AREA_WIDTH - WALL_SIDE_SIZE - 50;
-    const int LOWER_RIGHT_Y = AREA_HEIGHT - WALL_TOP_SIZE/2;
-    switch (random.computeUniformInteger(0,3))
+    const int LEFT_X = WALL_SIDE_SIZE + 50;
+    const int UPPER_SIDE_Y = WALL_TOP_SIZE;
+    const int RIGHT_X = AREA_WIDTH - WALL_SIDE_SIZE - 50;
+    const int LOWER_SIDE_Y = AREA_HEIGHT - WALL_TOP_SIZE/2;
+
+	int rand = random.computeUniformInteger(0,3);
+	while(rand == heroQuarter){
+		rand = random.computeUniformInteger(0,3);
+	}
+
+    switch (rand) //TODO gérer l'enlevage du côté où le héro regarde
     {
         case 0: //upper left corner
-            event.pos = sf::Vector2f(UPPER_LEFT_X, UPPER_LEFT_Y);
+            event.pos = sf::Vector2f(LEFT_X, UPPER_SIDE_Y);
             break;
         case 1: //upper right corner
-            event.pos = sf::Vector2f(UPPER_RIGHT_X, UPPER_RIGHT_Y);
+            event.pos = sf::Vector2f(RIGHT_X, UPPER_SIDE_Y);
             break;
         case 2: //lower left corner
-            event.pos = sf::Vector2f(LOWER_LEFT_X, LOWER_LEFT_Y);
+            event.pos = sf::Vector2f(LEFT_X, LOWER_SIDE_Y);
             break;
         default: //lower right corner
-            event.pos = sf::Vector2f(LOWER_RIGHT_X, LOWER_RIGHT_Y);
+            event.pos = sf::Vector2f(RIGHT_X, LOWER_SIDE_Y);
     }
     m_events.triggerEvent(&event);
+}
+
+game::EventStatus Arena::onCharacterLocationEvent(game::EventType type, game::Event *event) {
+  auto locationEvent = static_cast<CharacterLocationEvent *>(event);
+
+  m_heroPos = locationEvent->pos;
+  return game::EventStatus::KEEP;
 }
