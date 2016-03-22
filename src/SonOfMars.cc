@@ -22,6 +22,7 @@
 #include <game/Clock.h>
 #include <game/EntityManager.h>
 #include <game/Log.h>
+#include <game/Random.h>
 #include <game/WindowGeometry.h>
 #include <game/WindowSettings.h>
 
@@ -124,6 +125,9 @@ int main(void) {
   toggleSound.addKeyControl(sf::Keyboard::M);
   actions.addAction(toggleSound);
 
+  // Random generator
+  game::Random random;
+
   // resource manager
   game::ResourceManager resources;
   resources.addSearchDir(GAME_DATADIR);
@@ -146,7 +150,7 @@ int main(void) {
   Character character(b2_world, events, resources);
   mainEntities.addEntity(character);
 
-  Arena arena(b2_world, events, resources);
+  Arena arena(b2_world, events, resources, random);
   mainEntities.addEntity(arena);
 
   EnemyManager enemies(b2_world, events);

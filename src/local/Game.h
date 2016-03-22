@@ -83,4 +83,8 @@ struct CharacterMovementEvent : public game::Event {
   // Maybe send speed to set pitch
 };
 
+struct EndWaveEvent : public game::Event {
+  static const game::EventType type = "EndWaveEvent"_type;
+};
+
 #endif // LOCAL_GAME_H

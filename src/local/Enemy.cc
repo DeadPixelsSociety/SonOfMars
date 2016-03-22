@@ -86,10 +86,10 @@ Enemy::~Enemy() {
 }
 
 void Enemy::update(const float dt, const ActionType action) {
-    if(m_timeElapsed<m_attackPeriod) //if the attack is not ready, the cooldown reduce
-    {
-        m_timeElapsed += dt;
-    }
+  if(m_timeElapsed<m_attackPeriod) //if the attack is not ready, the cooldown reduce
+  {
+    m_timeElapsed += dt;
+  }
 
   // Define target
   m_action = action;
@@ -121,29 +121,31 @@ void Enemy::update(const float dt, const ActionType action) {
   m_body->SetTransform(m_body->GetPosition(),
     (( dir.y < 0 ) ? -1 : 1) * acos( dir.x/norm) );
   // Set enemy's speed (constant)
-  if ( norm > 3.0f*ENEMY_WIDTH / BOX2D_PIXELS_PER_METER )
+  if ( norm > 3.0f*ENEMY_WIDTH / BOX2D_PIXELS_PER_METER ) {
     m_body->SetLinearVelocity((m_speed/norm)*dir);
-  else // Useless when other enemies push
+  }
+  else { // Useless when other enemies push
     m_body->SetLinearVelocity( b2Vec2(0,0) );
+  }
 
-    if(m_timeElapsed>=m_attackPeriod)
+  if(m_timeElapsed>=m_attackPeriod)
+  {
+    //Manage the attacks
+    if(!m_visibleCharacter.empty())
     {
-      //Manage the attacks
-      if(!m_visibleCharacter.empty())
-      {
-        this->simpleAttack();
-        m_timeElapsed-=m_attackPeriod;
-      }
+      this->simpleAttack();
+      m_timeElapsed-=m_attackPeriod;
     }
-    //check if the enemy has health>0
-    if(m_health<=0)
-    {
-      // Trigger death event
-      EnemyDeathEvent deathEvent;
-      deathEvent.givenGold=m_goldGiven;
-      m_events.triggerEvent(&deathEvent);
-      this->death();
-    }
+  }
+  //check if the enemy has health>0
+  if(m_health<=0)
+  {
+    // Trigger death event
+    EnemyDeathEvent deathEvent;
+    deathEvent.givenGold=m_goldGiven;
+    m_events.triggerEvent(&deathEvent);
+    this->death();
+  }
 }
 
 void Enemy::render(sf::RenderWindow& window) {
