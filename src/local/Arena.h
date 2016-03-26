@@ -33,7 +33,7 @@
 
 class Arena: public game::Entity {
 public:
-  Arena(b2World &b2_world, game::EventManager& events, game::ResourceManager &resources);
+  Arena(b2World &b2_world, game::EventManager& events, game::ResourceManager &resources, game::Random &random);
 
   Arena(const Arena&) = delete;
   Arena& operator=(const Arena&) = delete;
@@ -46,17 +46,19 @@ public:
   virtual void update(const float dt) override;
   virtual void render(sf::RenderWindow& window) override;
 
-  void spawnEnemy(game::Random &random);
+  void spawnEnemy();
 
   game::EventStatus onCharacterLocationEvent(game::EventType type, game::Event *event);
 private:
   game::EventManager& m_events;
+  game::Random& m_random;
   float m_timeElapsed;
   std::vector<b2Body*> m_walls;
   int m_enemyCounter;
   int m_waveNumber;
   sf::Texture *m_background;
   b2Vec2 m_heroPos;
+  int m_numberEnemies;
 };
 
 #endif //ARENA_H

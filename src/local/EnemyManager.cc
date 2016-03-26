@@ -21,6 +21,8 @@
 
 #include "Game.h"
 
+static constexpr unsigned int SQUAD_NUMBER = 5;
+
 EnemyManager::EnemyManager(b2World &b2_world, game::EventManager& events)
 : m_b2_world(b2_world)
 , m_events(events) {
@@ -36,6 +38,19 @@ EnemyManager::~EnemyManager() {
 }
 
 void EnemyManager::update(const float dt) {
+  //Remove the deads
+  const auto trash = std::partition(m_enemies.begin(), m_enemies.end(), [](const Enemy *e) {
+    return e->isAlive();
+  });
+
+  for (auto it = trash; it != m_enemies.end(); ++it) {
+    assert(!(*it)->isAlive());
+    delete *it;
+    *it = nullptr;
+  }
+
+  m_enemies.erase(trash, m_enemies.end());
+
   // Define tactics
   // Sort the vector
   std::sort(m_enemies.begin(), m_enemies.end(), [](Enemy* a, Enemy* b) {
@@ -43,14 +58,14 @@ void EnemyManager::update(const float dt) {
   });
 
   // The first 10
-  for (unsigned i = 0; i < 10 && i < m_enemies.size(); ++i) {
+  for (unsigned i = 0; i < SQUAD_NUMBER && i < m_enemies.size(); ++i) {
     if (m_enemies[i]->isAlive()) {
       m_enemies[i]->update(dt, Enemy::ActionType::ATTACK);
     }
   }
 
   // the others
-  for (unsigned i = 10; i < m_enemies.size(); ++i) {
+  for (unsigned i = SQUAD_NUMBER; i < m_enemies.size(); ++i) {
     if (m_enemies[i]->isAlive()) {
       m_enemies[i]->update(dt, Enemy::ActionType::CIRCLE);
     }

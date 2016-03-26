@@ -22,6 +22,7 @@
 #include <game/Clock.h>
 #include <game/EntityManager.h>
 #include <game/Log.h>
+#include <game/Random.h>
 #include <game/WindowGeometry.h>
 #include <game/WindowSettings.h>
 
@@ -33,6 +34,7 @@
 #include "local/ContactListener.h"
 #include "local/Hud.h"
 #include "local/SFMLDebugDraw.h"
+#include "local/SoundManager.h"
 #include "local/Stage.h"
 
 
@@ -119,9 +121,19 @@ int main(void) {
   switchDisplayHud.addKeyControl(sf::Keyboard::Tab);
   actions.addAction(switchDisplayHud);
 
+  game::Action toggleSound("Toggle sound");
+  toggleSound.addKeyControl(sf::Keyboard::M);
+  actions.addAction(toggleSound);
+
+  // Random generator
+  game::Random random;
+
   // resource manager
   game::ResourceManager resources;
   resources.addSearchDir(GAME_DATADIR);
+
+  // Sound manager
+  SoundManager sounds(events, resources);
 
   // Setup Box2d engine
   b2World b2_world(b2Vec2(0.0f, 0.0f));
@@ -138,7 +150,7 @@ int main(void) {
   Character character(b2_world, events, resources);
   mainEntities.addEntity(character);
 
-  Arena arena(b2_world, events, resources);
+  Arena arena(b2_world, events, resources, random);
   mainEntities.addEntity(arena);
 
   EnemyManager enemies(b2_world, events);
@@ -224,6 +236,10 @@ int main(void) {
     if(switchDisplayHud.isActive())
     {
         hud.switchDisplay();
+    }
+
+    if (toggleSound.isActive()) {
+      sounds.toggleSound();
     }
 
     character.setTarget( window.mapPixelToCoords(

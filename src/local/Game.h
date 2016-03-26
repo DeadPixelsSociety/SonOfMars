@@ -59,4 +59,32 @@ struct EnemyDeathEvent : public game::Event {
   int givenGold;
 };
 
+// Sound-specific events
+struct CharacterHitEnemyEvent : public game::Event {
+  static const game::EventType type = "CharacterHitEnemyEvent"_type;
+  int numberOfHits;
+  // bools or enums or ints to pass kinds of enemies (with metal armor…)
+};
+
+struct EnemyHitCharacterEvent : public game::Event {
+  static const game::EventType type = "EnemyHitCharacterEvent"_type;
+  int damages;
+};
+
+struct CharacterDeathEvent : public game::Event {
+  static const game::EventType type = "CharacterDeathEvent"_type;
+};
+
+// EnemyDeathEvent already defined
+
+struct CharacterMovementEvent : public game::Event {
+  static const game::EventType type = "CharacterMovementEvent"_type;
+  bool moves;
+  // Maybe send speed to set pitch
+};
+
+struct EndWaveEvent : public game::Event {
+  static const game::EventType type = "EndWaveEvent"_type;
+};
+
 #endif // LOCAL_GAME_H

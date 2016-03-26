@@ -17,6 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef STAGE_H
+#define STAGE_H
+
 #include <game/Camera.h>
 #include <game/EventManager.h>
 
@@ -40,3 +43,5 @@ private:
   game::FlexibleCamera m_arenaCamera;
   game::FixedRatioCamera m_shopCamera;
 };
+
+#endif // STAGE_H
