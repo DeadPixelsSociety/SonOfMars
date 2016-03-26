@@ -269,7 +269,7 @@ void Arena::render(sf::RenderWindow& window) {
   window.draw(sprite);
 }
 
-void Arena::spawnEnemy(game::Random &random)
+void Arena::spawnEnemy()
 {
 if (m_waveNumber >= 5) {
     return;
@@ -278,7 +278,6 @@ if (m_waveNumber >= 5) {
   SpawnMobEvent event;
   event.multiplier=(m_waveNumber/INCREASE_ENEMY_POWER_RATE)+1;
   
-  //m_view = window.getDefaultView();
     sf::Vector2f heroPos = {m_heroPos.x, m_heroPos.y};
 	heroPos *= BOX2D_PIXELS_PER_METER;
 
@@ -287,15 +286,7 @@ if (m_waveNumber >= 5) {
 	int xValue = heroPos.x / halfWidth;
 	int yValue = heroPos.y / halfHeight;
     int heroQuarter = xValue + (yValue) * 2;
-    std::cout << "x " << heroPos.x << " x/width/2 " << xValue << std::endl;
-	std::cout << "y " << heroPos.y << " (y/height/2)*2 " << yValue << std::endl;
-    std::cout << "quarter " << heroQuarter << std::endl;
     
-    // Make the new ennemy spawn randomly near one of the corners
-    SpawnMobEvent event;
-    event.multiplier=(m_waveNumber/INCREASE_ENEMY_POWER_RATE)+1;
-    
-    //m_view = window.getDefaultView();
     
     const int UPPER_LEFT_X = WALL_SIDE_SIZE + 50;
   const int UPPER_LEFT_Y = WALL_TOP_SIZE;
@@ -306,9 +297,9 @@ if (m_waveNumber >= 5) {
   const int LOWER_RIGHT_X = AREA_WIDTH - WALL_SIDE_SIZE - 50;
   const int LOWER_RIGHT_Y = AREA_HEIGHT - WALL_TOP_SIZE/2;
 
-	int rand = random.computeUniformInteger(0,3);
+	int rand = m_random.computeUniformInteger(0,3);
 	while(rand == heroQuarter){
-		rand = random.computeUniformInteger(0,3);
+		rand = m_random.computeUniformInteger(0,3);
 	}
 
 	sf::Vector2f offset = { m_random.computeUniformFloat(0.0f, 50.0f), m_random.computeUniformFloat(0.0f, 50.0f) };
