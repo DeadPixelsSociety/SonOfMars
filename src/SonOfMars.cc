@@ -33,6 +33,7 @@
 #include "local/config.h"
 #include "local/ContactListener.h"
 #include "local/Hud.h"
+#include "local/NotificationManager.h"
 #include "local/SFMLDebugDraw.h"
 #include "local/SoundManager.h"
 #include "local/Stage.h"
@@ -156,6 +157,9 @@ int main(void) {
   EnemyManager enemies(b2_world, events);
   mainEntities.addEntity(enemies);
 
+  // Notifications manager
+  NotificationManager notifs(events, geometry);
+  mainEntities.addEntity(notifs);
 
   game::EntityManager HudEntities;
 
