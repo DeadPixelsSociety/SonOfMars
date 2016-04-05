@@ -269,26 +269,24 @@ void Arena::render(sf::RenderWindow& window) {
   window.draw(sprite);
 }
 
-void Arena::spawnEnemy()
-{
-if (m_waveNumber >= 5) {
+void Arena::spawnEnemy() {
+  if (m_waveNumber >= 5) {
     return;
   }
   // Make the new ennemy spawn randomly near one of the corners
   SpawnMobEvent event;
   event.multiplier=(m_waveNumber/INCREASE_ENEMY_POWER_RATE)+1;
   
-    sf::Vector2f heroPos = {m_heroPos.x, m_heroPos.y};
+  sf::Vector2f heroPos = {m_heroPos.x, m_heroPos.y};
 	heroPos *= BOX2D_PIXELS_PER_METER;
 
 	int halfWidth = AREA_WIDTH / 2;
 	int halfHeight = AREA_HEIGHT / 2;
 	int xValue = heroPos.x / halfWidth;
 	int yValue = heroPos.y / halfHeight;
-    int heroQuarter = xValue + (yValue) * 2;
+  int heroQuarter = xValue + (yValue) * 2;
     
-    
-    const int UPPER_LEFT_X = WALL_SIDE_SIZE + 50;
+  const int UPPER_LEFT_X = WALL_SIDE_SIZE + 50;
   const int UPPER_LEFT_Y = WALL_TOP_SIZE;
   const int UPPER_RIGHT_X = AREA_WIDTH - WALL_SIDE_SIZE - 50;
   const int UPPER_RIGHT_Y = WALL_TOP_SIZE;
@@ -298,29 +296,29 @@ if (m_waveNumber >= 5) {
   const int LOWER_RIGHT_Y = AREA_HEIGHT - WALL_TOP_SIZE/2;
 
 	int rand = m_random.computeUniformInteger(0,3);
-	while(rand == heroQuarter){
+	while(rand == heroQuarter) {
 		rand = m_random.computeUniformInteger(0,3);
 	}
 
 	sf::Vector2f offset = { m_random.computeUniformFloat(0.0f, 50.0f), m_random.computeUniformFloat(0.0f, 50.0f) };
 
-    switch (rand) {
-    case 0: //upper left corner
-      event.pos = sf::Vector2f(UPPER_LEFT_X, UPPER_LEFT_Y) + offset;
-      break;
+  switch (rand) {
+  case 0: //upper left corner
+    event.pos = sf::Vector2f(UPPER_LEFT_X, UPPER_LEFT_Y) + offset;
+    break;
 
-    case 1: //upper right corner
-      event.pos = sf::Vector2f(UPPER_RIGHT_X, UPPER_RIGHT_Y) + offset;
-      break;
+  case 1: //upper right corner
+    event.pos = sf::Vector2f(UPPER_RIGHT_X, UPPER_RIGHT_Y) + offset;
+    break;
 
-    case 2: //lower left corner
-      event.pos = sf::Vector2f(LOWER_LEFT_X, LOWER_LEFT_Y) + offset;
-      break;
+  case 2: //lower left corner
+    event.pos = sf::Vector2f(LOWER_LEFT_X, LOWER_LEFT_Y) + offset;
+    break;
 
-    default: //lower right corner
-      event.pos = sf::Vector2f(LOWER_RIGHT_X, LOWER_RIGHT_Y) + offset;
+  default: //lower right corner
+    event.pos = sf::Vector2f(LOWER_RIGHT_X, LOWER_RIGHT_Y) + offset;
   }
-    m_events.triggerEvent(&event);
+  m_events.triggerEvent(&event);
 }
 
 game::EventStatus Arena::onCharacterLocationEvent(game::EventType type, game::Event *event) {
