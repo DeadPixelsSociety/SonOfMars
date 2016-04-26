@@ -151,10 +151,10 @@ int main(void) {
   Character character(b2_world, events, resources);
   mainEntities.addEntity(character);
 
-  Arena arena(b2_world, events, resources, random);
+  Arena arena(b2_world, resources);
   mainEntities.addEntity(arena);
 
-  EnemyManager enemies(b2_world, events);
+  EnemyManager enemies(b2_world, events, random);
   mainEntities.addEntity(enemies);
 
   // Notifications manager
