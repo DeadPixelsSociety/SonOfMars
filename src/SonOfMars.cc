@@ -26,12 +26,10 @@
 #include <game/WindowGeometry.h>
 #include <game/WindowSettings.h>
 
-#include "local/Arena.h"
-#include "local/Enemy.h"
-#include "local/EnemyManager.h"
 #include "local/Character.h"
 #include "local/config.h"
 #include "local/ContactListener.h"
+#include "local/Enemy.h"
 #include "local/Hud.h"
 #include "local/SFMLDebugDraw.h"
 #include "local/SoundManager.h"
@@ -61,9 +59,6 @@ int main(void) {
 
   // Events manager
   game::EventManager events;
-
-  // Gestion des cameras
-  Stage stage(cameras, events, AREA_WIDTH, AREA_HEIGHT, 1000.0f);
 
   // add actions
   game::ActionManager actions;
@@ -150,12 +145,9 @@ int main(void) {
   Character character(b2_world, events, resources);
   mainEntities.addEntity(character);
 
-  Arena arena(b2_world, events, resources, random);
-  mainEntities.addEntity(arena);
-
-  EnemyManager enemies(b2_world, events);
-  mainEntities.addEntity(enemies);
-
+  // Manage level
+  Stage stage(b2_world, resources, cameras, events, random, geometry, AREA_WIDTH, AREA_HEIGHT, 1000.0f);
+  mainEntities.addEntity(stage);
 
   game::EntityManager HudEntities;
 

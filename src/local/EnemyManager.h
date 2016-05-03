@@ -26,13 +26,14 @@
 
 #include <game/Entity.h>
 #include <game/EventManager.h>
+#include <game/Random.h>
 
 #include "Character.h"
 #include "Enemy.h"
 
 class EnemyManager: public game::Entity {
 public:
-  EnemyManager(b2World &b2_world, game::EventManager& events);
+  EnemyManager(b2World &b2_world, game::EventManager& events, game::Random &random);
 
   EnemyManager(const EnemyManager&) = delete;
   EnemyManager& operator=(const EnemyManager&) = delete;
@@ -45,13 +46,19 @@ public:
   virtual void update(const float dt) override;
   virtual void render(sf::RenderWindow& window) override;
 
-  game::EventStatus onSpawnMobEvent(game::EventType type, game::Event *event);
   game::EventStatus onCharacterLocationEvent(game::EventType type, game::Event *event);
+
+private:
+  void spawnEnemy();
 
 private:
   std::vector<Enemy*> m_enemies;
   b2World &m_b2_world;
   game::EventManager& m_events;
+  game::Random& m_random;
+  float m_timeElapsed;
+  unsigned m_waveNumber;
+  b2Vec2 m_heroPos;
 };
 
 #endif // ENEMY_MANAGER_H

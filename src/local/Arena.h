@@ -27,13 +27,13 @@
 #include <Box2D/Box2D.h>
 
 #include <game/Entity.h>
-#include <game/EventManager.h>
-#include <game/Random.h>
 #include <game/ResourceManager.h>
+
+#include "local/config.h"
 
 class Arena: public game::Entity {
 public:
-  Arena(b2World &b2_world, game::EventManager& events, game::ResourceManager &resources, game::Random &random);
+  Arena(b2World &b2_world, game::ResourceManager &resources);
 
   Arena(const Arena&) = delete;
   Arena& operator=(const Arena&) = delete;
@@ -43,20 +43,14 @@ public:
 
   virtual ~Arena();
 
-  virtual void update(const float dt) override;
   virtual void render(sf::RenderWindow& window) override;
 
-  void spawnEnemy();
+  static constexpr float WALL_TOP_SIZE = 192.0f * (AREA_WIDTH/3000.0f);
+  static constexpr float WALL_SIDE_SIZE = 16.0f;
 
 private:
-  game::EventManager& m_events;
-  game::Random& m_random;
-  float m_timeElapsed;
   std::vector<b2Body*> m_walls;
-  int m_enemyCounter;
-  int m_waveNumber;
   sf::Texture *m_background;
-  int m_numberEnemies;
 };
 
 #endif //ARENA_H
