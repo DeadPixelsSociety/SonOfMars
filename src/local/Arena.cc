@@ -20,30 +20,11 @@
 #include <math.h>
 
 #include "Arena.h"
-#include "Character.h"
-
-#include "local/config.h"
 
 #include "Game.h"
 
-static constexpr float WALL_TOP_SIZE = 192.0f * (AREA_WIDTH/3000.0f);
-static constexpr float WALL_SIDE_SIZE = 16.0f;
-
-static constexpr float SPAWN_PERIOD = 10.0f;
-
-static constexpr int MIN_ENEMIES_PER_WAVE = 3;
-static constexpr int INCREASE_ENEMY_POWER_RATE = 5; // every INCREASE_ENEMY_POWER_RATE, enemies will get more powerful
-
-Arena::Arena(b2World &b2_world, game::EventManager& events, game::ResourceManager &resources, game::Random &random)
-: m_events(events)
-, m_random(random)
-, m_timeElapsed(SPAWN_PERIOD-2.0f)
-, m_enemyCounter(0)
-, m_waveNumber(1)
-, m_background(nullptr) {
-
-  events.registerHandler<CharacterLocationEvent>(&Arena::onCharacterLocationEvent, this);
-
+Arena::Arena(b2World &b2_world, game::ResourceManager &resources)
+: m_background(nullptr) {
   static constexpr float B2_WIDTH = AREA_WIDTH / BOX2D_PIXELS_PER_METER;
   static constexpr float B2_HEIGHT = AREA_HEIGHT / BOX2D_PIXELS_PER_METER;
   static constexpr float X_TOP = WALL_TOP_SIZE / BOX2D_PIXELS_PER_METER;
@@ -233,99 +214,9 @@ Arena::~Arena() {
   }
 }
 
-void Arena::update(const float dt)
-{
-  if (m_timeElapsed >= SPAWN_PERIOD) {
-    int enemyCounter = m_random.computeUniformInteger(MIN_ENEMIES_PER_WAVE + m_waveNumber, MIN_ENEMIES_PER_WAVE * (m_waveNumber + 1));
-
-    for (int i = 0; i < enemyCounter; ++i) {
-      spawnEnemy();
-    }
-
-    m_timeElapsed -= SPAWN_PERIOD;
-    m_waveNumber++;
-    // if(m_enemyCounter<=0)
-    // {
-    //     m_enemyCounter=
-    // }
-    // spawnEnemy();
-    // m_enemyCounter--;
-    // if(m_enemyCounter<=0)
-    // {
-    //     m_timeElapsed -= SPAWN_PERIOD;
-    //     m_waveNumber++;
-    // }
-  }
-  else
-  {
-    m_timeElapsed += dt;
-  }
-}
-
 void Arena::render(sf::RenderWindow& window) {
   sf::Sprite sprite;
   sprite.setTexture(*m_background);
   sprite.setScale(AREA_WIDTH / 3000.0f, AREA_HEIGHT / 1688.0f);
   window.draw(sprite);
-}
-
-void Arena::spawnEnemy()
-{
-if (m_waveNumber >= 5) {
-    return;
-  }
-  // Make the new ennemy spawn randomly near one of the corners
-  SpawnMobEvent event;
-  event.multiplier=(m_waveNumber/INCREASE_ENEMY_POWER_RATE)+1;
-  
-    sf::Vector2f heroPos = {m_heroPos.x, m_heroPos.y};
-	heroPos *= BOX2D_PIXELS_PER_METER;
-
-	int halfWidth = AREA_WIDTH / 2;
-	int halfHeight = AREA_HEIGHT / 2;
-	int xValue = heroPos.x / halfWidth;
-	int yValue = heroPos.y / halfHeight;
-    int heroQuarter = xValue + (yValue) * 2;
-    
-    
-    const int UPPER_LEFT_X = WALL_SIDE_SIZE + 50;
-  const int UPPER_LEFT_Y = WALL_TOP_SIZE;
-  const int UPPER_RIGHT_X = AREA_WIDTH - WALL_SIDE_SIZE - 50;
-  const int UPPER_RIGHT_Y = WALL_TOP_SIZE;
-  const int LOWER_LEFT_X = WALL_SIDE_SIZE + 50;
-  const int LOWER_LEFT_Y = AREA_HEIGHT - WALL_TOP_SIZE/2;
-  const int LOWER_RIGHT_X = AREA_WIDTH - WALL_SIDE_SIZE - 50;
-  const int LOWER_RIGHT_Y = AREA_HEIGHT - WALL_TOP_SIZE/2;
-
-	int rand = m_random.computeUniformInteger(0,3);
-	while(rand == heroQuarter){
-		rand = m_random.computeUniformInteger(0,3);
-	}
-
-	sf::Vector2f offset = { m_random.computeUniformFloat(0.0f, 50.0f), m_random.computeUniformFloat(0.0f, 50.0f) };
-
-    switch (rand) {
-    case 0: //upper left corner
-      event.pos = sf::Vector2f(UPPER_LEFT_X, UPPER_LEFT_Y) + offset;
-      break;
-
-    case 1: //upper right corner
-      event.pos = sf::Vector2f(UPPER_RIGHT_X, UPPER_RIGHT_Y) + offset;
-      break;
-
-    case 2: //lower left corner
-      event.pos = sf::Vector2f(LOWER_LEFT_X, LOWER_LEFT_Y) + offset;
-      break;
-
-    default: //lower right corner
-      event.pos = sf::Vector2f(LOWER_RIGHT_X, LOWER_RIGHT_Y) + offset;
-  }
-    m_events.triggerEvent(&event);
-}
-
-game::EventStatus Arena::onCharacterLocationEvent(game::EventType type, game::Event *event) {
-  auto locationEvent = static_cast<CharacterLocationEvent *>(event);
-
-  m_heroPos = locationEvent->pos;
-  return game::EventStatus::KEEP;
 }
