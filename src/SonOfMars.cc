@@ -31,6 +31,7 @@
 #include "local/ContactListener.h"
 #include "local/Enemy.h"
 #include "local/Hud.h"
+#include "local/NotificationManager.h"
 #include "local/SFMLDebugDraw.h"
 #include "local/SoundManager.h"
 #include "local/Stage.h"
@@ -148,6 +149,10 @@ int main(void) {
   // Manage level
   Stage stage(b2_world, resources, cameras, events, random, geometry, AREA_WIDTH, AREA_HEIGHT, 1000.0f);
   mainEntities.addEntity(stage);
+
+  // // Notifications manager
+  // NotificationManager notifs(events, geometry);
+  // mainEntities.addEntity(notifs);
 
   game::EntityManager HudEntities;
 

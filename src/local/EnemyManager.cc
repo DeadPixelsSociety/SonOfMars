@@ -91,18 +91,19 @@ void EnemyManager::update(const float dt) {
 
     m_waveNumber++;
 
-    unsigned numberEnemies = m_random.computeUniformInteger(1, 1);
+    unsigned numberEnemies = m_random.computeUniformInteger(1, 2);
+    assert(numberEnemies >= 1 && numberEnemies <= 2);
     for (unsigned i = 0; i < numberEnemies; ++i) {
       // spawnEnemy();
     }
   }
 
-  // If the safe zone needed
-  if (m_enemies.size() == 0 && m_waveNumber % 5 == 0) {
-    // Trigger teleport event
-    EndWaveEvent event;
-    m_events.triggerEvent(&event);
-  }
+  // // If the safe zone needed
+  // if (m_enemies.size() == 0 && m_waveNumber % 5 == 0) {
+  //   // Trigger teleport event
+  //   EndWaveEvent event;
+  //   m_events.triggerEvent(&event);
+  // }
 }
 
 void EnemyManager::render(sf::RenderWindow& window) {
