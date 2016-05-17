@@ -14,13 +14,13 @@ NotificationManager::~NotificationManager() {
 }
 
 void NotificationManager::update(const float dt) {
-  for(std::map<std::string, Notification>::iterator it = m_notifs.begin() ; it != m_notifs.end() ; it++) {
-    if(it->second.duration > 0.0f) {
-      it->second.curTime += dt;
-      if (it->second.curTime > it->second.duration)
-        removeNotification(it->first);
-    }
-  }
+  // for(std::map<std::string, Notification>::iterator it = m_notifs.begin() ; it != m_notifs.end() ; it++) {
+  //   if(it->second.duration > 0.0f) {
+  //     it->second.curTime += dt;
+  //     if (it->second.curTime > it->second.duration)
+  //       removeNotification(it->first);
+  //   }
+  // }
 }
 
 void NotificationManager::render(sf::RenderWindow& window) {

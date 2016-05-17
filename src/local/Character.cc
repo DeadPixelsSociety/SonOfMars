@@ -169,11 +169,12 @@ Character::~Character() {
 }
 
 void Character::update(const float dt) {
-    // if the attack is not ready to use, the actual cooldown reduce
-    if(m_timeElapsedAttack<m_attackPeriod)
-    {
-        m_timeElapsedAttack+=dt;
-    }
+  // if the attack is not ready to use, the actual cooldown reduce
+  if(m_timeElapsedAttack<m_attackPeriod)
+  {
+      m_timeElapsedAttack+=dt;
+  }
+  
   // Manage the move
   b2Vec2 b2_velocity = m_body->GetLinearVelocity();
   if (m_verticalDirection == Direction::UP) {

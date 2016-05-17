@@ -17,7 +17,8 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/local/config.h.in ${CMAKE_CURRENT_BIN
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY})
 
-add_definitions(-Wall -g -O2 -std=c++11)
+add_definitions(-Wall -g -O2 -std=c++11 -Wextra)
+# add_definitions(-D_GLIBCXX_USE_CXX11_ABI=0)
 
 add_executable(son-of-mars
   # Gameskel of Jube (https://github.com/jube/gameskel)
