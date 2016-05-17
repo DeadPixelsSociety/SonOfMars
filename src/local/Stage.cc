@@ -31,7 +31,7 @@ Stage::Stage(b2World &b2_world, game::ResourceManager &resources, game::CameraMa
 , m_shopCamera(stageWidth, stageHeight, {stageWidth * 2.0f, stageHeight * 0.5f}) 
 , m_arena(b2_world, resources)
 , m_enemies(b2_world, events, random)
-, m_notifs(events, geometry) {
+, m_notifs(events, resources, geometry) {
   // Register events trigger
   events.registerHandler<CharacterLocationEvent>(&Stage::onCharacterLocationEvent, this);
   events.registerHandler<EndWaveEvent>(&Stage::onEndWaveEvent, this);

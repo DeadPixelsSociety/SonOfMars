@@ -30,7 +30,7 @@
 class Hud: public game::Entity
 {
     public:
-        Hud(game::EventManager& events, game::ResourceManager& resource,game::WindowGeometry& geometry);
+        Hud(game::EventManager& events, game::ResourceManager& resource, game::WindowGeometry& geometry);
         virtual ~Hud();
         virtual void update(const float dt) override;
         virtual void render(sf::RenderWindow& window) override;
