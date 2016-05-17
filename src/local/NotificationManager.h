@@ -31,6 +31,10 @@
 
 #define NOTIF_POINT     1
 #define NOTIF_ALERT     2
+#define NOTIF_ENNEMI_HAUT_GAUCHE  3
+#define NOTIF_ENNEMI_HAUT_DROIT   4
+#define NOTIF_ENNEMI_BAS_GAUCHE   5
+#define NOTIF_ENNEMI_BAS_DROIT    6
 
 struct Notification {
   sf::Uint8 type;
@@ -42,7 +46,7 @@ struct Notification {
 
 class NotificationManager: public game::Entity {
 public:
-  NotificationManager(game::EventManager& events, game::WindowGeometry& geometry);
+  NotificationManager(game::EventManager& events, game::ResourceManager& resource, game::WindowGeometry& geometry);
   virtual ~NotificationManager();
   virtual void update(const float dt) override;
   virtual void render(sf::RenderWindow& window) override;
@@ -51,6 +55,8 @@ public:
 
   bool addNotification(std::string name, sf::Uint8 type, sf::Vector2f pos, std::string text, float duration);
   bool removeNotification(std::string name);
+  // Versions spéciales
+  bool addEnnemiNotif(int nbEnnemies, sf::Uint8 coin);
 private:
   game::WindowGeometry &m_geometry;
   game::EventManager& m_events;

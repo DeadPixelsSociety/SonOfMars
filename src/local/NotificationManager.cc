@@ -2,10 +2,13 @@
 
 #include <iostream>
 
-NotificationManager::NotificationManager(game::EventManager& events, game::WindowGeometry& geometry)
+NotificationManager::NotificationManager(game::EventManager& events, game::ResourceManager& resources, game::WindowGeometry& geometry)
 : m_geometry(geometry)
 , m_events(events)
+, m_font(nullptr)
 {
+  m_font=resources.getFont("GRECOromanLubedWrestling.ttf");
+  assert(m_font!=nullptr);
 
 }
 
@@ -25,12 +28,85 @@ void NotificationManager::update(const float dt) {
 
 void NotificationManager::render(sf::RenderWindow& window) {
   for(std::map<std::string, Notification>::iterator it = m_notifs.begin() ; it != m_notifs.end() ; it++) {
-    std::cout << "Notification " << it->first << std::endl;
-    std::cout << "    PositionX: " << it->second.pos.x << std::endl;
-    std::cout << "    PositionY: " << it->second.pos.y << std::endl;
-    std::cout << "    Text: " << it->second.text << std::endl;
-    std::cout << "    Duration: " << it->second.duration << std::endl;
-    std::cout << "    Current time: " << it->second.curTime << std::endl;
+    
+    Notification& cn = it->second;
+
+    sf::Text text;
+    text.setFont(*m_font);
+    text.setCharacterSize(30.0f);
+    text.setString(cn.text);
+    sf::FloatRect txtBounds = text.getGlobalBounds();
+
+    switch (cn.type) {
+      case NOTIF_POINT: {
+        sf::RectangleShape rect(sf::Vector2f(txtBounds.width+20.0f, text.getGlobalBounds().height+20.0f));
+        rect.setFillColor(sf::Color(100, 100, 100));
+        rect.setPosition(cn.pos);
+        text.setPosition(sf::Vector2f(-txtBounds.left, -txtBounds.top));
+        text.setPosition(sf::Vector2f(-txtBounds.left, -txtBounds.top));
+        text.move(cn.pos);
+        text.move(10.0f, 10.0f);
+        //circ.setSize({m_geometry.getXFromRight(0),m_geometry.getYRatio(0.05f,0.0f)});
+        //circ.setRadius(100.0f);
+        window.draw(rect);
+        window.draw(text);
+
+        } break;
+      case NOTIF_ENNEMI_HAUT_DROIT: {
+        float boxX = m_geometry.getXFromRight(txtBounds.width + 30.0f);
+        sf::RectangleShape rect(sf::Vector2f(txtBounds.width+20.0f, text.getGlobalBounds().height+20.0f));
+        rect.setFillColor(sf::Color(250, 0, 0));
+        rect.setPosition(boxX-cn.pos.x, cn.pos.y);
+        text.setPosition(sf::Vector2f(boxX-txtBounds.left, -txtBounds.top));
+        text.move(0.0f, 20.0f);
+        //text.move(cn.pos);
+        
+        window.draw(rect);
+        window.draw(text);
+
+      } break;
+      case NOTIF_ENNEMI_HAUT_GAUCHE: {
+        float boxX = 10.0f;
+        sf::RectangleShape rect(sf::Vector2f(txtBounds.width+20.0f, text.getGlobalBounds().height+20.0f));
+        rect.setFillColor(sf::Color(250, 0, 0));
+        rect.setPosition(boxX+cn.pos.x, cn.pos.y);
+        text.setPosition(sf::Vector2f(boxX-txtBounds.left, -txtBounds.top));
+        text.move(10.0f, 10.0f);
+        text.move(cn.pos);
+        
+        window.draw(rect);
+        window.draw(text);
+
+      } break;
+      case NOTIF_ENNEMI_BAS_DROIT: {
+        float boxX = m_geometry.getXFromRight(txtBounds.width + 30.0f),
+              boxY = m_geometry.getYFromBottom(txtBounds.height + 30.0f);
+        sf::RectangleShape rect(sf::Vector2f(txtBounds.width+20.0f, text.getGlobalBounds().height+20.0f));
+        rect.setFillColor(sf::Color(250, 0, 0));
+        rect.setPosition(boxX-cn.pos.x, boxY-cn.pos.y);
+        //text.setPosition(sf::Vector2f(boxX-txtBounds.left, boxX-txtBounds.top));
+        text.setPosition(rect.getPosition());
+        text.move(10.0f, 0.0f);
+        //text.move(cn.pos);
+        
+        window.draw(rect);
+        window.draw(text);
+
+      } break;
+      case NOTIF_ENNEMI_BAS_GAUCHE: {
+        float boxY = m_geometry.getYFromBottom(txtBounds.height + 30.0f);
+        sf::RectangleShape rect(sf::Vector2f(txtBounds.width+20.0f, text.getGlobalBounds().height+20.0f));
+        rect.setFillColor(sf::Color(250, 0, 0));
+        rect.setPosition(cn.pos.x, boxY-cn.pos.y);
+        text.setPosition(sf::Vector2f(-txtBounds.left, boxY-txtBounds.top));
+        text.move(10.0f, -10.0f);
+        text.move(cn.pos);
+        
+        window.draw(rect);
+        window.draw(text);
+
+      } break;
+    }
   }
 }
 
@@ -49,4 +125,8 @@ bool NotificationManager::removeNotification(std::string name) {
     return false;
   m_notifs.erase(name);
   return true;
+}
+
+bool NotificationManager::addEnnemiNotif(int nbEnnemies, sf::Uint8 coin) {
+  return addNotification("ennemis", coin, sf::Vector2f(10.0f, 10.0f), "Ennemis !", 2.0f);
 }

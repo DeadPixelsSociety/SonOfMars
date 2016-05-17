@@ -157,15 +157,15 @@ int main(void) {
   EnemyManager enemies(b2_world, events);
   mainEntities.addEntity(enemies);
 
-  // Notifications manager
-  NotificationManager notifs(events, geometry);
-  mainEntities.addEntity(notifs);
-
   game::EntityManager HudEntities;
 
   Hud hud(events, resources, geometry);
   HudEntities.addEntity(hud);
 
+  // Notifications manager
+  NotificationManager notifs(events, resources, geometry);
+  HudEntities.addEntity(notifs);
+  
   // main loop
   game::Clock clock;
 
