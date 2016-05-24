@@ -25,10 +25,10 @@
 
 #include "Game.h"
 
-Stage::Stage(b2World &b2_world, game::ResourceManager &resources, game::CameraManager &cameras, game::EventManager& events, game::Random random, game::WindowGeometry& geometry, float stageWidth, float stageHeight, float flexibleCameraWidth)
-: m_currentPlace(Stage::ARENA) 
+Stage::Stage(b2World &b2_world, game::ResourceManager &resources, game::CameraManager &cameras, game::EventManager& events, game::Random& random, game::WindowGeometry& geometry, float stageWidth, float stageHeight, float flexibleCameraWidth)
+: m_currentPlace(Stage::ARENA)
 , m_arenaCamera(flexibleCameraWidth, {stageWidth * 0.5f, stageHeight * 0.5f})
-, m_shopCamera(stageWidth, stageHeight, {stageWidth * 2.0f, stageHeight * 0.5f}) 
+, m_shopCamera(stageWidth, stageHeight, {stageWidth * 0.50f, stageHeight * 0.5f})
 , m_arena(b2_world, resources)
 , m_enemies(b2_world, events, random)
 , m_notifs(events, resources, geometry) {
@@ -98,13 +98,32 @@ game::EventStatus Stage::onEndWaveEvent(game::EventType type, game::Event *event
 }
 
 void Stage::update(const float dt) {
-  m_arena.update(dt);
-  m_enemies.update(dt);
-  m_notifs.update(dt);
+  switch (m_currentPlace) {
+    case ARENA:
+      m_enemies.update(dt);
+      m_notifs.update(dt);
+      break;
+
+    case SAFE_ROOM:
+      break;
+
+    default:
+      assert(false);
+  }
 }
 
 void Stage::render(sf::RenderWindow& window) {
-  m_arena.render(window);
-  m_enemies.render(window);
-  m_notifs.render(window);
+  switch (m_currentPlace) {
+    case ARENA:
+      m_arena.render(window);
+      m_enemies.render(window);
+      m_notifs.render(window);
+      break;
+
+    case SAFE_ROOM:
+      break;
+
+    default:
+      assert(false);
+  }
 }

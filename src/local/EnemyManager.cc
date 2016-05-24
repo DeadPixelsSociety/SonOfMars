@@ -25,7 +25,7 @@
 
 static constexpr unsigned int SQUAD_NUMBER = 5;
 
-static constexpr float SPAWN_PERIOD = 2.0f;
+static constexpr float SPAWN_PERIOD = 0.0f;
 
 static constexpr int MIN_ENEMIES_PER_WAVE = 3;
 static constexpr int INCREASE_ENEMY_POWER_RATE = 5; // every INCREASE_ENEMY_POWER_RATE, enemies will get more powerful
@@ -94,16 +94,16 @@ void EnemyManager::update(const float dt) {
     unsigned numberEnemies = m_random.computeUniformInteger(1, 2);
     assert(numberEnemies >= 1 && numberEnemies <= 2);
     for (unsigned i = 0; i < numberEnemies; ++i) {
-      // spawnEnemy();
+      spawnEnemy();
     }
   }
 
-  // // If the safe zone needed
-  // if (m_enemies.size() == 0 && m_waveNumber % 5 == 0) {
-  //   // Trigger teleport event
-  //   EndWaveEvent event;
-  //   m_events.triggerEvent(&event);
-  // }
+  // If the safe zone needed
+  if (m_enemies.size() == 0 && m_waveNumber % 5 == 0) {
+    // Trigger teleport event
+    EndWaveEvent event;
+    m_events.triggerEvent(&event);
+  }
 }
 
 void EnemyManager::render(sf::RenderWindow& window) {
@@ -129,50 +129,50 @@ game::EventStatus EnemyManager::onCharacterLocationEvent(game::EventType type, g
 
 void EnemyManager::spawnEnemy() {
   // Make the new ennemy spawn randomly near one of the corners
-  // float multiplier = (m_waveNumber / INCREASE_ENEMY_POWER_RATE) + 1;
-  
-  // sf::Vector2f heroPos = {m_heroPos.x, m_heroPos.y};
-  // heroPos *= BOX2D_PIXELS_PER_METER;
+  float multiplier = (m_waveNumber / INCREASE_ENEMY_POWER_RATE) + 1;
 
-  // int halfWidth = AREA_WIDTH / 2;
-  // int halfHeight = AREA_HEIGHT / 2;
-  // int xValue = heroPos.x / halfWidth;
-  // int yValue = heroPos.y / halfHeight;
-  // int heroQuarter = xValue + (yValue) * 2;
-    
-  // const int UPPER_LEFT_X = Arena::WALL_SIDE_SIZE + 50;
-  // const int UPPER_LEFT_Y = Arena::WALL_TOP_SIZE;
-  // const int UPPER_RIGHT_X = AREA_WIDTH - Arena::WALL_SIDE_SIZE - 50;
-  // const int UPPER_RIGHT_Y = Arena::WALL_TOP_SIZE;
-  // const int LOWER_LEFT_X = Arena::WALL_SIDE_SIZE + 50;
-  // const int LOWER_LEFT_Y = AREA_HEIGHT - Arena::WALL_TOP_SIZE/2;
-  // const int LOWER_RIGHT_X = AREA_WIDTH - Arena::WALL_SIDE_SIZE - 50;
-  // const int LOWER_RIGHT_Y = AREA_HEIGHT - Arena::WALL_TOP_SIZE/2;
+  sf::Vector2f heroPos = {m_heroPos.x, m_heroPos.y};
+  heroPos *= BOX2D_PIXELS_PER_METER;
 
-  // int rand = m_random.computeUniformInteger(0,3);
-  // while(rand == heroQuarter) {
-  //   rand = m_random.computeUniformInteger(0,3);
-  // }
+  int halfWidth = AREA_WIDTH / 2;
+  int halfHeight = AREA_HEIGHT / 2;
+  int xValue = heroPos.x / halfWidth;
+  int yValue = heroPos.y / halfHeight;
+  int heroQuarter = xValue + (yValue) * 2;
 
-  // sf::Vector2f offset = { m_random.computeUniformFloat(0.0f, 50.0f), m_random.computeUniformFloat(0.0f, 50.0f) };
+  const int UPPER_LEFT_X = Arena::WALL_SIDE_SIZE + 50;
+  const int UPPER_LEFT_Y = Arena::WALL_TOP_SIZE;
+  const int UPPER_RIGHT_X = AREA_WIDTH - Arena::WALL_SIDE_SIZE - 50;
+  const int UPPER_RIGHT_Y = Arena::WALL_TOP_SIZE;
+  const int LOWER_LEFT_X = Arena::WALL_SIDE_SIZE + 50;
+  const int LOWER_LEFT_Y = AREA_HEIGHT - Arena::WALL_TOP_SIZE/2;
+  const int LOWER_RIGHT_X = AREA_WIDTH - Arena::WALL_SIDE_SIZE - 50;
+  const int LOWER_RIGHT_Y = AREA_HEIGHT - Arena::WALL_TOP_SIZE/2;
 
-  // sf::Vector2f enemyPos;
-  // switch (rand) {
-  //   case 0: //upper left corner
-  //     enemyPos = sf::Vector2f(UPPER_LEFT_X, UPPER_LEFT_Y) + offset;
-  //     break;
+  int rand = m_random.computeUniformInteger(0,3);
+  while(rand == heroQuarter) {
+    rand = m_random.computeUniformInteger(0,3);
+  }
 
-  //   case 1: //upper right corner
-  //     enemyPos = sf::Vector2f(UPPER_RIGHT_X, UPPER_RIGHT_Y) + offset;
-  //     break;
+  sf::Vector2f offset = { m_random.computeUniformFloat(0.0f, 50.0f), m_random.computeUniformFloat(0.0f, 50.0f) };
 
-  //   case 2: //lower left corner
-  //     enemyPos = sf::Vector2f(LOWER_LEFT_X, LOWER_LEFT_Y) + offset;
-  //     break;
+  sf::Vector2f enemyPos;
+  switch (rand) {
+    case 0: //upper left corner
+      enemyPos = sf::Vector2f(UPPER_LEFT_X, UPPER_LEFT_Y) + offset;
+      break;
 
-  //   default: //lower right corner
-  //     enemyPos = sf::Vector2f(LOWER_RIGHT_X, LOWER_RIGHT_Y) + offset;
-  // }
+    case 1: //upper right corner
+      enemyPos = sf::Vector2f(UPPER_RIGHT_X, UPPER_RIGHT_Y) + offset;
+      break;
 
-  //m_enemies.push_back(new Enemy(m_b2_world, m_events, enemyPos, multiplier));
+    case 2: //lower left corner
+      enemyPos = sf::Vector2f(LOWER_LEFT_X, LOWER_LEFT_Y) + offset;
+      break;
+
+    default: //lower right corner
+      enemyPos = sf::Vector2f(LOWER_RIGHT_X, LOWER_RIGHT_Y) + offset;
+  }
+
+  m_enemies.push_back(new Enemy(m_b2_world, m_events, enemyPos, multiplier));
 }

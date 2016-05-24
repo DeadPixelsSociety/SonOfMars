@@ -158,6 +158,7 @@ Character::Character(b2World &b2_world, game::EventManager& events, game::Resour
 
   // Register event
   events.registerHandler<EnemyDeathEvent>(&Character::onEnemyDeathEvent, this);
+  events.registerHandler<EndWaveEvent>(&Character::onEndWaveEvent, this);
 }
 
 Character::~Character() {
@@ -174,7 +175,7 @@ void Character::update(const float dt) {
   {
       m_timeElapsedAttack+=dt;
   }
-  
+
   // Manage the move
   b2Vec2 b2_velocity = m_body->GetLinearVelocity();
   if (m_verticalDirection == Direction::UP) {
@@ -391,7 +392,7 @@ void Character::simpleAttack()
               enemy->substractToHealth((m_damage-enemy->getArmor()));
           }
           m_timeElapsedAttack-=m_attackPeriod;
-          
+
           CharacterHitEnemyEvent hitEnemyEvent;
           hitEnemyEvent.numberOfHits = m_visibleEnemies.size();
           m_events.triggerEvent(&hitEnemyEvent);
@@ -503,8 +504,7 @@ void Character::lostEnemy(Enemy* enemy) {
   m_visibleEnemies.erase(enemy);
 }
 
-void Character::death()
-{
+void Character::death() {
   CharacterDeathEvent deathEvent;
   m_events.triggerEvent(&deathEvent);
 
@@ -512,11 +512,18 @@ void Character::death()
   kill();
 }
 
-game::EventStatus Character::onEnemyDeathEvent(game::EventType type, game::Event *event)
-{
-    auto deathEvent = static_cast<EnemyDeathEvent *>(event);
+game::EventStatus Character::onEnemyDeathEvent(game::EventType type, game::Event *event) {
+  auto deathEvent = static_cast<EnemyDeathEvent *>(event);
 
-    this->addToGold(deathEvent->givenGold);
+  this->addToGold(deathEvent->givenGold);
 
-    return game::EventStatus::KEEP;
+  return game::EventStatus::KEEP;
+}
+
+game::EventStatus Character::onEndWaveEvent(game::EventType type, game::Event *event) {
+  //auto deathEvent = static_cast<EndWaveEvent *>(event);
+
+  m_body->SetTransform({AREA_WIDTH * 2.0f, AREA_HEIGHT * 0.5f}, m_body->GetAngle());
+
+  return game::EventStatus::KEEP;
 }

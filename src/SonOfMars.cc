@@ -158,7 +158,7 @@ int main(void) {
   // // Notifications manager
   // NotificationManager notifs(events, resources, geometry);
   // HudEntities.addEntity(notifs);
-  
+
   // main loop
   game::Clock clock;
 

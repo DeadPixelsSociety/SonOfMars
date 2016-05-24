@@ -61,6 +61,7 @@ public:
   void death();
 
   game::EventStatus onEnemyDeathEvent(game::EventType type, game::Event *event);
+  game::EventStatus onEndWaveEvent(game::EventType type, game::Event *event);
 
   // Events
   void move(Direction direction);
@@ -70,23 +71,23 @@ public:
   void buyMaxHealth();
   void buyRegenValue();
 
-    void setMaxHealth(float maxHealth);
-    float getMaxHealth() const;
-    void addToMaxHealth(float value);
-    void substractToMaxHealth(float value);
+  void setMaxHealth(float maxHealth);
+  float getMaxHealth() const;
+  void addToMaxHealth(float value);
+  void substractToMaxHealth(float value);
 
-    void setHealth(float health);
-    float getHealth() const;
-    void addToHealth(float value);
-    void substractToHealth(float value);
+  void setHealth(float health);
+  float getHealth() const;
+  void addToHealth(float value);
+  void substractToHealth(float value);
 
-    void setArmor(float armor);
-    int getArmor() const;
+  void setArmor(float armor);
+  int getArmor() const;
 
-    void setGold(int gold);
-    int getGold() const;
-    void addToGold(int value);
-    void substractToGold(int value);
+  void setGold(int gold);
+  int getGold() const;
+  void addToGold(int value);
+  void substractToGold(int value);
 
   void acquiredEnemy(Enemy* enemy);
   void lostEnemy(Enemy* enemy);
@@ -108,7 +109,7 @@ private:
   sf::Texture *m_animRightTexture;
   sf::Texture *m_animBottomTexture;
   sf::Texture *m_animTopTexture;
-  
+
   sf::Texture *m_animLeftPauseTexture;
   sf::Texture *m_animRightPauseTexture;
   sf::Texture *m_animBottomPauseTexture;

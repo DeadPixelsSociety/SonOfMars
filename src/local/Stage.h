@@ -42,8 +42,8 @@ public:
     SAFE_ROOM,
   };
 
-public: 
-  Stage(b2World &b2_world, game::ResourceManager &resources, game::CameraManager &cameras, game::EventManager& events, game::Random random, game::WindowGeometry& geometry, float stageWidth, float stageHeight, float flexibleCameraWidth);
+public:
+  Stage(b2World &b2_world, game::ResourceManager &resources, game::CameraManager &cameras, game::EventManager& events, game::Random& random, game::WindowGeometry& geometry, float stageWidth, float stageHeight, float flexibleCameraWidth);
 
   sf::View getCurrentView() const;
   void togglePlace();
