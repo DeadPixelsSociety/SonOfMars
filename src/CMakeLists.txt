@@ -51,6 +51,7 @@ add_executable(son-of-mars
   local/Hud.cc
   local/NotificationManager.cc
   local/SFMLDebugDraw.cc
+  local/Shop.cc
   local/SoundManager.cc
   local/Stage.cc
   local/Target.cc

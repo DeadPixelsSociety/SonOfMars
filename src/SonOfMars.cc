@@ -251,7 +251,7 @@ int main(void) {
     b2_world.Step(dt, 8, 3);
     HudEntities.update(dt);
     // render
-    window.clear(sf::Color::White);
+    window.clear(sf::Color::Black);
 
     stage.configureCurrentCamera(window);
     mainEntities.render(window);

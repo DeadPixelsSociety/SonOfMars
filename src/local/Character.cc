@@ -523,7 +523,7 @@ game::EventStatus Character::onEnemyDeathEvent(game::EventType type, game::Event
 game::EventStatus Character::onEndWaveEvent(game::EventType type, game::Event *event) {
   //auto deathEvent = static_cast<EndWaveEvent *>(event);
 
-  m_body->SetTransform({AREA_WIDTH * 2.0f, AREA_HEIGHT * 0.5f}, m_body->GetAngle());
-
+  m_body->SetTransform({AREA_WIDTH * 1.1f/(float)BOX2D_PIXELS_PER_METER, AREA_HEIGHT * 0.5f/(float)BOX2D_PIXELS_PER_METER}, m_body->GetAngle());
+  
   return game::EventStatus::KEEP;
 }

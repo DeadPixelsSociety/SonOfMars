@@ -32,6 +32,7 @@
 #include <game/EventManager.h>
 
 #include "Arena.h"
+#include "Shop.h"
 #include "EnemyManager.h"
 #include "NotificationManager.h"
 
@@ -59,6 +60,7 @@ private:
   game::FlexibleCamera m_arenaCamera;
   game::FixedRatioCamera m_shopCamera;
   Arena m_arena;
+  Shop m_shop;
   EnemyManager m_enemies;
   NotificationManager m_notifs;
 };

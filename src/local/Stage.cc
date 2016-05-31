@@ -28,7 +28,7 @@
 Stage::Stage(b2World &b2_world, game::ResourceManager &resources, game::CameraManager &cameras, game::EventManager& events, game::Random& random, game::WindowGeometry& geometry, float stageWidth, float stageHeight, float flexibleCameraWidth)
 : m_currentPlace(Stage::ARENA)
 , m_arenaCamera(flexibleCameraWidth, {stageWidth * 0.5f, stageHeight * 0.5f})
-, m_shopCamera(stageWidth, stageHeight, {stageWidth * 0.50f, stageHeight * 0.5f})
+, m_shopCamera(stageWidth/2.5f, stageHeight/2.5f, {stageWidth * 1.2f, stageHeight * 0.5f})
 , m_arena(b2_world, resources)
 , m_enemies(b2_world, events, random)
 , m_notifs(events, resources, geometry) {
@@ -121,6 +121,7 @@ void Stage::render(sf::RenderWindow& window) {
       break;
 
     case SAFE_ROOM:
+      m_shop.render(window);
       break;
 
     default:
