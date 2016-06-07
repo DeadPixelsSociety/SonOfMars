@@ -30,6 +30,7 @@ Stage::Stage(b2World &b2_world, game::ResourceManager &resources, game::CameraMa
 , m_arenaCamera(1000.0f, {AREA_WIDTH * 0.5f, AREA_HEIGHT * 0.5f})
 , m_shopCamera(SHOP_WIDTH, SHOP_HEIGHT, {SHOP_OFFSET_X + SHOP_WIDTH * 0.5f, SHOP_HEIGHT * 0.5f})
 , m_arena(b2_world, resources)
+, m_shop(b2_world)
 , m_enemies(b2_world, events, random)
 , m_notifs(events, resources, geometry) {
   // Register events trigger

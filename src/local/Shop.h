@@ -20,11 +20,13 @@
 #ifndef SHOP_H
 #define SHOP_H
 
+#include <Box2D/Box2D.h>
+
 #include <game/Entity.h>
 
 class Shop: public game::Entity {
 public:
-  //Shop(b2World &b2_world, game::ResourceManager &resources);
+  Shop(b2World &b2_world/*, game::ResourceManager &resources*/);
 
   /*Shop(const Shop&) = delete;
   Shop& operator=(const Shop&) = delete;
@@ -36,7 +38,7 @@ public:
 
 private:
   sf::Texture *m_background;
-
+  std::vector<b2Body*> m_walls;
 };
 
 #endif // SHOP_H
