@@ -23,7 +23,11 @@
 #define GAME_DATADIR "@CMAKE_INSTALL_PREFIX@/share/games/son-of-mars"
 
 static constexpr float AREA_WIDTH = 2300.0f;
-static constexpr float AREA_HEIGHT = 1294.1;
+static constexpr float AREA_HEIGHT = 1294.1f;
+
+static constexpr float SHOP_WIDTH = AREA_WIDTH / 2.5f;
+static constexpr float SHOP_HEIGHT = AREA_HEIGHT / 2.5f;
+static constexpr float SHOP_OFFSET_X = AREA_WIDTH;
 
 static constexpr float BOX2D_PIXELS_PER_METER = 32.0f;
 

@@ -147,7 +147,7 @@ int main(void) {
   mainEntities.addEntity(character);
 
   // Manage level
-  Stage stage(b2_world, resources, cameras, events, random, geometry, AREA_WIDTH, AREA_HEIGHT, 1000.0f);
+  Stage stage(b2_world, resources, cameras, events, random, geometry);
   mainEntities.addEntity(stage);
 
   game::EntityManager HudEntities;

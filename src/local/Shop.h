@@ -21,7 +21,6 @@
 #define SHOP_H
 
 #include <game/Entity.h>
-#include "local/config.h"
 
 class Shop: public game::Entity {
 public:

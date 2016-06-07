@@ -19,15 +19,17 @@
 
 #include <iostream>
 
+#include "local/config.h"
+
 #include "Shop.h"
 
 
 void Shop::render(sf::RenderWindow& window) {
-  sf::RectangleShape rect(sf::Vector2f(100.0f, 100.0f));
+  sf::RectangleShape rect(sf::Vector2f(SHOP_WIDTH, SHOP_HEIGHT));
   //rect.setColor(sf::Color(0, 255, 0));
   rect.setFillColor(sf::Color::Green);
-  
-  rect.setPosition(sf::Vector2f(0.0f, 0.0f));
+
+  rect.setPosition({SHOP_OFFSET_X, 0.0f});
   window.draw(rect);
   /*sf::Sprite sprite;
   sprite.setTexture(*m_background);

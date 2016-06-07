@@ -25,10 +25,10 @@
 
 #include "Game.h"
 
-Stage::Stage(b2World &b2_world, game::ResourceManager &resources, game::CameraManager &cameras, game::EventManager& events, game::Random& random, game::WindowGeometry& geometry, float stageWidth, float stageHeight, float flexibleCameraWidth)
+Stage::Stage(b2World &b2_world, game::ResourceManager &resources, game::CameraManager &cameras, game::EventManager& events, game::Random& random, game::WindowGeometry& geometry)
 : m_currentPlace(Stage::ARENA)
-, m_arenaCamera(flexibleCameraWidth, {stageWidth * 0.5f, stageHeight * 0.5f})
-, m_shopCamera(stageWidth/2.5f, stageHeight/2.5f, {stageWidth * 1.2f, stageHeight * 0.5f})
+, m_arenaCamera(1000.0f, {AREA_WIDTH * 0.5f, AREA_HEIGHT * 0.5f})
+, m_shopCamera(SHOP_WIDTH, SHOP_HEIGHT, {SHOP_OFFSET_X + SHOP_WIDTH * 0.5f, SHOP_HEIGHT * 0.5f})
 , m_arena(b2_world, resources)
 , m_enemies(b2_world, events, random)
 , m_notifs(events, resources, geometry) {

@@ -44,7 +44,7 @@ public:
   };
 
 public:
-  Stage(b2World &b2_world, game::ResourceManager &resources, game::CameraManager &cameras, game::EventManager& events, game::Random& random, game::WindowGeometry& geometry, float stageWidth, float stageHeight, float flexibleCameraWidth);
+  Stage(b2World &b2_world, game::ResourceManager &resources, game::CameraManager &cameras, game::EventManager& events, game::Random& random, game::WindowGeometry& geometry);
 
   sf::View getCurrentView() const;
   void togglePlace();
