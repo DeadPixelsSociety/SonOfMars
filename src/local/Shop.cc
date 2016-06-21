@@ -60,7 +60,6 @@ Shop::Shop(b2World &b2_world/*, game::ResourceManager &resources*/)
 
   // // Wall top
   b2_bodyDef.position.Set(B2_OFFSET_X + B2_WIDTH / 2.0f, B2_WALL_TOP_SIZE);
-
   vertices[0].Set(-B2_WIDTH / 2.0f, -B2_WALL_TOP_SIZE);
   vertices[1].Set( B2_WIDTH / 2.0f, -B2_WALL_TOP_SIZE);
   vertices[2].Set( B2_WIDTH / 2.0f,  B2_WALL_TOP_SIZE);
@@ -79,18 +78,16 @@ Shop::Shop(b2World &b2_world/*, game::ResourceManager &resources*/)
   b2_body = b2_world.CreateBody(&b2_bodyDef);
   m_walls.push_back(b2_body);
   b2_body->CreateFixture(&b2_fixture);
+
+  // Create merchants
+  m_merchants.push_back(Merchant(b2_world, Skill::LIFE, {AREA_WIDTH + 40.0f, 40.0f}));
 }
 
 
 void Shop::render(sf::RenderWindow& window) {
   sf::RectangleShape rect(sf::Vector2f(SHOP_WIDTH, SHOP_HEIGHT));
-  //rect.setColor(sf::Color(0, 255, 0));
   rect.setFillColor(sf::Color::Green);
 
   rect.setPosition({SHOP_OFFSET_X, 0.0f});
   window.draw(rect);
-  /*sf::Sprite sprite;
-  sprite.setTexture(*m_background);
-  sprite.setScale(AREA_WIDTH / 3000.0f, AREA_HEIGHT / 1688.0f);
-  window.draw(sprite);*/
 }

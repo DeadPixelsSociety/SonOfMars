@@ -30,6 +30,7 @@
 enum Origin {
   CHARACTER,
   ENEMY,
+  MERCHANT,
 };
 
 struct SpawnMobEvent : public game::Event {

@@ -49,6 +49,7 @@ add_executable(son-of-mars
   local/Enemy.cc
   local/EnemyManager.cc
   local/Hud.cc
+  local/Merchant.cc
   local/NotificationManager.cc
   local/SFMLDebugDraw.cc
   local/Shop.cc

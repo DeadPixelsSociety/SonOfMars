@@ -32,6 +32,7 @@
 #include <game/ResourceManager.h>
 
 #include "Enemy.h"
+#include "Merchant.h"
 #include "Target.h"
 
 class Character: public game::Entity {
@@ -146,6 +147,7 @@ private:
   float m_attackPeriod;
 
   std::set<Enemy *> m_visibleEnemies;
+  Merchant *m_visibleMerchant;
   std::vector<Target *> m_targets;
 };
 

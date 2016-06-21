@@ -17,31 +17,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SHOP_H
-#define SHOP_H
-
-#include <Box2D/Box2D.h>
-
-#include <game/Entity.h>
-
 #include "Merchant.h"
 
-class Shop: public game::Entity {
-public:
-  Shop(b2World &b2_world/*, game::ResourceManager &resources*/);
+#include "local/config.h"
 
-  /*Shop(const Shop&) = delete;
-  Shop& operator=(const Shop&) = delete;
+Merchant::Merchant(b2World &b2_world, Skill skill, sf::Vector2f position)
+: m_skill(skill)
+, m_body(nullptr) {
+  // Set the initial position
+  b2BodyDef b2_bodyDef;
+  b2_bodyDef.type = b2_staticBody;
+  b2_bodyDef.position.Set(position.x / BOX2D_PIXELS_PER_METER, position.y / BOX2D_PIXELS_PER_METER);
 
-  Shop(Shop&&) = delete;
-  Shop& operator=(Shop&&) = delete;*/
+  b2CircleShape b2_circle;
+  b2_circle.m_radius = MERCHANT_WIDTH / BOX2D_PIXELS_PER_METER;
 
-  virtual void render(sf::RenderWindow& window) override;
+  b2FixtureDef b2_fixture;
+  b2_fixture.shape = &b2_circle;
 
-private:
-  sf::Texture *m_background;
-  std::vector<b2Body*> m_walls;
-  std::vector<Merchant> m_merchants;
-};
+  m_body = b2_world.CreateBody(&b2_bodyDef);
+  m_target = std::make_shared<Target>(Target(Origin::MERCHANT, false, this));
+  m_body->CreateFixture(&b2_fixture)->SetUserData(m_target.get());
+}
 
-#endif // SHOP_H
+Skill Merchant::getSkill() {
+  return m_skill;
+}

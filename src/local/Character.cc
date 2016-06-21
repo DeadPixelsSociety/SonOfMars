@@ -82,6 +82,7 @@ Character::Character(b2World &b2_world, game::EventManager& events, game::Resour
 , m_regenerationValue(BASE_REGEN_VALUE) // The player regenerate m_regenerationValue over m_regenerationRate second
 , m_regenerationRate(BASE_REGEN_RATE)
 , m_attackPeriod(BASE_ATTACK_PERIOD)
+, m_visibleMerchant(nullptr)
 {
   // Load textures
   m_animLeftTexture = resources.getTexture("character/character_left.png");
@@ -382,22 +383,19 @@ void Character::setTarget(sf::Vector2f mousePos) {
   m_target.y = mousePos.y / (double)BOX2D_PIXELS_PER_METER;
 }
 
-void Character::simpleAttack()
-{
-    if(m_timeElapsedAttack>=m_attackPeriod)
-    {
-        if (m_visibleEnemies.size()) {
-          for (Enemy* enemy: m_visibleEnemies)
-          {
-              enemy->substractToHealth((m_damage-enemy->getArmor()));
-          }
-          m_timeElapsedAttack-=m_attackPeriod;
+void Character::simpleAttack() {
+  if(m_timeElapsedAttack>=m_attackPeriod) {
+    if (m_visibleEnemies.size()) {
+      for (Enemy* enemy: m_visibleEnemies) {
+        enemy->substractToHealth((m_damage-enemy->getArmor()));
+      }
+      m_timeElapsedAttack-=m_attackPeriod;
 
-          CharacterHitEnemyEvent hitEnemyEvent;
-          hitEnemyEvent.numberOfHits = m_visibleEnemies.size();
-          m_events.triggerEvent(&hitEnemyEvent);
-        }
+      CharacterHitEnemyEvent hitEnemyEvent;
+      hitEnemyEvent.numberOfHits = m_visibleEnemies.size();
+      m_events.triggerEvent(&hitEnemyEvent);
     }
+  }
 }
 
 void Character::buyDamage()
